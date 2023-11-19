@@ -1,0 +1,19 @@
+{
+    "name": "Creality Ender-7",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_CREALITY\\nPRINTER_MODEL_ENDER7\\nPRINTER_HAS_BOWDEN\\nPRINTER_HAS_HIGHSPEED\\nPRINTER_HAS_SUPERSPEED",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "ender7_bed.stl",
+    "picture": "ENDER7_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 240.0,
+            "y": 240.0,
+            "z": 300
+        }
+    },
+    "is-default": false
+}

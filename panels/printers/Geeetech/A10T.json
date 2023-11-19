@@ -1,0 +1,19 @@
+{
+    "name": "Geeetech A10 T",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_Geeetech\\nPRINTER_MODEL_A10T\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "220x220.stl",
+    "picture": "A10T_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 220.0,
+            "y": 220.0,
+            "z": 260
+        }
+    },
+    "is-default": false
+}

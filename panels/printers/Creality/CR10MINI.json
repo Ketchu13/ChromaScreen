@@ -1,0 +1,19 @@
+{
+    "name": "Creality CR-10 Mini",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_CREALITY\\nPRINTER_MODEL_CR10MINI\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "cr10mini_bed.stl",
+    "picture": "CR10MINI_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 300.0,
+            "y": 220.0,
+            "z": 300
+        }
+    },
+    "is-default": false
+}

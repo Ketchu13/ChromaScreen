@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa XL - 2T Input Shaper (Alpha)",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "xl_bed.stl",
+    "picture": "XL2IS_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

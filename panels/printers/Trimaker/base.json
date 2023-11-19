@@ -1,0 +1,14 @@
+{
+    "name": "Trimaker",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "Trimaker Nebula Cloud",
+        "Trimaker Cosmos II",
+        "Trimaker Nebula "
+    ]
+}

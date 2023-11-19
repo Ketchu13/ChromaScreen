@@ -1,0 +1,19 @@
+{
+    "name": "Taz6 Aero",
+    "description": "LulzBot Taz 6 w/ Aerostruder profile for Delaware Library System, Rt9 Library and Innovation Center.",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "TAZ6_AERO_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 280.0,
+            "y": 280.0,
+            "z": 250
+        }
+    },
+    "is-default": false
+}

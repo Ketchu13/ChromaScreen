@@ -1,0 +1,19 @@
+{
+    "name": "Papapiu N1S",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "Papapiu_N1S_Bed.stl",
+    "picture": "Papapiu_N1S_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 299.0,
+            "y": 300.0,
+            "z": 360
+        }
+    },
+    "is-default": false
+}

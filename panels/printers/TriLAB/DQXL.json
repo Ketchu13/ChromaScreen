@@ -1,0 +1,19 @@
+{
+    "name": "DeltiQ XL",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "DQXL_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": 500
+        }
+    },
+    "is-default": false
+}

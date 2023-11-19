@@ -1,0 +1,19 @@
+{
+    "name": "FLSun Q5",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_FLSun\\nPRINTER_MODEL_Q5\\nPRINTER_HAS_BOWDEN\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "Q5_bed.stl",
+    "picture": "Q5_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": 200
+        }
+    },
+    "is-default": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "Creality CR-10 S5",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_CREALITY\\nPRINTER_MODEL_CR10S5\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "cr10s5_bed.stl",
+    "picture": "CR10S5_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 500.0,
+            "y": 500.0,
+            "z": 500
+        }
+    },
+    "is-default": false
+}

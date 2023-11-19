@@ -1,0 +1,16 @@
+{
+    "name": "gCreate",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "GMAX15P",
+        "GMAX2",
+        "GMAX2PRO",
+        "GMAX2DUAL2IN1",
+        "GMAX2DUAL"
+    ]
+}

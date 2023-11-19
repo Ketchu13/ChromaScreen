@@ -1,0 +1,19 @@
+{
+    "name": "Photon Mono SE",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.'\\nPRINTER_VENDOR_ANYCUBIC\\nPRINTER_MODEL_PHOTONMONOSE\\nPRINTER_TECHNOLOGY_SLA\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "PHOTON MONO SE_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 82.62,
+            "y": 130.56,
+            "z": 160
+        }
+    },
+    "is-default": false
+}

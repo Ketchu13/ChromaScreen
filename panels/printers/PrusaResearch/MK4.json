@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa MK4",
+    "description": "Do not remove the keywords below.\\nPRINTER_VENDOR_PRUSA3D\\nPRINTER_MODEL_MK4\\nPG",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "mk4_bed.stl",
+    "picture": "MK4_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 250.0,
+            "y": 210.0,
+            "z": 220
+        }
+    },
+    "is-default": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa XL",
+    "description": "Do not remove the keywords below.\\nPRINTER_VENDOR_PRUSA3D\\nPRINTER_MODEL_XL\\nPG",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "xl_bed.stl",
+    "picture": "XL_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 360.0,
+            "y": 360.0,
+            "z": 360
+        }
+    },
+    "is-default": false
+}

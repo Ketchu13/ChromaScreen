@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa i3 MK2.5 MMU2",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_PRUSA3D\\nPRINTER_MODEL_MK2.5\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "mk3_bed.stl",
+    "picture": "MK2.5MMU2_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": 200
+        }
+    },
+    "is-default": false
+}

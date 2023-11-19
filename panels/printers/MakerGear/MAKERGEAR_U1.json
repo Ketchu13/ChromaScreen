@@ -1,0 +1,19 @@
+{
+    "name": "Ultra One",
+    "description": "Dont remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_MAKERGEAR\\nPRINTER_MODEL_MAKERGEAR_U1\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "MAKERGEAR_U1_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 406.0,
+            "y": 355.0,
+            "z": 350
+        }
+    },
+    "is-default": false
+}

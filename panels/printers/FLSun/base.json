@@ -1,0 +1,13 @@
+{
+    "name": "FLSun",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "QQSP",
+        "Q5"
+    ]
+}

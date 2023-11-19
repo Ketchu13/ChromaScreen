@@ -1,0 +1,13 @@
+{
+    "name": "Snapmaker",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "A250",
+        "A350"
+    ]
+}

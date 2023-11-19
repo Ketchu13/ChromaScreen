@@ -1,0 +1,19 @@
+{
+    "name": "INAT Proton X Rod",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "PROTON_X_ROD_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

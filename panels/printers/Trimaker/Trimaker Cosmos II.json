@@ -1,0 +1,19 @@
+{
+    "name": "Trimaker Cosmos II",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "CosmosII_bed.stl",
+    "picture": "",
+    "machine": {
+        "size": {
+            "x": 200.0,
+            "y": 200.0,
+            "z": 200
+        }
+    },
+    "is-default": false
+}

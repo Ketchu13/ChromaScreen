@@ -1,0 +1,19 @@
+{
+    "name": "Infinity3D DEV-200",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "DEV_200_bed.stl",
+    "picture": "DEV-200_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 200.0,
+            "y": 200.0,
+            "z": 235
+        }
+    },
+    "is-default": false
+}

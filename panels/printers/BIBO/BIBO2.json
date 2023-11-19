@@ -1,0 +1,19 @@
+{
+    "name": "BIBO2 Touch",
+    "description": "Do not remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_BIBO\\nPRINTER_MODEL_BIBO2",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "BIBO2_bed.stl",
+    "picture": "BIBO2_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

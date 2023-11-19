@@ -1,0 +1,13 @@
+{
+    "name": "Infinity3D",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "DEV-200",
+        "DEV-350"
+    ]
+}

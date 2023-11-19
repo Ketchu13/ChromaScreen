@@ -1,0 +1,19 @@
+{
+    "name": "Zonestar Z6",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "bed_150.stl",
+    "picture": "Z6_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 150.0,
+            "y": 150.0,
+            "z": 150
+        }
+    },
+    "is-default": false
+}

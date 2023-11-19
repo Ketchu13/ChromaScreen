@@ -1,0 +1,19 @@
+{
+    "name": "Zonestar Z8",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "bed_310.stl",
+    "picture": "Z8_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 310.0,
+            "y": 310.0,
+            "z": 400
+        }
+    },
+    "is-default": false
+}

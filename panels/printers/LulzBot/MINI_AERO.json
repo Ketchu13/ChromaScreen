@@ -1,0 +1,19 @@
+{
+    "name": "Mini Aero",
+    "description": "LulzBot Mini w/ Aerostruder profile for Delaware Library System, Rt9 Library and Innovation Center.",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "MINI_AERO_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 154.0,
+            "y": 154.0,
+            "z": 158
+        }
+    },
+    "is-default": false
+}

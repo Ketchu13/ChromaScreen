@@ -1,0 +1,19 @@
+{
+    "name": "Geeetech Me Creator2",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_Geeetech\\nPRINTER_MODEL_MeCreator2\\nPRINTER_HAS_DirectDriveExtruder",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "160x160.stl",
+    "picture": "MeCreator2_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 160.0,
+            "y": 160.0,
+            "z": 160
+        }
+    },
+    "is-default": false
+}

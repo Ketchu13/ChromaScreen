@@ -1,0 +1,19 @@
+{
+    "name": "LNL3D D5",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_LNL3D\\nPRINTER_MODEL_LNL3D_D5\\nPRINTER_HAS_ULTRADETAIL\\nPRINTER_HAS_HIGHSPEED\\nPRINTER_HAS_SUPERSPEED",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "LNL3D_D5_bed.stl",
+    "picture": "LNL3D_D5_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 500.0,
+            "y": 500.0,
+            "z": 600
+        }
+    },
+    "is-default": false
+}

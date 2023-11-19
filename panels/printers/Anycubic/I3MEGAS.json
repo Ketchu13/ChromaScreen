@@ -1,0 +1,19 @@
+{
+    "name": "Anycubic i3 Mega S",
+    "description": "Do not remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_ANYCUBIC\\nPRINTER_MODEL_I3_MEGA_S\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "i3megas_bed.stl",
+    "picture": "I3MEGAS_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

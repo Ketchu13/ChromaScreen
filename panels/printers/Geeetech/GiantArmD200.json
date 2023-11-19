@@ -1,0 +1,19 @@
+{
+    "name": "Geeetech GiantArmD200",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_Geeetech\\nPRINTER_MODEL_GiantArmD200\\nPRINTER_HAS_DirectDriveExtruder",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "300x180.stl",
+    "picture": "GiantArmD200_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 300.0,
+            "y": 180.0,
+            "z": 180
+        }
+    },
+    "is-default": false
+}

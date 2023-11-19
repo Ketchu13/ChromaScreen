@@ -1,0 +1,12 @@
+{
+    "name": "Print4Taste",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "MC2.0"
+    ]
+}

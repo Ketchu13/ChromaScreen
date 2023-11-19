@@ -1,0 +1,12 @@
+{
+    "name": "CocoaPress",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "Cocoa_Press"
+    ]
+}

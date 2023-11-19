@@ -1,0 +1,19 @@
+{
+    "name": "SV03 / SV03 BLTOUCH",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_SOVOL\\nPRINTER_MODEL_SV03\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "SV03_bed.stl",
+    "picture": "SV03_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 350.0,
+            "y": 350.0,
+            "z": 400
+        }
+    },
+    "is-default": false
+}

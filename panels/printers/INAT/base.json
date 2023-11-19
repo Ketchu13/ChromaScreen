@@ -1,0 +1,14 @@
+{
+    "name": "INAT",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "PROTON_X_RAIL",
+        "PROTON_X_ROD",
+        "PROTON_XE750"
+    ]
+}

@@ -1,0 +1,22 @@
+{
+    "name": "Anycubic",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "AKLP",
+        "AK",
+        "MEGA0",
+        "I3MEGA",
+        "I3MEGAS",
+        "4MAXPRO20",
+        "PREDATOR",
+        "PHOTON MONO",
+        "PHOTON MONO X",
+        "PHOTON MONO X 6K",
+        "PHOTON MONO SE"
+    ]
+}

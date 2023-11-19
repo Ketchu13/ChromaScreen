@@ -1,0 +1,19 @@
+{
+    "name": "Voron Switchwire",
+    "description": "PRINTER_HAS_BOWDEN\\nSTU\\nE3DV6",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "printbed-SW-MK52.stl",
+    "picture": "Voron_SW_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 250.0,
+            "y": 210.0,
+            "z": 240
+        }
+    },
+    "is-default": false
+}

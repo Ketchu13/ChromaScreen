@@ -1,0 +1,19 @@
+{
+    "name": "mycusini 2.0",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_PRINT4TASTE\\nPRINTER_MODEL_MYCUSINI2.0",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "MC2.0_bed.stl",
+    "picture": "MC2.0_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 100.0,
+            "y": 110.0,
+            "z": 45
+        }
+    },
+    "is-default": false
+}

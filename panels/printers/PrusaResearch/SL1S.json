@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa SL1S SPEED",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "sl1s_bed.stl",
+    "picture": "SL1S_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 127.0,
+            "y": 80.0,
+            "z": 150
+        }
+    },
+    "is-default": false
+}

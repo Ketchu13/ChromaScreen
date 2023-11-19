@@ -1,0 +1,19 @@
+{
+    "name": "Anycubic Kossel Pulley (Linear)",
+    "description": "Do not remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_Anycubic\\nPRINTER_MODEL_AK\\nPRINTER_HAS_BOWDEN\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "AK_Bed.stl",
+    "picture": "AK_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

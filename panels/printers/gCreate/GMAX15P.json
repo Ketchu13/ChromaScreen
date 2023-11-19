@@ -1,0 +1,19 @@
+{
+    "name": "gMax 1.5XT Plus",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_GCREATE\\nPRINTER_MODEL_GMAX15P",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "gmax15p_bed.stl",
+    "picture": "GMAX15P_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 410.0,
+            "y": 410.0,
+            "z": 533
+        }
+    },
+    "is-default": false
+}

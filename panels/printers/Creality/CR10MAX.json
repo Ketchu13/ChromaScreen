@@ -1,0 +1,19 @@
+{
+    "name": "Creality CR-10 Max",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_CREALITY\\nPRINTER_MODEL_CR10MAX\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "cr10max_bed.stl",
+    "picture": "CR10MAX_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 440.0,
+            "y": 440.0,
+            "z": 470
+        }
+    },
+    "is-default": false
+}

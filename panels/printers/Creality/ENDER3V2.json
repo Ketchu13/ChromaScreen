@@ -1,0 +1,19 @@
+{
+    "name": "Creality Ender-3 V2",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_CREALITY\\nPRINTER_MODEL_ENDER3V2\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "ender3v2_bed.stl",
+    "picture": "ENDER3V2_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 210.0,
+            "y": 220.0,
+            "z": 250
+        }
+    },
+    "is-default": false
+}

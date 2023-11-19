@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa XL Input Shaper (Alpha)",
+    "description": "Do not remove the keywords below.\\nPRINTER_VENDOR_PRUSA3D\\nPRINTER_MODEL_XLIS\\nPG\\nINPUT_SHAPER",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "xl_bed.stl",
+    "picture": "XLIS_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

@@ -1,0 +1,16 @@
+{
+    "name": "Zonestar",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "Z5",
+        "Z6",
+        "Z5X",
+        "Z8",
+        "Z9"
+    ]
+}

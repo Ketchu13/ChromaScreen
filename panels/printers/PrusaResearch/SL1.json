@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa SL1",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_PRUSA3D\\nPRINTER_MODEL_SL1\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "sl1_bed.stl",
+    "picture": "SL1_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 118.0,
+            "y": 66.0,
+            "z": 150
+        }
+    },
+    "is-default": false
+}

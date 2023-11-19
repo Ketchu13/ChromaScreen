@@ -1,0 +1,19 @@
+{
+    "name": "Trimaker Nebula",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "NebulaCloud_bed.stl",
+    "picture": "",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
+    "is-default": false
+}

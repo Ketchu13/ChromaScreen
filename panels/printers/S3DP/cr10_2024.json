@@ -1,0 +1,29 @@
+{
+  "name": "CR10 2024 S3DP",
+  "description": "CR10 Klipper 2024",
+  "uuid": "cr102024S3DP",
+  "url": "http://s3dp.com",
+  "version": "1.0.0",
+  "author": "ketchu13",
+  "contact": "ketchu13@hotmail.fr",
+  "logo": "logo.png",
+  "model": "cr10_2024.stl",
+  "picture": "cr10_2024.png",
+  "machine": {
+    "size": {
+      "x": 300,
+      "y": 300,
+      "z": 400
+    },
+    "max_speed": 300,
+    "max_accel": 3000,
+    "max_z_velocity": 100,
+    "max_z_accel": 1000,
+    "max_extrude_only_velocity": 100,
+    "max_extrude_only_accel": 1000,
+    "max_extruder_temp": 300,
+    "max_bed_temp": 120,
+    "max_extruder_count": 1
+  },
+  "is-default": true
+}

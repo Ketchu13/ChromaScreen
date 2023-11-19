@@ -1,0 +1,19 @@
+{
+    "name": "Original Prusa i3 MK2S MMU1",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "mk2_bed.stl",
+    "picture": "MK2SMM_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

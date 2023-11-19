@@ -1,0 +1,15 @@
+{
+    "name": "Rigid3D",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "Zero2",
+        "Zero3",
+        "Mucit",
+        "Mucit2"
+    ]
+}

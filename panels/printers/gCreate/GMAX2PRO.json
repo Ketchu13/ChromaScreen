@@ -1,0 +1,19 @@
+{
+    "name": "gMax 2 Pro",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_GCREATE\\nPRINTER_MODEL_GMAX2PRO",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "gmax2_bed.stl",
+    "picture": "GMAX2PRO_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 457.0,
+            "y": 457.0,
+            "z": 610
+        }
+    },
+    "is-default": false
+}

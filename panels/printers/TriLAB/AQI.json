@@ -1,0 +1,19 @@
+{
+    "name": "AzteQ Industrial",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "aq_bed.stl",
+    "picture": "AQI_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": 400
+        }
+    },
+    "is-default": false
+}

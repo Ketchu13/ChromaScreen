@@ -1,0 +1,19 @@
+{
+    "name": "Geeetech Mizar Max",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_Geeetech\\nPRINTER_MODEL_MizarMax\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "320x320.stl",
+    "picture": "MizarMax_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 320.0,
+            "y": 320.0,
+            "z": 400
+        }
+    },
+    "is-default": false
+}

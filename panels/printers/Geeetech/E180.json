@@ -1,0 +1,19 @@
+{
+    "name": "Geeetech E180",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_Geeetech\\nPRINTER_MODEL_E180\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "125X130.stl",
+    "picture": "E180_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 125.0,
+            "y": 130.0,
+            "z": 126
+        }
+    },
+    "is-default": false
+}

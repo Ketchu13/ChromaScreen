@@ -1,0 +1,19 @@
+{
+    "name": "BIQU BX",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_BIQU\\nPRINTER_MODEL_BIQUBX",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "BX_Bed.stl",
+    "picture": "BIQUBX_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 250.0,
+            "y": 250.0,
+            "z": 250
+        }
+    },
+    "is-default": false
+}

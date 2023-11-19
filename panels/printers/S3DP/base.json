@@ -1,0 +1,13 @@
+{
+  "name": "S3DP",
+  "description": "S3DP",
+  "uuid": "S3DP",
+  "url": "http://s3dp.com",
+  "version": "1.0.0",
+  "author": "ketchu13",
+  "contact": "ketchu13@hotmail.fr",
+  "logo": "logo.png",
+  "printers": [
+    "cr10_2024"
+  ]
+}

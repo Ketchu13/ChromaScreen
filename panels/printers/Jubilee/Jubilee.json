@@ -1,0 +1,19 @@
+{
+    "name": "Jubilee",
+    "description": "Volcano",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "Jubilee_bed.stl",
+    "picture": "Jubilee_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

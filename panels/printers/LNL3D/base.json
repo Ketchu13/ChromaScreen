@@ -1,0 +1,16 @@
+{
+    "name": "LNL3D",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "LNL3D_D3",
+        "LNL3D_D3_VULCAN",
+        "LNL3D_D3_V2",
+        "LNL3D_D5",
+        "LNL3D_D6"
+    ]
+}

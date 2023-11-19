@@ -1,0 +1,19 @@
+{
+    "name": "Snapmaker A250",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "A250_bed.stl",
+    "picture": "A250_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 230.0,
+            "y": 250.0,
+            "z": 235
+        }
+    },
+    "is-default": false
+}

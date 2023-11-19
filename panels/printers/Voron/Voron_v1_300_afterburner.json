@@ -1,0 +1,19 @@
+{
+    "name": "Voron v1 300mm3",
+    "description": "Unoffical profile.\\nE3DV6",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "printbed-v1-300.stl",
+    "picture": "Voron_v1_300_afterburner_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 300.0,
+            "y": 300.0,
+            "z": 280
+        }
+    },
+    "is-default": false
+}

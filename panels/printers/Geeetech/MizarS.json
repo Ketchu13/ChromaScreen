@@ -1,0 +1,19 @@
+{
+    "name": "Geeetech Mizar S",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_Geeetech\\nPRINTER_MODEL_MizarS\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "255x255.stl",
+    "picture": "MizarS_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 255.0,
+            "y": 255.0,
+            "z": 260
+        }
+    },
+    "is-default": false
+}

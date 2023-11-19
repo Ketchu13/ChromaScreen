@@ -1,0 +1,19 @@
+{
+    "name": "Voron v2 250mm3",
+    "description": "Unoffical profile.\\nE3DV6",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "printbed-v2-250.stl",
+    "picture": "Voron_v2_250_afterburner_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "M3 - Independent Dual Rev.1 (Duplication Mode)",
+    "description": "Dont remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_MAKERGEAR\\nPRINTER_MODEL_MAKERGEAR_M3_ID_1_DUPLICATION\\n",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "",
+    "machine": {
+        "size": {
+            "x": 100.0,
+            "y": 251.0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

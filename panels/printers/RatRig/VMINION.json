@@ -1,0 +1,19 @@
+{
+    "name": "RatRig V-Minion",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "rr-vminion.stl",
+    "picture": "VMINION_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 180.0,
+            "y": 180.0,
+            "z": 180
+        }
+    },
+    "is-default": false
+}

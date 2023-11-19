@@ -1,0 +1,19 @@
+{
+    "name": "Creality CR-10 S Pro V2",
+    "description": "Don't remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_CREALITY\\nPRINTER_MODEL_CR10SPROV2\\nPRINTER_HAS_BOWDEN",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "cr10v2_bed.stl",
+    "picture": "CR10SPROV2_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 300.0,
+            "y": 300.0,
+            "z": 400
+        }
+    },
+    "is-default": false
+}

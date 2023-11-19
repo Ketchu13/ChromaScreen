@@ -1,0 +1,23 @@
+{
+    "name": "Voron",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "Voron_v2_250_afterburner",
+        "Voron_v2_300_afterburner",
+        "Voron_v2_350_afterburner",
+        "Voron_v2_250",
+        "Voron_v2_300",
+        "Voron_v2_350",
+        "Voron_v1_250_afterburner",
+        "Voron_v1_300_afterburner",
+        "Voron_v1_350_afterburner",
+        "Voron_v0_120",
+        "Voron_SW_afterburner",
+        "Voron_SW"
+    ]
+}

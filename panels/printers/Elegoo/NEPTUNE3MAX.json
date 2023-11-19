@@ -1,0 +1,19 @@
+{
+    "name": "Elegoo Neptune-3 Max",
+    "description": "Do not remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_ELEGOO\\nPRINTER_MODEL_NEPTUNE3MAX",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "NEPTUNE3MAX_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 420.0,
+            "y": 420.0,
+            "z": 500
+        }
+    },
+    "is-default": false
+}

@@ -1,0 +1,19 @@
+{
+    "name": "Voron Zero 120mm3",
+    "description": "Unoffical profile.\\nPRINTER_HAS_BOWDEN\\nE3DV6",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "printbed-v0-120.stl",
+    "picture": "Voron_v0_120_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 120.0,
+            "y": 120.0,
+            "z": 120
+        }
+    },
+    "is-default": false
+}

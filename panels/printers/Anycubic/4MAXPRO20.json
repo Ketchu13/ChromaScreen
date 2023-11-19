@@ -1,0 +1,19 @@
+{
+    "name": "Anycubic 4Max Pro 2.0",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "4MAXPRO20_bed.stl",
+    "picture": "4MAXPRO20_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 270.0,
+            "y": 210.0,
+            "z": 190
+        }
+    },
+    "is-default": false
+}

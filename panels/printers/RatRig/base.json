@@ -1,0 +1,15 @@
+{
+    "name": "RatRig",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "VC3_300",
+        "VC3_400",
+        "VC3_500",
+        "VMINION"
+    ]
+}

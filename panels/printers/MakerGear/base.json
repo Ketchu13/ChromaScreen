@@ -1,0 +1,21 @@
+{
+    "name": "MakerGear",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "MAKERGEAR_MICRO",
+        "MAKERGEAR_M2",
+        "MAKERGEAR_M2_DUAL",
+        "MAKERGEAR_M3_SE",
+        "MAKERGEAR_M3_ID_0",
+        "MAKERGEAR_M3_ID_0_DUPLICATION",
+        "MAKERGEAR_M3_ID_1",
+        "MAKERGEAR_M3_ID_1_DUPLICATION",
+        "MAKERGEAR_U1",
+        "MAKERGEAR_U1_DUPLICATION"
+    ]
+}

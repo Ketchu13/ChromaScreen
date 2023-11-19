@@ -1,0 +1,19 @@
+{
+    "name": "Infinity3D DEV-350",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "DEV_350_bed.stl",
+    "picture": "DEV-350_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

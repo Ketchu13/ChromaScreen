@@ -1,0 +1,19 @@
+{
+    "name": "M3 - Independent Dual Rev.0",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "M2_M3.stl",
+    "picture": "",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": 0
+        }
+    },
+    "is-default": false
+}

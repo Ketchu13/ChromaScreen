@@ -1,0 +1,19 @@
+{
+    "name": "Sovol",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "SV06",
+        "SV06 PLUS",
+        "SV05",
+        "SV04",
+        "SV03",
+        "SV02",
+        "SV01",
+        "SV01 PRO"
+    ]
+}

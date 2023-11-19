@@ -1,0 +1,21 @@
+{
+    "name": "TriLAB",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "printers": [
+        "AQI",
+        "DQ2",
+        "DQ2P",
+        "DQ2+FP2",
+        "DQ2P+FP2",
+        "DQ2+FP",
+        "DQ2P+FP",
+        "DQM",
+        "DQL",
+        "DQXL"
+    ]
+}

@@ -1,0 +1,19 @@
+{
+    "name": "AnkerMake M5",
+    "description": "Don not remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_ANKERMAKE\\nPRINTER_MODEL_M5",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "M5-bed.stl",
+    "picture": "M5_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 235.0,
+            "y": 235.0,
+            "z": 250
+        }
+    },
+    "is-default": false
+}

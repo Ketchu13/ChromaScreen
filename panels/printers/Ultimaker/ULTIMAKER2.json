@@ -1,0 +1,19 @@
+{
+    "name": "Ultimaker 2",
+    "description": "Dont remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_ULTIMAKER\\nPRINTER_MODEL_ULTIMAKER2",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "ultimaker2_bed.stl",
+    "picture": "ULTIMAKER2_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 224.0,
+            "y": 225.0,
+            "z": ""
+        }
+    },
+    "is-default": false
+}

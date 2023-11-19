@@ -1,0 +1,19 @@
+{
+    "name": "RatRig V-Core-3 400mm",
+    "description": "",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "rr-vc-400.stl",
+    "picture": "VC3_400_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 400.0,
+            "y": 400.0,
+            "z": 400
+        }
+    },
+    "is-default": false
+}

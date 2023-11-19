@@ -1,0 +1,19 @@
+{
+    "name": "Elegoo Neptune-X",
+    "description": "Do not remove the following keywords! These keywords are used in the \"compatible printer\" condition of the print and filament profiles to link the particular print and filament profiles to this printer profile.\\nPRINTER_VENDOR_ELEGOO\\nPRINTER_MODEL_NEPTUNEX",
+    "uuid": "",
+    "url": "",
+    "version": "1.0",
+    "author": "Ketchu13",
+    "logo": "",
+    "model": "",
+    "picture": "NEPTUNEX_thumbnail.png",
+    "machine": {
+        "size": {
+            "x": 0,
+            "y": 0,
+            "z": 300
+        }
+    },
+    "is-default": false
+}
