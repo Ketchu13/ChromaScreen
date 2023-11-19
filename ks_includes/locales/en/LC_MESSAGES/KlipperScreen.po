@@ -245,9 +245,6 @@ msgstr "File Name"
 msgid "Print Time"
 msgstr "Print Time"
 
-msgid "Printer is returning to the starting position, please wait.."
-msgstr "Printer is returning to the starting position, please wait.."
-
 msgid "Filament"
 msgstr "Filament"
 
