@@ -51,7 +51,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
        
-        initHeader = InitHeader (self, _('Language Settings'), _('Lütfen sistem dilini belirleyiniz'), "Geography")
+        initHeader = InitHeader (self, _('Language Settings'), _('Please specify the system language'), "Geography")
 
         '''diller'''
         grid = Gtk.Grid(column_homogeneous=True,
@@ -91,19 +91,16 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             f.add(eventBox)
             grid.attach(f, count, row, 1, 1)
             count += 1
-            if count % 2 is 0:
+            if count % 2 == 0:
                 count = 0
                 row += 1
-
-
-       
         
         gridBox = Gtk.Box()
         gridBox.set_halign(Gtk.Align.CENTER)
         gridBox.add(grid)
         '''diller bitis'''
         
-        
+        # TODO add an apply bouton, avoid apply on select
         
         self.continueButton = Gtk.Button(_('Continue'),name ="flat-button-blue")
         self.continueButton.connect("clicked", self.on_click_continue_button)
@@ -194,16 +191,14 @@ class CoPrintSplashScreenPanel(ScreenPanel):
                 self.add_power_button(power_devices)
 
     def open_info_dialog(self):
-        self.dialog = InfoDialog(self.parent, "Değişikler Yapılıyor lütfen bekleyiniz..", False)
+        self.dialog = InfoDialog(self, _("Loading selected language;\nPlease wait.."), True)
         self.dialog.get_style_context().add_class("alert-info-dialog")
       
         self.dialog.set_decorated(False)
         self.dialog.set_size_request(0, 0)
-      
-     
 
         response = self.dialog.run()
-   
+
     def finished(self):
         self.dialog.response(Gtk.ResponseType.CANCEL)
         self.dialog.destroy()
