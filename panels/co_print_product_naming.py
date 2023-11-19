@@ -24,8 +24,8 @@ class CoPrintProductNaming(ScreenPanel):
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
-       
-        
+        self.source = None
+
         initHeader = InitHeader (self, _('Rename Your Device'),_('Please specify a custom name for your device.'), "naming")
 
         self.deviceImage = self._gtk.Image("device", self._gtk.content_width * .4 , self._gtk.content_height * .4)
@@ -35,7 +35,6 @@ class CoPrintProductNaming(ScreenPanel):
         self.continueButton.set_hexpand(True)
         self.buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.buttonBox.pack_start(self.continueButton, False, False, 0)
-   
         
         self.entry = Gtk.Entry(name="device-name")
         self.entry.connect("activate", self.rename)
@@ -72,13 +71,10 @@ class CoPrintProductNaming(ScreenPanel):
         self.main.pack_start(initHeader, False, False, 0)
         self.main.pack_start(eventBox, False, False, 5)
         self.main.pack_start(self.tempBox, False, False, 0)
-   
 
         self.content.add(self.main)
-    
 
-
-    def give_name(self,a,b):
+    def give_name(self, a, b):
        
         for child in self.tempBox.get_children():
             self.tempBox.remove(child) 
@@ -86,7 +82,6 @@ class CoPrintProductNaming(ScreenPanel):
         self.content.show_all()
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         box.set_size_request(self._screen.gtk.content_width, self._screen.gtk.keyboard_height)
-
        
         box.get_style_context().add_class("keyboard_box")
         box.add(Keyboard(self._screen, self.remove_keyboard, entry=self.entry))
@@ -100,35 +95,34 @@ class CoPrintProductNaming(ScreenPanel):
         self.tempBox.pack_start(self.buttonBox, False, False, 0)
         self.content.show_all()
 
-
     def rename(self, widget):
-        params = {"source": self.source, "dest": f"gcodes/{self.labels['new_name'].get_text()}"}
-       
+        params = {
+            "source": self.source,
+            "dest": f"gcodes/{self.labels['new_name'].get_text()}"
+        }
 
     def on_click_continue_button(self, continueButton):
-        #sudoPassword = '12345'
+        # sudoPassword = '12345'
 
         logging.debug(f"Device Name: " + self.entry.get_text())
 
+        # create user with password for sudo access
+
         # password ="12345" 
         # encPass = crypt.crypt(password,"22")
+
         # command2 = "useradd -p "+encPass+" " + self.entry.get_text()
-
-
         # # command2 = 'sudo adduser temporary'
         # p = os.system('echo %s|sudo -S %s' % (sudoPassword, command2))
 
-       
         # command = 'usermod -l habip noya'
         # p = os.system('echo %s|sudo -S %s' % (sudoPassword, command))
 
-        
-
         # command3 = 'update-locale LC_ALL=' + locale_code
         # p = os.system('echo %s|sudo -S %s' % (sudoPassword, command3))
-    
+
+        # go to Wi-Fi selection screen
         self._screen.show_panel("co_print_wifi_selection", "co_print_wifi_selection", None, 2)
         
     def on_click_back_button(self, button, data):
-        
         self._screen.show_panel(data, data, "Language", 1, False)

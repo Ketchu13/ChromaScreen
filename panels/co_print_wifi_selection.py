@@ -23,8 +23,7 @@ class CoPrintWifiSelection(ScreenPanel):
         self.selectedWifiIndex = None
         self.wifies = []
         wifi_list = subprocess.check_output(['nmcli', '-f', 'SSID', 'dev', 'wifi']).decode('utf-8')
-        initHeader = InitHeader (self, _('Connection Settings'),_('Connect the device by entering the information of the network you are using.'), "wifi")
-       
+        initHeader = InitHeader(self, _('Connection Settings'),_('Connect the device by entering the information of the network you are using.'), "wifi")
 
         wifi_flowbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         wifi_flowbox.set_halign(Gtk.Align.CENTER)
@@ -115,16 +114,10 @@ class CoPrintWifiSelection(ScreenPanel):
         page.pack_start(self.main, False, True, 0)
         
         self.content.add(page)
-       
 
-
-    
-    
-
-    def wifiChanged(self,widget , event, name):
-      
-       self.selectedWifiIndex = name
-       self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True, items=self.selectedWifiIndex)
+    def wifiChanged(self, widget, event, name):
+        self.selectedWifiIndex = name
+        self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True, items=self.selectedWifiIndex)
 
     def on_click_continue_button(self, continueButton):
         """if self.selectedWifiIndex is not None:
@@ -132,7 +125,6 @@ class CoPrintWifiSelection(ScreenPanel):
         else:
             #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)"""
         self._screen.show_panel("co_print_chip_selection", "co_print_chip_selection", None, 2)
-       
 
     #asıl kullanılan metod bu diğer metodu sayfayı görüntülemek için yazdım
     def refresh(self, widget):
@@ -142,7 +134,7 @@ class CoPrintWifiSelection(ScreenPanel):
         spinner.props.height_request = 100
         spinner.start()
         for child in self.scroll.get_children():
-                self.scroll.remove(child)
+            self.scroll.remove(child)
         self.scroll.add(spinner)
         self.content.show_all()   
 
@@ -156,21 +148,20 @@ class CoPrintWifiSelection(ScreenPanel):
         self.wifies = []
         wifiNames = []
         wifi_list = subprocess.check_output(['nmcli', '-f', 'SSID,BARS', 'dev', 'wifi']).decode()
-       
-        
+
         if wifi_list != '':
             wifi_list = wifi_list.split("\n")
             connected_wifi_list = self.what_wifi()
             for wifi in wifi_list[1:]:
                 wifiarray = wifi.split()
-                if (len(wifiarray) > 0):
+                if len(wifiarray) > 0:
                     bar = wifiarray.pop()
                     name = ' '.join(wifiarray)
-                    if (str(name) != "SSID" and str(name) != "--"):
+                    if str(name) != "SSID" and str(name) != "--":
                         icon = 'signal-low'
-                        if (len(bar) == 4):
+                        if len(bar) == 4:
                             icon = 'signal-high'
-                        if (len(bar) == 3):
+                        if len(bar) == 3:
                             icon = 'signal-medium'
                         if str(name) not in wifiNames:
                             wifiNames.append(str(name))
@@ -184,33 +175,28 @@ class CoPrintWifiSelection(ScreenPanel):
                 wifione = WifiCard(self, wifi['Icon'], wifi['Name'], connection_status)
                 wifi_flowbox.pack_start(wifione, False, False, 0)
 
-           
-
-
         else:
+            wifione     = WifiCard(self, "signal-high"  , "Co Print 5G"      , "Connected")
+            wifitwo     = WifiCard(self, "signal-high"  , "TurkTelekom Wifi" , "Click to connect.")
+            wifithree   = WifiCard(self, "signal-medium", "Superonline Wifi" , "Click to connect.")
+            wififour    = WifiCard(self, "signal-medium", "Superonline Wifi" , "Click to connect.")
+            wififive    = WifiCard(self, "signal-medium", "Superonline Wifi" , "Click to connect.")
+            wifisix     = WifiCard(self, "signal-low"   , "Superonline Wifi2", "Click to connect.")
+            wifiseven   = WifiCard(self, "signal-low"   , "Superonline Wifi2", "Click to connect.")
 
-            wifione = WifiCard(self, "signal-high", "Co Print 5G", "Connected")
-            wifitwo = WifiCard(self, "signal-high", "TurkTelekom Wifi", "Click to connect.")
-            wifithree = WifiCard(self, "signal-medium", "Superonline Wifi", "Click to connect.")
-            wififour = WifiCard(self, "signal-medium", "Superonline Wifi", "Click to connect.")
-            wififive = WifiCard(self, "signal-medium", "Superonline Wifi", "Click to connect.")
-            wifisix = WifiCard(self, "signal-low", "Superonline Wifi2", "Click to connect.")
-            wifiseven = WifiCard(self, "signal-low", "Superonline Wifi2", "Click to connect.")
-            wifi_flowbox.pack_start(wifione, True, True, 0)
-            wifi_flowbox.pack_start(wifitwo, True, True, 0)
+            wifi_flowbox.pack_start(wifione  , True, True, 0)
+            wifi_flowbox.pack_start(wifitwo  , True, True, 0)
             wifi_flowbox.pack_start(wifithree, True, True, 0)
-            wifi_flowbox.pack_start(wififour, True, True, 0)
-            wifi_flowbox.pack_start(wififive, True, True, 0)
-            wifi_flowbox.pack_start(wifisix, True, True, 0)
+            wifi_flowbox.pack_start(wififour , True, True, 0)
+            wifi_flowbox.pack_start(wififive , True, True, 0)
+            wifi_flowbox.pack_start(wifisix  , True, True, 0)
             wifi_flowbox.pack_start(wifiseven, True, True, 0)
+
             for child in self.scroll.get_children():
                 self.scroll.remove(child) 
         
         for child in self.scroll.get_children():
             self.scroll.remove(child)
-        
-
-    
 
         self.scroll.add(wifi_flowbox)
         self.content.show_all()  
@@ -229,5 +215,4 @@ class CoPrintWifiSelection(ScreenPanel):
     #     self._screen.show_panel("co_print_chip_selection", "co_print_chip_selection", "Language", 1, False)
     
     def on_click_back_button(self, button, data):
-        
         self._screen.show_panel(data, data, "Language", 1, False)

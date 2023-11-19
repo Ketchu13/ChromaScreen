@@ -31,11 +31,15 @@ class CoPrintWifiSelectionConnect(ScreenPanel):
         
         # ComboBox'a öğeler ekle
         
-        self.selectedWifiImage = self._gtk.Image("sinyal", self._gtk.content_width * .05 , self._gtk.content_height * .05)
-        self.selectedWifiName = Gtk.Label("",name ="wifi-label")
-        self.selectedPassword = Gtk.Label("",name ="password-label")
-        self.selectedWifiName.set_alignment(0,0.5)
-        self.selectedWifiImage.set_alignment(1,0.5)
+        self.selectedWifiImage = self._gtk.Image(
+            "sinyal",
+            self._gtk.content_width * .05,
+            self._gtk.content_height * .05
+        )
+        self.selectedWifiName = Gtk.Label("", name="wifi-label")
+        self.selectedPassword = Gtk.Label("", name="password-label")
+        self.selectedWifiName.set_alignment(0, 0.5)
+        self.selectedWifiImage.set_alignment(1, 0.5)
 
         
         self.selectedWifiBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0, name= 'wifi')
@@ -62,8 +66,6 @@ class CoPrintWifiSelectionConnect(ScreenPanel):
         self.main.pack_end(buttonBox, False, False, 20)
         self.main.pack_end(self.selectedWifiBox, False, True, 0)
         
-
-        
         self.content.add(self.main)
        
     def show_message_box(self,title,message):
@@ -89,25 +91,11 @@ class CoPrintWifiSelectionConnect(ScreenPanel):
 
         Gtk.main()
 
-
-    
-   
-      
     def initialize(self, items, password):
         self.selectedMenu = items
         self.password = password
         self.selectedWifiName.set_label(self.selectedMenu)
         self.selectedPassword.set_label(self.password)
         
-    
-    
-
-
     def on_click_continue_button(self, continueButton):
         self._screen.show_panel("co_print_chip_selection", "co_print_chip_selection", None, 2)
-
-        #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)
-        
-   
-    
-  

@@ -81,8 +81,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         is recalculated based on the current time.""" 
         if self._screen.connected_printer :
             self._screen.show_panel("co_print_home_screen", "co_print_home_screen", "Language", 1, False)
-            #self._screen.show_panel("co_print_language_select_screen", "co_print_language_select_screen", "Language", 1, False)
-
         else:
             self._screen.show_panel("co_print_language_select_screen", "co_print_language_select_screen", "Language", 1, False)
 
@@ -106,8 +104,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             if power_devices and self._printer.get_power_devices():
                 logging.info(f"Associated power devices: {power_devices}")
                 self.add_power_button(power_devices)
-
-      
 
     def add_power_button(self, powerdevs):
         self.labels['power'] = self._gtk.Button("shutdown", _("Power On Printer"), "color3")

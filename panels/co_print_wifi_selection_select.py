@@ -172,9 +172,9 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
             return ''
 
     def is_connected_to(self, ssid: str):
-        return 'yes:'+ ssid in  self.what_wifi()
+        return 'yes:' + ssid in self.what_wifi()
 
-    def scan_wifi():
+    def scan_wifi(self):
         process = subprocess.run(['nmcli', '-t', '-f', 'SSID,SECURITY,SIGNAL', 'dev', 'wifi'], stdout=subprocess.PIPE)
         if process.returncode == 0:
             return process.stdout.decode('utf-8').strip().split('\n')
@@ -195,9 +195,3 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         subprocess.call(['nmcli', 'c', 'up', ssid])
         return self.is_connected_to(ssid)
         
-
-       
-        
-   
-    
-  
