@@ -22,7 +22,7 @@ class CoPrintWifiSelection(ScreenPanel):
       
         self.selectedWifiIndex = None
         self.wifies = []
-        #wifi_list = subprocess.check_output(['nmcli', '-f', 'SSID', 'dev', 'wifi']).decode('utf-8')
+        wifi_list = subprocess.check_output(['nmcli', '-f', 'SSID', 'dev', 'wifi']).decode('utf-8')
         initHeader = InitHeader (self, _('Connection Settings'),_('Connect the device by entering the information of the network you are using.'), "wifi")
        
 
@@ -30,8 +30,8 @@ class CoPrintWifiSelection(ScreenPanel):
         wifi_flowbox.set_halign(Gtk.Align.CENTER)
         wifi_flowbox.set_hexpand(True)
 
-        #wifi_list = wifi_list.split("\n")
-        #wifi_list = list(filter(None, wifi_list))
+        wifi_list = wifi_list.split("\n")
+        wifi_list = list(filter(None, wifi_list))
         # for wifi in wifi_list:
         #     if(wifi != "SSID" or wifi != "--"):
         #         self.wifies.append({'Name': wifi, 'Icon': 'sinyal'})
@@ -127,11 +127,11 @@ class CoPrintWifiSelection(ScreenPanel):
        self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True, items=self.selectedWifiIndex)
 
     def on_click_continue_button(self, continueButton):
-        if self.selectedWifiIndex is not None:
+        """if self.selectedWifiIndex is not None:
             self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True, items=self.selectedWifiIndex)
         else:
-            #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)
-            self._screen.show_panel("co_print_chip_selection", "co_print_chip_selection", None, 2)
+            #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)"""
+        self._screen.show_panel("co_print_chip_selection", "co_print_chip_selection", None, 2)
        
 
     #asıl kullanılan metod bu diğer metodu sayfayı görüntülemek için yazdım
