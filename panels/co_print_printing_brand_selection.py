@@ -1,3 +1,5 @@
+import contextlib
+import json
 import logging
 import os
 from ks_includes.widgets.checkbuttonbox import CheckButtonBox
@@ -15,17 +17,53 @@ def create_panel(*args):
 
 
 class CoPrintPrintingBrandSelection(ScreenPanel):
+    def getPrinters(self):
+        printers_brands = []
+        if os.path.exists(self.printers_folder) and os.path.isdir(self.printers_folder):
+            for brand_folder in os.listdir(self.printers_folder):
+                # check if base.json exists
+                if os.path.exists(os.path.join(self.printers_folder, brand_folder, "base.json")) :
+                    # get json from file
+                    with open(os.path.join(self.printers_folder, brand_folder, "base.json")) as json_file:
+                        printers_brand = json.load(json_file)
+                    # get the printer files to load
+                    printers_filename_to_load = printers_brand["printers"]
+                    # remove printers from json
+                    printers_brand["printers"] = []
+                    # for each printer file in the list of printers to load
+                    for printer_filename in printers_filename_to_load:
+                        # load printer json file
+                        printerfile_path = os.path.join(self.printers_folder, brand_folder, "%s.json" % printer_filename)
+                        if os.path.exists(printerfile_path) and os.path.isfile(printerfile_path):  # todo check extension
+                            with open(printerfile_path, 'r', encoding="utf-8") as json_file:
+                                # add printer json to printers_brand
+                                printers_brand["printers"].append(json.load(json_file))
+                    # avoid empty brands
+                    if len(printers_brand["printers"]) > 0:
+                        printers_brands.append(printers_brand)
+        return printers_brands
 
-     
+    def getPrinterPicture(self, image_path=None, width=None, height=None):
+        if image_path is not None:
+            if os.path.exists(image_path):
+                width = width if width is not None else 50
+                height = height if height is not None else 50
+                with contextlib.suppress(Exception):
+                    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(image_path, int(width), int(height))
+                    if pixbuf is not None:
+                        return pixbuf
+        logging.error(f"Unable to find image {image_path}")
+        return None
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
      
-        initHeader = InitHeader (self, _('Connect Your 3D Printer'), _('Connect your 3D printer to Co Print Smart using a USB cable.'), "yazicibaglama")
+        initHeader = InitHeader(self, _('Connect Your 3D Printer'), _('Connect your 3D printer to Co Print Smart using a USB cable.'), "yazicibaglama")
         
         self.image = self._gtk.Image("printer", self._gtk.content_width * .42 , self._gtk.content_height * .42)
-        
-        #finish button  
-        self.continueButton = Gtk.Button(_('Finish'),name ="flat-button-blue-brand")
+        self.printers_folder = os.path.join(os.path.dirname(__file__), "printers")
+
+        self.continueButton = Gtk.Button(_('Finish'),name="flat-button-blue-brand")
         self.continueButton.connect("clicked", self.on_click_continue_button)
         self.continueButton.set_hexpand(True)
         self.continueButton.set_always_show_image (True)
@@ -39,127 +77,117 @@ class CoPrintPrintingBrandSelection(ScreenPanel):
         backButtonBox.set_valign(Gtk.Align.CENTER)
         backButtonBox.pack_start(backIcon, False, False, 0)
         backButtonBox.pack_start(backLabel, False, False, 0)
-        self.backButton = Gtk.Button(name ="back-button")
+        self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
         self.backButton.connect("clicked", self.on_click_back_button, 'co_print_printing_selection_port')
-        self.backButton.set_always_show_image (True)       
+        self.backButton.set_always_show_image(True)
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
-        #treePrinterList--start--
-        tree = Gtk.TreeView(name="tree-list")
-        
-        store = Gtk.TreeStore(bool, str)
-        tree.set_model(store)
-        
-        
-        iter1 = store.append(None,[None, "Creality"])
-        iter2 = store.append(None, [None, "Anet"])
-        iter3 = store.append(None, [None, "Anet"])
-        
-        
-        store.append(iter1, [True, "Creality Ender 3 Pro"])
-        store.append(iter1, [False, "Creality Ender 3 V2"])
-        store.append(iter1, [False, "Creality CR 10 2017"])
-        store.append(iter1, [False, "Creality CR 10 Smart Pro 2022"])
-        store.append(iter1, [False, "Creality CR 10 v3"])
-        store.append(iter1, [False, "Creality Ender 3 V2"])
-        store.append(iter1, [False, "Creality CR 10 2017"])
-        store.append(iter1, [False, "Creality CR 10 Smart Pro 2022"])
-        store.append(iter1, [False, "Creality CR 10 v3"])
-        
-        
-        store.append(iter2, [None, "Anet a4 2018"])
-        store.append(iter2, [None, "Anet a8 2017"])
-        store.append(iter2, [None, "Anet a8 2019"])
-        store.append(iter2, [None, "Anet E10"])
-        store.append(iter2, [None, "Anet E16"])
-        store.append(iter2, [None, "Anet a8 2019"])
-        store.append(iter2, [None, "Anet E10"])
-        store.append(iter2, [None, "Anet E16"])
-        
-        store.append(iter3, [None, "Anet a4 2018"])
-        store.append(iter3, [None, "Anet a8 2017"])
-        store.append(iter3, [None, "Anet a8 2019"])
-        store.append(iter3, [None, "Anet E10"])
-        store.append(iter3, [None, "Anet E16"])
-        store.append(iter3, [None, "Anet a8 2019"])
-        store.append(iter3, [None, "Anet E10"])
-        store.append(iter3, [None, "Anet E16"])
-        
-        # create a column
-        column = Gtk.TreeViewColumn()
-        tree.append_column(column)
-        # add a toggle render
-        toggle = Gtk.CellRendererToggle()
-        column.pack_start(toggle, True)
-        column.add_attribute(toggle, "active", 0)
-        toggle.set_radio(True)
-        # and add a text renderer to the same column
-        text_ren = Gtk.CellRendererText()
-        column.pack_start(text_ren, True)
-        column.add_attribute(text_ren, "text", 1)
-        
-        tree.expand_all()
-        select = tree.get_selection()
-        select.connect("changed", self.on_tree_selection_changed)
-        tree.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
-        #treePrinterList--end--
 
-        scroll = self._gtk.ScrolledWindow()
-        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        #scroll.set_min_content_height(self._screen.height * .3)
-        scroll.set_kinetic_scrolling(True)
-        scroll.get_overlay_scrolling()
+        self.treestore = Gtk.TreeStore(str, bool)
 
-        #scroll.set_hexpand(True)
-        scroll.add(tree)
-        
-        #selectPrinterLabel = Gtk.Label("Listeden yazıcınızı seçiniz")
-      
-    
-        
-        selectedPrinterName= Gtk.Label("Creality Ender 3 Pro", name="selected-printer-name")
-        selectedPrinterDimension = Gtk.Label(_('Dimension') + ": " + "235mm × 235mm x 300mm", name="selected-printer-dimension")
-        selectedPrinterBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        selectedPrinterBox.set_name("selected-printer-box")
-        selectedPrinterBox.pack_start(self.image, False, False, 0)
-        selectedPrinterBox.pack_start(selectedPrinterName, False, False, 10)
-        selectedPrinterBox.pack_start(selectedPrinterDimension, False, False, 0)
-        selectedPrinterBox.pack_end(buttonBox, False, False, 5)
-        
+        self.printer_bands = self.getPrinters()
+        for brand in self.printer_bands:
+            brand_cat = self.treestore.append(None, [brand["name"], False])
+            for printer in brand["printers"]:
+                # set parent checked too if is-default is true
+                if printer["is-default"]:
+                    self.treestore.set_value(brand_cat, 1, True)
+                self.treestore.append(brand_cat, [printer["name"], printer["is-default"]])
+
+        self.treeview = Gtk.TreeView(model=self.treestore, name="tree-list")
+        self.treeview.set_headers_visible(False)
+
+        renderer_brand_name = Gtk.CellRendererText()
+        renderer_brand_name.set_property("font", "Sans Bold 12")
+
+        column_brand_name = Gtk.TreeViewColumn("Brand", renderer_brand_name, text=0)
+
+        self.treeview.append_column(column_brand_name)
+
+        self.treeview.expand_all()
+        selection = self.treeview.get_selection()
+        selection.connect("changed", self.on_tree_selection_changed)
+        self.treeview.get_selection().set_mode(Gtk.SelectionMode.SINGLE)
+
+        self.scroll = self._gtk.ScrolledWindow()
+        self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+
+        self.scroll.set_kinetic_scrolling(True)
+        self.scroll.get_overlay_scrolling()
+
+        self.scroll.add(self.treeview)
+
+        self.selectedPrinterName = Gtk.Label("Creality Ender 3 Pro", name="selected-printer-name")
+        self.selectedPrinterDimension = Gtk.Label(_('Dimension') + ": " + "235mm × 235mm x 300mm", name="selected-printer-dimension")
+        self.selectedPrinterBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.selectedPrinterBox.set_name("selected-printer-box")
+        self.selectedPrinterBox.pack_start(self.image, False, False, 0)
+        self.selectedPrinterBox.pack_start(self.selectedPrinterName, False, False, 10)
+        self.selectedPrinterBox.pack_start(self.selectedPrinterDimension, False, False, 0)
+        self.selectedPrinterBox.pack_end(buttonBox, False, False, 5)
 
         pageBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
         pageBox.set_name("brand-selection-box")
     
         pageBox.set_halign(Gtk.Align.CENTER)
-        pageBox.pack_start(scroll, False, False, 0)
-        pageBox.pack_start(selectedPrinterBox, False, False, 0)
+        pageBox.pack_start(self.scroll, False, False, 0)
+        pageBox.pack_start(self.selectedPrinterBox, False, False, 0)
         
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         
         main.pack_start(mainBackButtonBox, False, False, 0)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(pageBox, False, False, 0)
-           
-       
       
         self.content.add(main)
-       
-    def radioButtonSelected(self, button, baudRate):
-        self.selected = baudRate
-    
-    
+
     def on_click_continue_button(self, continueButton):
         self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)
         
-    def on_tree_selection_changed(selection):
-        model, treeiter = selection.get_selected()
-        if treeiter is not None:
-            print("You selected", model[treeiter][0])
+    def on_tree_selection_changed(self, selection):
+        # only one item can be selected
+        model, iter_ = selection.get_selected()
+
+        if iter_ is not None:
+            # if a printer is selected
+            if model.iter_parent(iter_) is not None:
+                parent_iter = model.iter_parent(iter_)
+                parent_name = model[parent_iter][0] if parent_iter is not None else ""
+
+                # change cell background color
+                model[iter_][1] = not model[iter_][1]
+
+                # get printer
+                printer_selected = {}
+                for brand_ in self.printer_bands:
+                    if brand_["name"] == parent_name:
+                        for printer_ in brand_["printers"]:
+                            if printer_["name"] == model[iter_][0]:
+                                printer_selected = printer_
+                                break
+                        break
+
+                if printer_selected:
+                    image_path = os.path.join(self.printers_folder, parent_name, printer_selected["picture"])
+                    if os.path.exists(image_path):
+                        self.image.set_from_pixbuf(
+                            self.getPrinterPicture(
+                                image_path,
+                                self._gtk.content_width * .42, self._gtk.content_height * .42)
+                        )
+                    else:
+                        self.image = self._gtk.Image("printer", self._gtk.content_width * .42, self._gtk.content_height * .42)
+
+                    self.selectedPrinterName.set_text(printer_selected["name"])
+                    # update display
+
+                    size = printer_selected["machine"]["size"]
+                    self.selectedPrinterDimension.set_text(
+                        _('Dimension') + ": " + "%smm × %smm x %smm" % (size["x"], size["y"], size["z"])
+                    )
+
+                    print("You selected brand: %s and model: %s" % (parent_name, printer_selected["name"]))
             
     def on_click_back_button(self, button, data):
-        
         self._screen.show_panel(data, data, "Language", 1, False)
-        
-   
