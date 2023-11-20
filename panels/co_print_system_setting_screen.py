@@ -22,10 +22,13 @@ class CoPrintSystemSettingScreen(ScreenPanel):
         super().__init__(screen, title)
         
         menu = BottomMenu(self, False)
-    
 
         update_resp = self._screen.apiclient.send_request("machine/update/status")
-        self.update_status = update_resp['result']
+        if not update_resp:
+            self.update_status = {}
+            logging.info("No update manager configured")
+        else:
+            self.update_status = update_resp['result']
         self.version_info = self.update_status['version_info']
 
         self.version_info['mainsail']['version']
