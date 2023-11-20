@@ -19,7 +19,8 @@ class CoPrintMcuSelection(ScreenPanel):
      
     def __init__(self, screen, title):
         super().__init__(screen, title)
-     
+
+        self.selected = None
         chips = [
             {'Name': "Atmega AVR",  'Button': Gtk.RadioButton()},
             {'Name': "SAM 3 / 4 / E70",  'Button': Gtk.RadioButton()},
@@ -40,28 +41,25 @@ class CoPrintMcuSelection(ScreenPanel):
         self.labels['actions'].set_homogeneous(True)
         self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
-       
         initHeader = InitHeader (self, _('Select Microcontroller'), _('Select the MCU located on the board you will be controlling.'), "mikrochip")
 
-    
         '''diller bitis'''
-        
-        grid = Gtk.Grid(column_homogeneous=True,
-                         column_spacing=10,
-                         row_spacing=10)
+        grid = Gtk.Grid(
+            column_homogeneous=True,
+            column_spacing=10,
+            row_spacing=10
+        )
         row = 0
         count = 0
         
-        group =chips[0]['Button']
+        group = chips[0]['Button']
         for chip in chips:
             chipName = Gtk.Label(chip['Name'],name ="wifi-label")
             chipName.set_alignment(0,0.5)
             
             chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group,"")
             if chips[0]['Name'] == chip['Name']:
-                 chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(None,"")
-           
-           
+                chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(None,"")
             
             chip['Button'].connect("toggled",self.radioButtonSelected, chip['Name'])
             chip['Button'].set_alignment(1,0.5)
@@ -78,14 +76,10 @@ class CoPrintMcuSelection(ScreenPanel):
             if count % 2 is 0:
                 count = 0
                 row += 1
-
-
-       
         
         gridBox = Gtk.FlowBox()
         gridBox.set_halign(Gtk.Align.CENTER)
         gridBox.add(grid)
- 
         
         self.scroll = self._gtk.ScrolledWindow()
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -137,11 +131,8 @@ class CoPrintMcuSelection(ScreenPanel):
        
     def on_click_continue_button(self, continueButton):
         self._screen.show_panel("co_print_mcu_model_selection", "co_print_mcu_model_selection", None, 2)
-        
-   
 
     def update_text(self, text):
-        
         self.show_restart_buttons()
 
     def clear_action_bar(self):
@@ -149,15 +140,12 @@ class CoPrintMcuSelection(ScreenPanel):
             self.labels['actions'].remove(child)
 
     def show_restart_buttons(self):
-
         self.clear_action_bar()
         if self.ks_printer_cfg is not None and self._screen._ws.connected:
             power_devices = self.ks_printer_cfg.get("power_devices", "")
             if power_devices and self._printer.get_power_devices():
                 logging.info(f"Associated power devices: {power_devices}")
                 self.add_power_button(power_devices)
-
-      
 
     def add_power_button(self, powerdevs):
         self.labels['power'] = self._gtk.Button("shutdown", _("Power On Printer"), "color3")
@@ -198,7 +186,6 @@ class CoPrintMcuSelection(ScreenPanel):
             os.system("systemctl poweroff")
 
     def restart_system(self, widget):
-
         if self._screen._ws.connected:
             self._screen._confirm_send_action(widget,
                                               _("Are you sure you wish to reboot the system?"),
@@ -217,5 +204,4 @@ class CoPrintMcuSelection(ScreenPanel):
         self.show_restart_buttons()
 
     def on_click_back_button(self, button, data):
-        
         self._screen.show_panel(data, data, "Language", 1, False)

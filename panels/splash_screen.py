@@ -37,12 +37,9 @@ class SplashScreenPanel(ScreenPanel):
         self.labels['retry'] = self._gtk.Button("load", _('Retry'), "color3")
         self.labels['retry'].connect("clicked", self.retry)
 
-        self.labels['actions'] = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.labels['actions'].set_hexpand(True)
-        self.labels['actions'].set_vexpand(False)
-        self.labels['actions'].set_halign(Gtk.Align.CENTER)
+        self.labels['actions'] = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, hexpand=True, vexpand=False, halign=Gtk.Align.CENTER)
         self.labels['actions'].set_homogeneous(True)
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
+        self.labels['actions'].set_size_request(self._gtk.content_width - 30, -1)
 
         scroll = self._gtk.ScrolledWindow()
         scroll.set_hexpand(True)

@@ -12,12 +12,12 @@ from gi.repository import Gtk, Pango, GLib, Gdk
 
 from ks_includes.screen_panel import ScreenPanel
 import gettext
+
 def create_panel(*args):
     return CoPrintSplashScreenPanel(*args)
 
 
 class CoPrintSplashScreenPanel(ScreenPanel):
-
      
     def __init__(self, screen, title):
         super().__init__(screen, title)
@@ -31,8 +31,9 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         #print("stdout: {}".format(out))
         #os.chdir(wd)
 
-       
-        
+        self.dialog = None
+        self.selected = None
+
         languages = [
             {'Lang':'en' ,'Name': _('English'), 'Icon': 'English', 'Button': Gtk.RadioButton()},
             {'Lang':'fr' ,'Name': _('French'), 'Icon': 'France', 'Button': Gtk.RadioButton()},
@@ -40,8 +41,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             {'Lang':'tr' ,'Name': _("Turkish"), 'Icon': 'Turkey', 'Button': Gtk.RadioButton()},
             {'Lang':'it' ,'Name': _('Italian'), 'Icon': 'Italy', 'Button': Gtk.RadioButton()},
             {'Lang':'sp' ,'Name': _('Spanish'), 'Icon': 'Spain', 'Button': Gtk.RadioButton()},
-            
-            ]
+        ]
         
         self.labels['actions'] = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.labels['actions'].set_hexpand(True)
@@ -49,35 +49,37 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         self.labels['actions'].set_halign(Gtk.Align.CENTER)
         self.labels['actions'].set_homogeneous(True)
         self.labels['actions'].set_size_request(self._gtk.content_width, -1)
-
        
         initHeader = InitHeader (self, _('Language Settings'), _('Please specify the system language'), "Geography")
 
         '''diller'''
-        grid = Gtk.Grid(column_homogeneous=True,
-                         column_spacing=10,
-                         row_spacing=10)
+        grid = Gtk.Grid(
+            column_homogeneous=True,
+            column_spacing=10,
+            row_spacing=10
+        )
         row = 0
         count = 0
-        #group =  [x for x in languages if x['Lang'] == i18n.get('locale')][0]['Button']
-        group =  languages[0]['Button']
-       
-        current_lang =  self._config.current_lang
+
+        group = languages[0]['Button']
+
+        current_lang = self._config.current_lang
+
         for language in languages:
-            
             languageImage = self._gtk.Image(language['Icon'], self._gtk.content_width * .05 , self._gtk.content_height * .05)
+
             languageName = Gtk.Label(language['Name'],name ="language-label")
+
             language['Button'] = Gtk.RadioButton.new_with_label_from_widget(group,"")
             if current_lang == language['Lang']:
-                 language['Button'] = Gtk.RadioButton.new_with_label_from_widget(None,"")
-           
-           
-            
-            language['Button'].connect("toggled",self.radioButtonSelected, language['Lang'])
-            
-             
+                language['Button'] = Gtk.RadioButton.new_with_label_from_widget(None,"")
+
+            language['Button'].connect("toggled", self.radioButtonSelected, language['Lang'])
+
             languageBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
+
             f = Gtk.Frame()
+
             languageBox.pack_start(languageImage, False, True, 5)
             languageBox.pack_end(language['Button'], False, False, 5)
             languageBox.pack_end(languageName, True, True, 5)
@@ -86,7 +88,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             eventBox = Gtk.EventBox()
             eventBox.connect("button-press-event", self.eventBoxLanguage, language['Lang'])
             eventBox.add(languageBox)
-
 
             f.add(eventBox)
             grid.attach(f, count, row, 1, 1)
@@ -118,7 +119,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
       
         self.content.add(main)
         self._screen.base_panel.visible_menu(False)
-       
+
     def on_click_continue_button(self, continueButton):
         self._screen.show_panel("co_print_contract_approval", "co_print_contract_approval", None, 2)
 
@@ -156,14 +157,11 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         p = os.system('echo %s|sudo -S %s' % (sudoPassword, command3))
         self.finished()
 
-
     def radioButtonSelected(self, button, lang):
         self.changeLang(lang)
     
     def eventBoxLanguage(self, button, gparam, lang):
         self.changeLang(lang)
-        
-
 
     def _resolve_radio(self, master_radio):
         active = next((
@@ -182,7 +180,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             self.labels['actions'].remove(child)
 
     def show_restart_buttons(self):
-
         self.clear_action_bar()
         if self.ks_printer_cfg is not None and self._screen._ws.connected:
             power_devices = self.ks_printer_cfg.get("power_devices", "")
@@ -243,7 +240,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             os.system("systemctl poweroff")
 
     def restart_system(self, widget):
-
         if self._screen._ws.connected:
             self._screen._confirm_send_action(widget,
                                               _("Are you sure you wish to reboot the system?"),

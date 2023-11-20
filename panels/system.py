@@ -65,9 +65,7 @@ class SystemPanel(ScreenPanel):
             items = sorted(list(vi))
             i = 0
             for prog in items:
-                self.labels[prog] = Gtk.Label("")
-                self.labels[prog].set_hexpand(True)
-                self.labels[prog].set_halign(Gtk.Align.START)
+                self.labels[prog] = Gtk.Label(hexpand=True, halign=Gtk.Align.START, ellipsize=Pango.EllipsizeMode.END)
 
                 self.labels[f"{prog}_status"] = self._gtk.Button()
                 self.labels[f"{prog}_status"].set_hexpand(False)
