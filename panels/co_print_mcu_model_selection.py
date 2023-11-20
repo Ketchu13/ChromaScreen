@@ -15,7 +15,6 @@ def create_panel(*args):
 
 
 class CoPrintMcuModelSelection(ScreenPanel):
-
      
     def __init__(self, screen, title):
         super().__init__(screen, title)
@@ -39,54 +38,58 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.labels['actions'].set_halign(Gtk.Align.CENTER)
         self.labels['actions'].set_homogeneous(True)
         self.labels['actions'].set_size_request(self._gtk.content_width, -1)
-
        
-        initHeader = InitHeader (self, _('Select the Chip Model'), _('Select the MCU model located on the board you will be controlling.'), "mikrochip")
+        initHeader = InitHeader(
+            self,
+            _('Select the Chip Model'),
+            _('Select the MCU model located on the board you will be controlling.'),
+            "mikrochip"
+        )
 
-    
-        '''diller bitis'''
-        
-        grid = Gtk.Grid(column_homogeneous=True,
-                         column_spacing=10,
-                         row_spacing=10)
+        '''diller'''
+        grid = Gtk.Grid(
+            column_homogeneous=True,
+            column_spacing=10,
+            row_spacing=10
+        )
         row = 0
         count = 0
         
-        group =chips[0]['Button']
+        group = chips[0]['Button']
+
+        current_mcu_model = ""
+        
         for chip in chips:
-            chipName = Gtk.Label(chip['Name'],name ="wifi-label")
+            chipImage = None
+        
+            chipName = Gtk.Label(chip['Name'], name="wifi-label")
             chipName.set_alignment(0,0.5)
             
             chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group,"")
             if chips[0]['Name'] == chip['Name']:
                  chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(None,"")
-           
-           
-            
-            chip['Button'].connect("toggled",self.radioButtonSelected, chip['Name'])
-            chip['Button'].set_alignment(1,0.5)
+
+            chip['Button'].connect("toggled", self.radioButtonSelected, chip['Name'])
+            chip['Button'].set_alignment(1, 0.5)
+
             chipBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
            
             f = Gtk.Frame(name="chip")
-            chipBox.pack_start(chipName, False, True, 10)
-           
-            chipBox.pack_end(chip['Button'], False, False, 10)
             
+            chipBox.pack_start(chipName, False, True, 10)           
+            chipBox.pack_end(chip['Button'], False, False, 10)
+
             f.add(chipBox)
             grid.attach(f, count, row, 1, 1)
             count += 1
-            if count % 2 is 0:
+            if count % 2 == 0:
                 count = 0
                 row += 1
-
-
-       
         
         gridBox = Gtk.FlowBox()
         gridBox.set_halign(Gtk.Align.CENTER)
         gridBox.add(grid)
- 
-        
+
         self.scroll = self._gtk.ScrolledWindow()
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.scroll.set_min_content_height(self._screen.height * .3)
@@ -99,6 +102,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         
         self.continueButton = Gtk.Button(_('Continue'),name ="flat-button-blue")
         self.continueButton.connect("clicked", self.on_click_continue_button)
+        
         self.continueButton.set_hexpand(True)
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
@@ -122,26 +126,35 @@ class CoPrintMcuModelSelection(ScreenPanel):
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)
         main.pack_end(buttonBox, False, False, 15)
-        
+
         page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         page.pack_start(mainBackButtonBox, False, False, 0)
         page.pack_start(main, True, True, 0)
-        
-        #self.show_restart_buttons()
-      
+
         self.content.add(page)
         self._screen.base_panel.visible_menu(False)
-        
-    def radioButtonSelected(self, button, baudRate):
-        self.selected = baudRate
-       
+
     def on_click_continue_button(self, continueButton):
         self._screen.show_panel("co_print_mcu_bootloader_ofset", "co_print_mcu_bootloader_ofset", None, 2)
-        
-   
+
+    def changeChip(self, chip):
+        self.selected = chip
+
+    def radioButtonSelected(self, button, chip):
+        self.changeChip(chip)
+
+    def eventBoxChip(self, button, gparam, chip):
+        self.changeChip(chip)
+
+    def _resolve_radio(self, master_radio):
+        active = next((
+            radio for radio in
+            master_radio.get_group()
+            if radio.get_active()
+        ))
+        return active
 
     def update_text(self, text):
-        
         self.show_restart_buttons()
 
     def clear_action_bar(self):
@@ -149,15 +162,12 @@ class CoPrintMcuModelSelection(ScreenPanel):
             self.labels['actions'].remove(child)
 
     def show_restart_buttons(self):
-
         self.clear_action_bar()
         if self.ks_printer_cfg is not None and self._screen._ws.connected:
             power_devices = self.ks_printer_cfg.get("power_devices", "")
             if power_devices and self._printer.get_power_devices():
                 logging.info(f"Associated power devices: {power_devices}")
                 self.add_power_button(power_devices)
-
-      
 
     def add_power_button(self, powerdevs):
         self.labels['power'] = self._gtk.Button("shutdown", _("Power On Printer"), "color3")
@@ -198,7 +208,6 @@ class CoPrintMcuModelSelection(ScreenPanel):
             os.system("systemctl poweroff")
 
     def restart_system(self, widget):
-
         if self._screen._ws.connected:
             self._screen._confirm_send_action(widget,
                                               _("Are you sure you wish to reboot the system?"),
@@ -217,5 +226,4 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.show_restart_buttons()
 
     def on_click_back_button(self, button, data):
-        
         self._screen.show_panel(data, data, "Language", 1, False)
