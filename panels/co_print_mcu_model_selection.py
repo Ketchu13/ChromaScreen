@@ -18,19 +18,21 @@ class CoPrintMcuModelSelection(ScreenPanel):
      
     def __init__(self, screen, title):
         super().__init__(screen, title)
-     
-        chips = [
-            {'Name': "STM32F103",  'Button': Gtk.RadioButton()},
-            {'Name': "STM32F207",  'Button': Gtk.RadioButton()},
-            {'Name': "STM32F401",  'Button': Gtk.RadioButton()},
+
+        self.selected = None
+
+        mcu_models = [
+            {'Name': "STM32F103", 'Button': Gtk.RadioButton()},
+            {'Name': "STM32F207", 'Button': Gtk.RadioButton()},
+            {'Name': "STM32F401", 'Button': Gtk.RadioButton()},
             {'Name': "STM32F405", 'Button': Gtk.RadioButton()},
             {'Name': "STM32F407", 'Button': Gtk.RadioButton()},
-            {'Name': "STM32F429",  'Button': Gtk.RadioButton()},
+            {'Name': "STM32F429", 'Button': Gtk.RadioButton()},
             {'Name': "STM32F446", 'Button': Gtk.RadioButton()},
             {'Name': "STM32F031", 'Button': Gtk.RadioButton()},
             {'Name': "STM32F042", 'Button': Gtk.RadioButton()},
             {'Name': "STM32F070", 'Button': Gtk.RadioButton()},
-            ]
+        ]
         
         self.labels['actions'] = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.labels['actions'].set_hexpand(True)
@@ -38,7 +40,9 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.labels['actions'].set_halign(Gtk.Align.CENTER)
         self.labels['actions'].set_homogeneous(True)
         self.labels['actions'].set_size_request(self._gtk.content_width, -1)
-       
+
+        group = None
+
         initHeader = InitHeader(
             self,
             _('Select the Chip Model'),
@@ -55,32 +59,33 @@ class CoPrintMcuModelSelection(ScreenPanel):
         row = 0
         count = 0
         
-        group = chips[0]['Button']
-
-        current_mcu_model = ""
+        for mcu_model in mcu_models:
+            mcu_modelImage = None
         
-        for chip in chips:
-            chipImage = None
-        
-            chipName = Gtk.Label(chip['Name'], name="wifi-label")
-            chipName.set_alignment(0,0.5)
+            mcu_modelName = Gtk.Label(mcu_model['Name'], name="wifi-label")
+            mcu_modelName.set_alignment(0, 0.5)
             
-            chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group,"")
-            if chips[0]['Name'] == chip['Name']:
-                 chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(None,"")
+            mcu_model['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
+            if mcu_models[0]['Name'] == mcu_model['Name']:
+                mcu_model['Button'] = Gtk.RadioButton.new_with_label_from_widget(None, "")
 
-            chip['Button'].connect("toggled", self.radioButtonSelected, chip['Name'])
-            chip['Button'].set_alignment(1, 0.5)
+            mcu_model['Button'].connect("toggled", self.radioButtonSelected, mcu_model['Name'])
+            mcu_model['Button'].set_alignment(1, 0.5)
 
-            chipBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
+            mcu_modelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
            
             f = Gtk.Frame(name="chip")
             
-            chipBox.pack_start(chipName, False, True, 10)           
-            chipBox.pack_end(chip['Button'], False, False, 10)
+            mcu_modelBox.pack_start(mcu_modelName, False, True, 10)
+            mcu_modelBox.pack_end(mcu_model['Button'], False, False, 10)
 
-            f.add(chipBox)
+            f.add(mcu_modelBox)
+
             grid.attach(f, count, row, 1, 1)
+
+            if group is None:
+                group = mcu_model['Button']
+
             count += 1
             if count % 2 == 0:
                 count = 0
@@ -100,29 +105,34 @@ class CoPrintMcuModelSelection(ScreenPanel):
         
         self.scroll.add(gridBox)
         
-        self.continueButton = Gtk.Button(_('Continue'),name ="flat-button-blue")
+        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
         self.continueButton.connect("clicked", self.on_click_continue_button)
-        
-        self.continueButton.set_hexpand(True)
+
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
+        buttonBox.set_center_widget(self.continueButton)
 
         backIcon = self._gtk.Image("back-arrow", 35, 35)
-        backLabel = Gtk.Label(_("Back"), name="bottom-menu-label")            
-        backButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        backButtonBox.set_halign(Gtk.Align.CENTER)
-        backButtonBox.set_valign(Gtk.Align.CENTER)
+        backLabel = Gtk.Label(_("Back"), name="bottom-menu-label")
+
+        backButtonBox = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            spacing=0,
+            halign=Gtk.Align.CENTER,
+            valign=Gtk.Align.CENTER
+        )
         backButtonBox.pack_start(backIcon, False, False, 0)
         backButtonBox.pack_start(backLabel, False, False, 0)
-        self.backButton = Gtk.Button(name ="back-button")
+
+        self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
-        self.backButton.connect("clicked", self.on_click_back_button, 'co_print_mcu_selection')
-        self.backButton.set_always_show_image (True)       
+        self.backButton.connect("clicked", self.on_click_back_button, "co_print_mcu_selection")
+        self.backButton.set_always_show_image(True)
+
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
         
-        main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        main.set_halign(Gtk.Align.CENTER)
+        main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)
         main.pack_end(buttonBox, False, False, 15)
@@ -132,19 +142,17 @@ class CoPrintMcuModelSelection(ScreenPanel):
         page.pack_start(main, True, True, 0)
 
         self.content.add(page)
-        self._screen.base_panel.visible_menu(False)
+        #self._screen.base_panel.visible_menu(False)
 
-    def on_click_continue_button(self, continueButton):
-        self._screen.show_panel("co_print_mcu_bootloader_ofset", "co_print_mcu_bootloader_ofset", None, 2)
+    def on_click_continue_button(self, continueButton, target_panel):
+        if self.selected:
+            self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def changeChip(self, chip):
-        self.selected = chip
+    def on_click_back_button(self, button, target_panel):
+        self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def radioButtonSelected(self, button, chip):
-        self.changeChip(chip)
-
-    def eventBoxChip(self, button, gparam, chip):
-        self.changeChip(chip)
+    def radioButtonSelected(self, button, name):
+        self.selected = name
 
     def _resolve_radio(self, master_radio):
         active = next((
@@ -153,77 +161,3 @@ class CoPrintMcuModelSelection(ScreenPanel):
             if radio.get_active()
         ))
         return active
-
-    def update_text(self, text):
-        self.show_restart_buttons()
-
-    def clear_action_bar(self):
-        for child in self.labels['actions'].get_children():
-            self.labels['actions'].remove(child)
-
-    def show_restart_buttons(self):
-        self.clear_action_bar()
-        if self.ks_printer_cfg is not None and self._screen._ws.connected:
-            power_devices = self.ks_printer_cfg.get("power_devices", "")
-            if power_devices and self._printer.get_power_devices():
-                logging.info(f"Associated power devices: {power_devices}")
-                self.add_power_button(power_devices)
-
-    def add_power_button(self, powerdevs):
-        self.labels['power'] = self._gtk.Button("shutdown", _("Power On Printer"), "color3")
-        self.labels['power'].connect("clicked", self._screen.power_devices, powerdevs, True)
-        self.check_power_status()
-        self.labels['actions'].add(self.labels['power'])
-
-    def activate(self):
-        self.check_power_status()
-        self._screen.base_panel.show_macro_shortcut(False)
-        self._screen.base_panel.show_heaters(False)
-        self._screen.base_panel.show_estop(False)
-
-    def check_power_status(self):
-        if 'power' in self.labels:
-            devices = self._printer.get_power_devices()
-            if devices is not None:
-                for device in devices:
-                    if self._printer.get_power_device_status(device) == "off":
-                        self.labels['power'].set_sensitive(True)
-                        break
-                    elif self._printer.get_power_device_status(device) == "on":
-                        self.labels['power'].set_sensitive(False)
-
-    def firmware_restart(self, widget):
-        self._screen._ws.klippy.restart_firmware()
-
-    def restart(self, widget):
-        self._screen._ws.klippy.restart()
-
-    def shutdown(self, widget):
-        if self._screen._ws.connected:
-            self._screen._confirm_send_action(widget,
-                                              _("Are you sure you wish to shutdown the system?"),
-                                              "machine.shutdown")
-        else:
-            logging.info("OS Shutdown")
-            os.system("systemctl poweroff")
-
-    def restart_system(self, widget):
-        if self._screen._ws.connected:
-            self._screen._confirm_send_action(widget,
-                                              _("Are you sure you wish to reboot the system?"),
-                                              "machine.reboot")
-        else:
-            logging.info("OS Reboot")
-            os.system("systemctl reboot")
-
-    def retry(self, widget):
-        self.update_text((_("Connecting to %s") % self._screen.connecting_to_printer))
-        if self._screen._ws and not self._screen._ws.connecting:
-            self._screen._ws.retry()
-        else:
-            self._screen.reinit_count = 0
-            self._screen.init_printer()
-        self.show_restart_buttons()
-
-    def on_click_back_button(self, button, data):
-        self._screen.show_panel(data, data, "Language", 1, False)
