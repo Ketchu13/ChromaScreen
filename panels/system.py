@@ -1,5 +1,6 @@
 import logging
 import os
+from gettext import ngettext
 
 import gi
 
