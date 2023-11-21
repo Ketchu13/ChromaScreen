@@ -3,6 +3,7 @@ import os
 from ks_includes.widgets.checkbuttonbox import CheckButtonBox
 import gi
 
+
 from ks_includes.widgets.initheader import InitHeader
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango, GLib, Gdk
@@ -58,24 +59,21 @@ class CoPrintMcuModelSelection(ScreenPanel):
         )
         row = 0
         count = 0
-        
+
         for mcu_model in mcu_models:
             mcu_modelImage = None
-        
+
             mcu_modelName = Gtk.Label(mcu_model['Name'], name="wifi-label")
             mcu_modelName.set_alignment(0, 0.5)
             
             mcu_model['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
-            if mcu_models[0]['Name'] == mcu_model['Name']:
-                mcu_model['Button'] = Gtk.RadioButton.new_with_label_from_widget(None, "")
-
-            mcu_model['Button'].connect("toggled", self.radioButtonSelected, mcu_model['Name'])
             mcu_model['Button'].set_alignment(1, 0.5)
+            mcu_model['Button'].connect("toggled", self.radioButtonSelected, mcu_model['Name'])
 
             mcu_modelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
-           
+
             f = Gtk.Frame(name="chip")
-            
+
             mcu_modelBox.pack_start(mcu_modelName, False, True, 10)
             mcu_modelBox.pack_end(mcu_model['Button'], False, False, 10)
 
@@ -90,7 +88,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
             if count % 2 == 0:
                 count = 0
                 row += 1
-        
+
         gridBox = Gtk.FlowBox()
         gridBox.set_halign(Gtk.Align.CENTER)
         gridBox.add(grid)
@@ -104,7 +102,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.scroll.set_margin_right(self._gtk.action_bar_width*1)
         
         self.scroll.add(gridBox)
-        
+
         self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
         self.continueButton.connect("clicked", self.on_click_continue_button, "co_print_mcu_bootloader_ofset")
 
@@ -142,7 +140,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         page.pack_start(main, True, True, 0)
 
         self.content.add(page)
-        #self._screen.base_panel.visible_menu(False)
+        # self._screen.base_panel.visible_menu(False)
 
     def on_click_continue_button(self, continueButton, target_panel):
         if self.selected:

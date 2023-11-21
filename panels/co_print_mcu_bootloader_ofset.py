@@ -32,7 +32,7 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
             {'Name': "64KiB bootloader",  'Button': Gtk.RadioButton()},
             {'Name': "2KiB bootloader\n(HID Bootloader)", 'Button': Gtk.RadioButton()},
             {'Name': "4KiB bootloader", 'Button': Gtk.RadioButton()},
-            ]
+        ]
         
         self.labels['actions'] = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self.labels['actions'].set_hexpand(True)
@@ -49,7 +49,6 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
             _('Select the bootloader offset located on the board you will be controlling.'),
             "mikrochip"
         )
-        initHeader.set_can_focus(False)
 
         '''diller bitis'''
         grid = Gtk.Grid(
@@ -57,36 +56,35 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
             column_spacing=10,
             row_spacing=10
         )
-        grid.set_can_focus(False)
         row = 0
         count = 0
 
         for bootloader in bootloaders:
+
+
             bootloaderName = Gtk.Label(bootloader['Name'], name="wifi-label")
             bootloaderName.set_alignment(0, 0.5)
-            
+
             bootloader['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
             bootloader['Button'].set_alignment(1, 0.5)
             bootloader['Button'].connect("toggled", self.radioButtonSelected, bootloader['Name'])
 
             bootloaderBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
-            bootloaderBox.set_can_focus(False)
-            bootloader['Button'].set_can_focus(False)
-            bootloaderName.set_can_focus(False)
 
             f = Gtk.Frame(name="chip")
-            bootloaderBox.pack_start(bootloaderName, False, True, 10)
 
+            bootloaderBox.pack_start(bootloaderName, False, True, 10)
             bootloaderBox.pack_end(bootloader['Button'], False, False, 10)
-            
+
             f.add(bootloaderBox)
+
             grid.attach(f, count, row, 1, 1)
 
             if group is None:
                 group = bootloader['Button']
 
             count += 1
-            if count % 2 is 0:
+            if count % 2 == 0:
                 count = 0
                 row += 1
 
@@ -104,7 +102,7 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
         
         self.scroll.add(gridBox)
 
-        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue")
+        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
         self.continueButton.connect("clicked", self.on_click_continue_button, "co_print_mcu_clock_reference")
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -139,7 +137,7 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
         page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         page.pack_start(mainBackButtonBox, False, False, 0)
         page.pack_start(main, True, True, 0)
-      
+
         self.content.add(page)
         #self._screen.base_panel.visible_menu(False)
 
