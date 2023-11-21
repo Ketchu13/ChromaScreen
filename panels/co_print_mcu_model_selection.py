@@ -106,7 +106,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.scroll.add(gridBox)
         
         self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
-        self.continueButton.connect("clicked", self.on_click_continue_button)
+        self.continueButton.connect("clicked", self.on_click_continue_button, "co_print_mcu_bootloader_ofset")
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
