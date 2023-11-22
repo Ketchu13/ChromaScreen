@@ -4,6 +4,7 @@ import pytz
 import subprocess
 
 import gi
+import tzlocal
 
 from ks_includes.widgets.initheader import InitHeader
 gi.require_version("Gtk", "3.0")
@@ -20,6 +21,8 @@ class CoPrintRegionSelection(ScreenPanel):
 
     def __init__(self, screen, title):
         super().__init__(screen, title)
+        self.current_timezone = self.get_system_timezone()
+        self.selected = None
 
         initHeader = InitHeader(
             self,
@@ -77,6 +80,7 @@ class CoPrintRegionSelection(ScreenPanel):
         self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue")
         self.continueButton.connect("clicked", self.on_click_continue_button)
         self.continueButton.set_hexpand(True)
+
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
         buttonBox.set_center_widget(self.continueButton)
@@ -96,6 +100,7 @@ class CoPrintRegionSelection(ScreenPanel):
         
         backIcon = self._gtk.Image("back-arrow", 35, 35)
         backLabel = Gtk.Label(_("Back"), name="bottom-menu-label")            
+
         backButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         backButtonBox.set_halign(Gtk.Align.CENTER)
         backButtonBox.set_valign(Gtk.Align.CENTER)
@@ -105,6 +110,7 @@ class CoPrintRegionSelection(ScreenPanel):
         self.backButton.add(backButtonBox)
         self.backButton.connect("clicked", self.on_click_back_button, "co_print_contract_approval")
         self.backButton.set_always_show_image(True)
+
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
         
@@ -124,7 +130,14 @@ class CoPrintRegionSelection(ScreenPanel):
         fixed.add(image)
         fixed.add_overlay(main)
         self.content.add(fixed)
-        
+
+        self.select_item_on_init(self.listbox, self.current_timezone)
+
+    def select_item_on_init(self, combobox, text):
+        self.entry.set_text(text)
+        if self.listbox.get_visible():
+            self.listbox.hide()
+
     def on_country_combo_changed(self, combo):
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
@@ -143,12 +156,12 @@ class CoPrintRegionSelection(ScreenPanel):
         
     def on_combobox_changed(self, combobox):
         active_text = combobox.get_active_text()
-        print("Seçilen seçenek:", active_text)
+        print("Selected option: ", active_text)
         
     def on_listbox_row_activated(self, listbox, row):
         # Seçilen öğenin değerini Entry kutusuna yazdırma
-        selected_value = row.get_child().get_label()
-        self.entry.set_text(selected_value)
+        self.selected = row.get_child().get_label()
+        self.entry.set_text(self.selected)
         
     def on_arrow_clicked(self, widget, event):
         # Ok simgesi tıklandığında yapılacak işlemler
@@ -158,7 +171,7 @@ class CoPrintRegionSelection(ScreenPanel):
             allocation = self.entry.get_allocation()
             x, y = self.entry.translate_coordinates(self, allocation.x, allocation.y + allocation.height)
             self.listbox.set_size_request(allocation.width, -1)
-            self.move(x, y)
+            self.listbox.move(x, y)
             self.listbox.show_all()
 
     def on_button_clicked(self, button):
@@ -168,5 +181,9 @@ class CoPrintRegionSelection(ScreenPanel):
         else:
             self.listbox.show()
     
-    def on_click_back_button(self, button, data):
-        self._screen.show_panel(data, data, "Language", 1, False)
+    def on_click_back_button(self, button, target_panel):
+        self._screen.show_panel(target_panel, target_panel, None, 2)
+
+    def get_system_timezone(self) -> str:
+        local_timezone = str(tzlocal.get_localzone())
+        return local_timezone
