@@ -124,7 +124,7 @@ class CoPrintWifiSelection(ScreenPanel):
             self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True, items=self.selectedWifiIndex)
         else:
             #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)"""
-        self._screen.show_panel("co_print_chip_selection", "co_print_chip_selection", None, 2)
+        self._screen.show_panel("co_print_fwmenu_selection", "co_print_fwmenu_selection", None, 2)
 
     #asıl kullanılan metod bu diğer metodu sayfayı görüntülemek için yazdım
     def refresh(self, widget):
@@ -212,7 +212,7 @@ class CoPrintWifiSelection(ScreenPanel):
         return ('yes:' + ssid + "\n" in wifi_list) or ('evet:' + ssid + "\n" in wifi_list)
     
     # def on_click_continue_button(self, continueButton):
-    #     self._screen.show_panel("co_print_chip_selection", "co_print_chip_selection", "Language", 1, False)
+    #     self._screen.show_panel("co_print_fwmenu_selection", "co_print_fwmenu_selection", "Language", 1, False)
     
     def on_click_back_button(self, button, data):
         self._screen.show_panel(data, data, "Language", 1, False)
