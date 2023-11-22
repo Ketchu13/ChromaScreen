@@ -1,6 +1,3 @@
-import logging
-import os
-from ks_includes.widgets.checkbuttonbox import CheckButtonBox
 import gi
 
 from ks_includes.widgets.initheader import InitHeader
@@ -52,13 +49,17 @@ class CoPrintMcuModelSelection(ScreenPanel):
         )
         row = 0
         count = 0
+        if "mcu" not in self._screen._fw_config:
+            self._screen._fw_config["mcu"] = {}
+        if "usb_ids" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["usb_ids"] = None
 
         for flash_method in flash_methods:
             flash_methodImage = None
 
             flash_methodName = Gtk.Label(flash_method['Name'], name="wifi-label")
             flash_methodName.set_alignment(0, 0.5)
-            
+
             flash_method['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
             flash_method['Button'].set_alignment(1, 0.5)
             flash_method['Button'].connect("toggled", self.radioButtonSelected, flash_method['Name'])
@@ -74,8 +75,15 @@ class CoPrintMcuModelSelection(ScreenPanel):
 
             grid.attach(f, count, row, 1, 1)
 
+            if self._screen._fw_config["mcu"]["flash_method"] == flash_method['Name']:
+                flash_method['Button'].set_active(True)
+                self.selected = flash_method['Name']
+                group = flash_method['Button']
+
+            # set group if chip name is the same as the one in fw_config
             if group is None:
                 group = flash_method['Button']
+                self.selected = flash_method['Name']
 
             count += 1
             if count % 2 == 0:
@@ -91,13 +99,32 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.scroll.set_min_content_height(self._screen.height * .3)
         self.scroll.set_kinetic_scrolling(True)
         self.scroll.get_overlay_scrolling()
-        self.scroll.set_margin_left(self._gtk.action_bar_width *1)
-        self.scroll.set_margin_right(self._gtk.action_bar_width*1)
+        self.scroll.set_margin_left(self._gtk.action_bar_width * 1)
+        self.scroll.set_margin_right(self._gtk.action_bar_width * 1)
         
         self.scroll.add(gridBox)
+        self._screen._fw_config["mcu"]["manual_cfg"] = True
+        # get fw_config from screen to know if we are in manual or wizzard config
+        validate_button = {
+            "text": _("Continue"),
+            "panel_link": None,
+            "panel_link_b": "co_print_mcu_selection"
+        }
+        if "mcu" not in self._screen._fw_config:
+            self._screen._fw_config["mcu"] = {}
 
-        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
-        self.continueButton.connect("clicked", self.on_click_continue_button)
+        if "manual_cfg" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["manual_cfg"] = False
+
+        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+            validate_button["panel_link"] = "co_print_fwmenu_selection"
+            validate_button["panel_link_b"] = "co_print_fwmenu_selection"
+            validate_button["text"] = _('Save')
+        if "flash_method" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["flash_method"] = False
+
+        self.continueButton = Gtk.Button(validate_button["text"], name="flat-button-blue", hexpand=True)
+        self.continueButton.connect("clicked", self.on_click_continue_button, validate_button["panel_link"])
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
@@ -117,7 +144,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
 
         self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
-        self.backButton.connect("clicked", self.on_click_back_button, "co_print_mcu_selection")
+        self.backButton.connect("clicked", self.on_click_back_button, validate_button["panel_link_b"])
         self.backButton.set_always_show_image(True)
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
