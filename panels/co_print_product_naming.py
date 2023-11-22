@@ -30,7 +30,7 @@ class CoPrintProductNaming(ScreenPanel):
 
         self.deviceImage = self._gtk.Image("device", self._gtk.content_width * .4 , self._gtk.content_height * .4)
        
-        self.continueButton = Gtk.Button(_('Continue'),name ="flat-button-blue")
+        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue")
         self.continueButton.connect("clicked", self.on_click_continue_button)
         self.continueButton.set_hexpand(True)
         self.buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -43,6 +43,7 @@ class CoPrintProductNaming(ScreenPanel):
         self.entry.set_placeholder_text(("Device Name"))
         self.entry.set_margin_left(self._gtk.action_bar_width *3)
         self.entry.set_margin_right(self._gtk.action_bar_width *3)
+        self.entry.set_text("ChromaPad")
 
         eventBox = Gtk.EventBox()
         eventBox.connect("button-press-event", self.give_name)
@@ -55,10 +56,10 @@ class CoPrintProductNaming(ScreenPanel):
         backButtonBox.set_valign(Gtk.Align.CENTER)
         backButtonBox.pack_start(backIcon, False, False, 0)
         backButtonBox.pack_start(backLabel, False, False, 0)
-        self.backButton = Gtk.Button(name ="back-button")
+        self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
         self.backButton.connect("clicked", self.on_click_back_button, 'co_print_region_selection')
-        self.backButton.set_always_show_image (True)       
+        self.backButton.set_always_show_image(True)
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
         
@@ -124,5 +125,6 @@ class CoPrintProductNaming(ScreenPanel):
         # go to Wi-Fi selection screen
         self._screen.show_panel("co_print_wifi_selection", "co_print_wifi_selection", None, 2)
         
-    def on_click_back_button(self, button, data):
-        self._screen.show_panel(data, data, "Language", 1, False)
+    def on_click_back_button(self, button, target_panel):
+        self._screen.show_panel(target_panel, target_panel, None, 2)
+
