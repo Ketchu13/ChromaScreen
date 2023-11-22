@@ -3,7 +3,6 @@ import os
 from ks_includes.widgets.checkbuttonbox import CheckButtonBox
 import gi
 
-
 from ks_includes.widgets.initheader import InitHeader
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango, GLib, Gdk
@@ -16,7 +15,6 @@ def create_panel(*args):
 
 
 class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
-
      
     def __init__(self, screen, title):
         super().__init__(screen, title)
@@ -34,11 +32,13 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
             {'Name': "4KiB bootloader", 'Button': Gtk.RadioButton()},
         ]
         
-        self.labels['actions'] = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.labels['actions'].set_hexpand(True)
-        self.labels['actions'].set_vexpand(False)
-        self.labels['actions'].set_halign(Gtk.Align.CENTER)
-        self.labels['actions'].set_homogeneous(True)
+        self.labels['actions'] = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            hexpand=True,
+            vexpand=False,
+            halign=Gtk.Align.CENTER,
+            homogeneous=True
+        )
         self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
         group = None
@@ -143,6 +143,9 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
 
     def on_click_continue_button(self, continueButton, target_panel):
         if self.selected:
+            if "mcu" not in self._screen._fw_config:
+                self._screen._fw_config["mcu"] = {}
+            self._screen._fw_config["mcu"]["bootloader"] = self.selected
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):

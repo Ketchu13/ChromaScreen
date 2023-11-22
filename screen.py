@@ -108,14 +108,18 @@ class KlipperScreen(Gtk.Window):
         self.confirm = None
 
         klipperscreendir = pathlib.Path(__file__).parent.resolve()
-
+        # config file is in the user's home directory
         configfile = os.path.normpath(os.path.expanduser(args.configfile))
-
         self._config = KlipperScreenConfig(configfile, self)
         self.lang_ltr = set_text_direction(self._config.get_main_config().get("language", None))
 
+        fwconfigfile = os.path.normpath(os.path.expanduser(args.fwconfig))
+        firmware_config = ""  # TODO: Get firmware config 01
+        self._fw_config = {}
+
         self.connect("key-press-event", self._key_press_event)
         self.connect("configure_event", self.update_size)
+
         monitor = Gdk.Display.get_default().get_primary_monitor()
         if monitor is None:
             monitor = Gdk.Display.get_default().get_monitor(0)
@@ -1020,14 +1024,28 @@ def main():
     homedir = os.path.expanduser("~")
 
     parser.add_argument(
-        "-c", "--configfile", default=os.path.join(homedir, "KlipperScreen.conf"), metavar='<configfile>',
+        "-c",
+        "--configfile",
+        default=os.path.join(homedir, "KlipperScreen.conf"),
+        metavar='<configfile>',
         help="Location of KlipperScreen configuration file"
     )
+    parser.add_argument(
+        "-f",
+        "--fwconfig",
+        default=os.path.join(homedir, "Firmware.conf"),
+        metavar='<fwconfig>',
+        help="Location of the firmware configuration file"
+    )
+
     logdir = os.path.join(homedir, "printer_data", "logs")
     if not os.path.exists(logdir):
         logdir = "/tmp"
     parser.add_argument(
-        "-l", "--logfile", default=os.path.join(logdir, "KlipperScreen.log"), metavar='<logfile>',
+        "-l",
+        "--logfile",
+        default=os.path.join(logdir, "KlipperScreen.log"),
+        metavar='<logfile>',
         help="Location of KlipperScreen logfile output"
     )
     args = parser.parse_args()
@@ -1040,6 +1058,7 @@ def main():
     functions.patch_threading_excepthook()
 
     logging.info(f"KlipperScreen version: {version}")
+
     if not Gtk.init_check(None)[0]:
         logging.critical("Failed to initialize Gtk")
         raise RuntimeError
@@ -1048,9 +1067,11 @@ def main():
     except Exception as e:
         logging.exception("Failed to initialize window")
         raise RuntimeError from e
+
     win.connect("destroy", Gtk.main_quit)
     win.show_all()
     win.base_panel.visible_menu(False)
+
     Gtk.main()
 
 

@@ -9,6 +9,7 @@ from gi.repository import Gtk
 class ScreenPanel:
     _screen = None
     _config = None
+    _fw_config = None
     _files = None
     _printer = None
     _gtk = None
@@ -17,6 +18,7 @@ class ScreenPanel:
     def __init__(self, screen, title):
         self.menu = None
         ScreenPanel._screen = screen
+        ScreenPanel._fw_config = screen._fw_config
         ScreenPanel._config = screen._config
         ScreenPanel._files = screen.files
         ScreenPanel._printer = screen.printer

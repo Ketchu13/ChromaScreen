@@ -139,6 +139,9 @@ class CoPrintMcuClockReference(ScreenPanel):
 
     def on_click_continue_button(self, continueButton, target_panel):
         if self.selected:
+            if "mcu" not in self._screen._fw_config:
+                self._screen._fw_config["mcu"] = {}
+            self._screen._fw_config["mcu"]["clock_reference"] = self.selected
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):
