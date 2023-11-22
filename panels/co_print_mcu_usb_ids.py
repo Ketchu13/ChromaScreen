@@ -52,6 +52,10 @@ class CoPrintMcuUsbIds(ScreenPanel):
         )
         row = 0
         count = 0
+        if "mcu" not in self._screen._fw_config:
+            self._screen._fw_config["mcu"] = {}
+        if "usb_ids" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["usb_ids"] = None
 
         for chip in chips:
 
@@ -74,8 +78,15 @@ class CoPrintMcuUsbIds(ScreenPanel):
 
             grid.attach(f, count, row, 1, 1)
 
+            if self._screen._fw_config["mcu"]["usb_ids"] == chip['Name']:
+                chip['Button'].set_active(True)
+                self.selected = chip['Name']
+                group = chip['Button']
+
+            # set group if chip name is the same as the one in fw_config
             if group is None:
                 group = chip['Button']
+                self.selected = chip['Name']
 
             count += 1
             if count % 2 == 0:
@@ -91,23 +102,43 @@ class CoPrintMcuUsbIds(ScreenPanel):
         self.scroll.set_min_content_height(self._screen.height * .3)
         self.scroll.set_kinetic_scrolling(True)
         self.scroll.get_overlay_scrolling()
-        self.scroll.set_margin_left(self._gtk.action_bar_width *1)
-        self.scroll.set_margin_right(self._gtk.action_bar_width*1)
+        self.scroll.set_margin_left(self._gtk.action_bar_width * 1)
+        self.scroll.set_margin_right(self._gtk.action_bar_width * 1)
         
         self.scroll.add(gridBox)
-        
+        self._screen._fw_config["mcu"]["manual_cfg"] = True
+        # get fw_config from screen to know if we are in manual or wizzard config
+        validate_button = {
+            "text": _("Continue"),
+            "panel_link": "co_print_mcu_flash_chip",
+            "panel_link_b": "co_print_mcu_com_interface"
+        }
+        if "mcu" not in self._screen._fw_config:
+            self._screen._fw_config["mcu"] = {}
+
+        if "manual_cfg" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["manual_cfg"] = False
+
+        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+            validate_button["panel_link"] = "co_print_fwmenu_selection"
+            validate_button["panel_link_b"] = "co_print_fwmenu_selection"
+            validate_button["text"] = _('Save')
+        if "serial_from" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["serial_from"] = False
+
         self.checkButton = CheckButtonBox(self, _('USB serial number from CHIPID'))
         self.checkButton.set_hexpand(True)
         self.checkButton.set_margin_left(self._gtk.action_bar_width * 3)
         self.checkButton.set_margin_right(self._gtk.action_bar_width * 3)
+        self.checkButton.set_active(self._screen._fw_config["mcu"]["serial_from"])
         checkButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         checkButtonBox.pack_start(self.checkButton, False, True, 0)
         checkButtonBox.set_homogeneous(True)
         checkButtonBox.set_halign(Gtk.Align.CENTER)
         checkButtonBox.set_valign(Gtk.Align.CENTER)
 
-        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
-        self.continueButton.connect("clicked", self.on_click_continue_button, "co_print_mcu_flash_chip")
+        self.continueButton = Gtk.Button(validate_button["text"], name="flat-button-blue", hexpand=True)
+        self.continueButton.connect("clicked", self.on_click_continue_button, validate_button["panel_link"])
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
@@ -127,7 +158,7 @@ class CoPrintMcuUsbIds(ScreenPanel):
 
         self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
-        self.backButton.connect("clicked", self.on_click_back_button, 'co_print_mcu_com_interface')
+        self.backButton.connect("clicked", self.on_click_back_button, validate_button["panel_link_b"])
         self.backButton.set_always_show_image(True)
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -144,7 +175,7 @@ class CoPrintMcuUsbIds(ScreenPanel):
         page.pack_start(main, True, True, 0)
 
         self.content.add(page)
-        #self._screen.base_panel.visible_menu(False)
+        # self._screen.base_panel.visible_menu(False)
 
     def on_click_continue_button(self, continueButton, target_panel):
         if self.selected:

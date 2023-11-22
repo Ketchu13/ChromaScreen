@@ -30,11 +30,13 @@ class CoPrintMcuClockReference(ScreenPanel):
             {'Name': "Internal clock",  'Button': Gtk.RadioButton()},
         ]
         
-        self.labels['actions'] = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
-        self.labels['actions'].set_hexpand(True)
-        self.labels['actions'].set_vexpand(False)
-        self.labels['actions'].set_halign(Gtk.Align.CENTER)
-        self.labels['actions'].set_homogeneous(True)
+        self.labels['actions'] = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            hexpand=True,
+            vexpand=False,
+            halign=Gtk.Align.CENTER,
+            homogeneous=True
+        )
         self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
         group = None
@@ -54,13 +56,18 @@ class CoPrintMcuClockReference(ScreenPanel):
         )
         row = 0
         count = 0
+        if "mcu" not in self._screen._fw_config:
+            self._screen._fw_config["mcu"] = {}
+        if "clock_reference" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["clock_reference"] = None
 
         for chip in chips:
 
 
+
             chipName = Gtk.Label(chip['Name'], name="wifi-label")
             chipName.set_alignment(0, 0.5)
-            
+
             chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
             chip['Button'].set_alignment(1, 0.5)
             chip['Button'].connect("toggled", self.radioButtonSelected, chip['Name'])
@@ -76,8 +83,15 @@ class CoPrintMcuClockReference(ScreenPanel):
 
             grid.attach(f, count, row, 1, 1)
 
+            if self._screen._fw_config["mcu"]["clock_reference"] == chip['Name']:
+                chip['Button'].set_active(True)
+                self.selected = chip['Name']
+                group = chip['Button']
+
+            # set group if chip name is the same as the one in fw_config
             if group is None:
                 group = chip['Button']
+                self.selected = chip['Name']
 
             count += 1
             if count % 2 == 0:
@@ -97,9 +111,26 @@ class CoPrintMcuClockReference(ScreenPanel):
         self.scroll.set_margin_right(self._gtk.action_bar_width*1)
         
         self.scroll.add(gridBox)
+        self._screen._fw_config["mcu"]["manual_cfg"] = True
+        # get fw_config from screen to know if we are in manual or wizzard config
+        validate_button = {
+            "text": _("Continue"),
+            "panel_link": "co_print_mcu_com_interface",
+            "panel_link_b": "co_print_mcu_bootloader_ofset"
+        }
+        if "mcu" not in self._screen._fw_config:
+            self._screen._fw_config["mcu"] = {}
 
-        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
-        self.continueButton.connect("clicked", self.on_click_continue_button, "co_print_mcu_com_interface")
+        if "manual_cfg" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["manual_cfg"] = False
+
+        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+            validate_button["panel_link"] = "co_print_fwmenu_selection"
+            validate_button["panel_link_b"] = "co_print_fwmenu_selection"
+            validate_button["text"] = _('Save')
+
+        self.continueButton = Gtk.Button(validate_button["text"], name="flat-button-blue", hexpand=True)
+        self.continueButton.connect("clicked", self.on_click_continue_button, validate_button["panel_link"])
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
@@ -119,7 +150,7 @@ class CoPrintMcuClockReference(ScreenPanel):
 
         self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
-        self.backButton.connect("clicked", self.on_click_back_button, "co_print_mcu_bootloader_ofset")
+        self.backButton.connect("clicked", self.on_click_back_button, validate_button["panel_link_b"])
         self.backButton.set_always_show_image(True)
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -135,7 +166,6 @@ class CoPrintMcuClockReference(ScreenPanel):
         page.pack_start(main, True, True, 0)
 
         self.content.add(page)
-        # self._screen.base_panel.visible_menu(False)
 
     def on_click_continue_button(self, continueButton, target_panel):
         if self.selected:
