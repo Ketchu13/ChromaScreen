@@ -48,14 +48,20 @@ class CoPrintChipSelection(ScreenPanel):
 
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
+        if "low_level" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["low_level"] = False
+
+
 
         self.mainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         for menu_item in menu_items:
             menu_item_value = "..."
             menu_item_name = menu_item['Name']
-
+            if self._screen._fw_config["mcu"]["low_level"] is False and (menu_item_name == _("Clock Referance") or menu_item_name == _("USB Ids")):
+                continue
             if (menu_item['key'] in self._screen._fw_config["mcu"] and
+                    self._screen._fw_config["mcu"][menu_item['key']] is not None and
                     len(self._screen._fw_config["mcu"][menu_item['key']]) > 1):
                 menu_image_name = "approve"
                 menu_item_value = self._screen._fw_config["mcu"][menu_item['key']]
@@ -64,11 +70,11 @@ class CoPrintChipSelection(ScreenPanel):
 
             menu_item_image = self._gtk.Image(
                 menu_image_name,
-                self._gtk.content_width * .05,
-                self._gtk.content_height * .05
+                self._gtk.content_width * .03,
+                self._gtk.content_height * .03
             )
 
-            current_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+            current_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
             menu_name_label = Gtk.Label(menu_item_name)
             menu_name_label.set_alignment(0, 0.5)
             menu_name_label.set_width_chars(30)
@@ -81,8 +87,8 @@ class CoPrintChipSelection(ScreenPanel):
 
             current_row.pack_start(menu_item_image, False, False, 0)
 
-            menu_button_edit = Gtk.Button(label="Edit",name="flat-button-blue", hexpand=True)
-            menu_button_edit.set_size_request(30, 30)
+            menu_button_edit = Gtk.Button(label="Edit", name="flat-button-blue", hexpand=True)
+            menu_button_edit.set_size_request(20, 20)
             menu_button_edit.connect("clicked", self.on_click_menu_item_edit, menu_item['panel_link'])
 
             current_row.pack_start(menu_button_edit, False, False, 0)
@@ -90,8 +96,14 @@ class CoPrintChipSelection(ScreenPanel):
             self.mainBox.pack_start(current_row, False, False, 0)
 
 
-        
-        self.checkButton = CheckButtonBox(self, _('Enable extra low-level configuration options'))
+        # TODO: Add config and : add isb ids and show hide if low level enable/disable
+
+        self.checkButton = CheckButtonBox(
+            self,
+            _('Enable extra low-level configuration options'),
+            self.lowLevel_on_check,
+            self._screen._fw_config["mcu"]["low_level"]
+        )
 
         checkButtonBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         checkButtonBox.set_halign(Gtk.Align.CENTER)
@@ -138,20 +150,13 @@ class CoPrintChipSelection(ScreenPanel):
         page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         page.pack_start(mainBackButtonBox, False, False, 0)
         page.pack_start(main, True, True, 0)
-     
       
         self.content.add(page)
         self._screen.base_panel.visible_menu(False)
 
-
-
-    def button_data_func(self, column,cell, model, iter, data=None):
-        cell.set_property('text', 'Edit')
-        cell.set_property('editable', True)
-        cell.connect('edited', self.on_cell_edited, model, iter)
-
-    def on_cell_edited(self, cell, path, new_text, model, iter):
-        print("cell edited: %s %s %s %s" % (cell, path, new_text, model))
+    def lowLevel_on_check(self, val):
+        self._screen._fw_config["mcu"]["low_level"] = val
+        self._screen.show_panel("co_print_fwmenu_selection", "co_print_fwmenu_selection", None, 2)
 
     def on_click_menu_item_edit(self, button, target_panel):
         if "mcu" not in self._screen._fw_config:
@@ -160,7 +165,6 @@ class CoPrintChipSelection(ScreenPanel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_continue_button(self, continueButton, target_panel):
-        # TODO check mcu dict and go next
         if self.checkButton.get_active():
             self._screen._fw_config["mcu"]["enable_extra"] = True
         else:
@@ -173,23 +177,6 @@ class CoPrintChipSelection(ScreenPanel):
 
     def on_click_back_button(self, button, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
-
-    def on_box_click(self, widget, event):
-        self.selected = event
-        path_info = self.treeview.get_path_at_pos(event.get_coords()[0],event.get_coords()[1])
-        if path_info:
-            path, column, x, y = path_info
-            model = self.treeview.get_model()
-            iter = model.get_iter(path)
-            name = model.get_value(iter, 0)
-            #get  panel link by name
-            panel_link = None
-            for menu_item in self.menu_items:
-                if menu_item['Name'] == name:
-                    panel_link = menu_item['panel_link']
-                    break
-            if panel_link:
-                self._screen.show_panel(panel_link, panel_link, None, 2)
 
     def _resolve_radio(self, master_radio):
         active = next((

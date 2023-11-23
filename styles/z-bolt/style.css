@@ -210,7 +210,7 @@ textview .time {
     background: #13181C;;
     border: 3px solid;
     border-color: #8a8a8a;
-    font-size: 13px;
-    padding: 5px;
-    border-radius: 10px;
+    font-size: 12px;
+    padding: 2px;
+    border-radius: 8px;
 }
