@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import subprocess
@@ -19,12 +20,50 @@ def create_panel(*args):
 
 
 class CoPrintChipSelection(ScreenPanel):
-
+    mcu_arch_names = {
+        "Atmega AVR": "MACH_AVR",
+        "SAM 3 / 4 / E70": "MACH_ATSAM",
+        "SAM D21 / SAM D51": "MACH_ATSAMD",
+        "LPC176X": "MACH_LPC176X",
+        "STM 32": "MACH_STM32",
+        "Raspberry PI RP2040": "MACH_RP2040",
+        "Beaglebone PRU": "MACH_PRU",
+        "Linux Procces": "MACH_LINUX",
+        "Host simulator": "MACH_HOST_SIM"
+    }
+    def get_lowlevel_options(self, architecture, mcu_model):
+        # load json file
+        fw_configs = None
+        try:
+            with open(self.fw_configs_path, "r") as f:
+                fw_configs = json.load(f)
+        except Exception as e:
+            logging.error("Error while loading fwconfig.json: %s", e)
+            return None
+        if fw_configs is None:
+            return None
+        # get mcu models for the selected architecture from ./fwconfig.json
+        lowlevel_options_tmp = None
+        formated_arch_name = self.mcu_arch_names[architecture]
+        if formated_arch_name in fw_configs["mcus"]:
+            current_arch_data = fw_configs["mcus"][formated_arch_name]
+            if "low-level" in current_arch_data:
+                lowlevel_options_tmp = current_arch_data["low-level"]
+        lowlevel_options = []
+        if lowlevel_options_tmp is not None:
+            for lowlevel_option in lowlevel_options_tmp:
+                lowlevel_options.append(lowlevel_option)
+        return lowlevel_options
      
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
+        self.fw_configs_path = os.path.join(os.path.dirname(__file__), "fwconfig", "fwconfig.json")
+
+        self.low_level_options = None
         self.selected = None
+        self.architecture_selected = None
+        self.mcu_model_selected = None
 
         panel = {
             "title": _("Klipper Firmware Configuration"),
@@ -37,11 +76,15 @@ class CoPrintChipSelection(ScreenPanel):
 
         menu_items = [
             {'Name': _("MCU Architecture")  , 'key': 'architecture'     , "panel_link": "co_print_mcu_selection"},
-            {'Name': _("Botloader Offset")  , 'key': 'bootloader'       , "panel_link": "co_print_mcu_bootloader_ofset"},
             {'Name': _("Processor Model")   , 'key': 'model'            , "panel_link": "co_print_mcu_model_selection"},
-            {'Name': _("Com Interface")     , 'key': 'com_interface'    , "panel_link": "co_print_mcu_com_interface"},
-            {'Name': _("Clock Referance")   , 'key': 'clock_reference'  , "panel_link": "co_print_mcu_clock_reference"}
         ]
+        menu_items_low_level = [
+            {'Name': _("Botloader Offset"), 'key': 'bootloader', "panel_link": "co_print_mcu_bootloader_ofset"},
+            {'Name': _("Com Interface")     , 'key': 'com_interface'    , "panel_link": "co_print_mcu_com_interface"},
+            {'Name': _("Clock Referance")   , 'key': 'clock_reference'  , "panel_link": "co_print_mcu_clock_reference"},
+            {'Name': _("USB ids")           , 'key': 'usb_ids'          , "panel_link": "co_print_mcu_usb_ids"}
+        ]
+
         self.menu_items = menu_items
 
         initHeader = InitHeader(self, panel['title'], panel['text'], panel['icon'])
@@ -50,16 +93,30 @@ class CoPrintChipSelection(ScreenPanel):
             self._screen._fw_config["mcu"] = {}
         if "low_level" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["low_level"] = False
+        self.low_level_enabled = self._screen._fw_config["mcu"]["low_level"]
 
+        if "model" in self._screen._fw_config["mcu"]:
+            self.mcu_model_selected = self._screen._fw_config["mcu"]["model"]
+        if "architecture" in self._screen._fw_config["mcu"]:
+            self.architecture_selected = self._screen._fw_config["mcu"]["architecture"]
+            self.low_level_options = self.get_lowlevel_options(self._screen._fw_config["mcu"]["architecture"], None)
 
+        # if option name is in low-level options
+        if self.low_level_options is not None:
+            for menu_item_ll in menu_items_low_level:
+                if menu_item_ll['key'] in self.low_level_options:
+                    if self.architecture_selected is not None:
+                        if self.mcu_model_selected is not None:
+                            if self.low_level_enabled:
+                                menu_items.append(menu_item_ll)
 
         self.mainBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         for menu_item in menu_items:
             menu_item_value = "..."
             menu_item_name = menu_item['Name']
-            if self._screen._fw_config["mcu"]["low_level"] is False and (menu_item_name == _("Clock Referance") or menu_item_name == _("USB Ids")):
-                continue
+
+
             if (menu_item['key'] in self._screen._fw_config["mcu"] and
                     self._screen._fw_config["mcu"][menu_item['key']] is not None and
                     len(self._screen._fw_config["mcu"][menu_item['key']]) > 1):
@@ -164,11 +221,8 @@ class CoPrintChipSelection(ScreenPanel):
         self._screen._fw_config["mcu"]["manual_cfg"] = True
         self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def on_click_continue_button(self, continueButton, target_panel):
-        if self.checkButton.get_active():
-            self._screen._fw_config["mcu"]["enable_extra"] = True
-        else:
-            self._screen._fw_config["mcu"]["enable_extra"] = False
+    def on_click_continue_button(self, continueButton, target_panel=None):
+        pass
 
     def on_click_wizzard_button(self, continueButton):
         if "mcu" not in self._screen._fw_config:
