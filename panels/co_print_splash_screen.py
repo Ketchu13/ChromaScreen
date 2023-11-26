@@ -16,7 +16,9 @@ class CoPrintSplashScreenPanel(ScreenPanel):
 
     def __init__(self, screen, title):
         super().__init__(screen, title)
-        
+
+        self.timeout_id = None
+
         image = self._gtk.Image("coPrint", self._gtk.content_width , self._gtk.content_height * .20)
         spinner = Gtk.Spinner()
         spinner.start()
@@ -62,27 +64,27 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         self.show_restart_buttons()
         self.start_timer()
         self.content.add(main)
-        
-        
 
     def update_text(self, text):
-        
         self.show_restart_buttons()
 
     def start_timer(self):
         """ Start the timer. """
         self.timeout_id = GLib.timeout_add(1500, self.on_timeout, None)
-        
 
     def on_timeout(self, *args, **kwargs):
         """ A timeout function.
         Return True to stop it.
         This is not a precise timer since next timeout  
-        is recalculated based on the current time.""" 
-        if self._screen.connected_printer :
+        is recalculated based on the current time."""
+        self._screen.show_panel("co_print_language_select_screen", "co_print_language_select_screen", "Language", 1,
+                                False)
+        """
+        if self._screen.connected_printer:
             self._screen.show_panel("co_print_home_screen", "co_print_home_screen", "Language", 1, False)
         else:
             self._screen.show_panel("co_print_language_select_screen", "co_print_language_select_screen", "Language", 1, False)
+            """
 
         
         #self._screen.show_panel("co_print_network_setting_screen", "co_print_network_setting_screen", "Language", 1, False)
