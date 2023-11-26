@@ -466,7 +466,7 @@ class JobStatusPanel(ScreenPanel):
         logging.debug("Canceling print")
         self.set_state("cancelling")
         self.disable_button("pause", "resume", "cancel")
-        self._screen._ws.klippy.print_cancel(self._response_callback)a
+        self._screen._ws.klippy.print_cancel(self._response_callback)
 
     def _response_callback(self, response, method, params, func=None, *args):
         if func == "enable_button":

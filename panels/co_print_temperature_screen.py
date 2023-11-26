@@ -238,11 +238,10 @@ class CoPrintTemperatureScreen(ScreenPanel, metaclass=Singleton):
         main.set_vexpand(True)
         main.pack_start(contentBox, False, True, 0)
         main.pack_end(BottomMenu(self, True), False, True, 0)
-        
  
         self.content.add(main)
         
-    def open_numpad(self, widget, type):
+    def open_numpad(self, widget, type_):
         
         dialog = KeyPadNew(self)
         dialog.get_style_context().add_class("new-numpad-dialog")
@@ -252,11 +251,10 @@ class CoPrintTemperatureScreen(ScreenPanel, metaclass=Singleton):
         if response == Gtk.ResponseType.OK:
             print(dialog.resp)
             resp = dialog.resp
-            if type == 'extruder':
+            if type_ == 'extruder':
                 self.change_extruder_temperature(int(resp))
             else:
                 self.change_bed_temperature(int(resp))
-            
             
         elif response == Gtk.ResponseType.CANCEL:
             print("The Cancel button was clicked")
@@ -494,22 +492,22 @@ class CoPrintTemperatureScreen(ScreenPanel, metaclass=Singleton):
             
            
             heater_bed_array = self._printer.get_temp_store('heater_bed')
-            if(heater_bed_array):
+            if heater_bed_array:
                 self.heater_bed_temp = heater_bed_array['temperatures'][-1]
                 self.heater_bed_temp_target = heater_bed_array['targets'][-1]
-                if(self.isDisable == False):
+                if self.isDisable == False:
                     self.heatedBedLabel.set_label(str(round(self.heater_bed_temp,1)) + f"° / {self.heater_bed_temp_target}°")
             else:
-                if(self.isDisable == False):
+                if self.isDisable == False:
                     self.heatedBedLabel.set_label(str(-1) + f"° / {self.HeaterBedMax_temp}°")
             extruder_array = self._printer.get_temp_store('extruder')
-            if(extruder_array):
+            if extruder_array:
                 self.extruder_temp = extruder_array['temperatures'][-1]
                 self.extruder_temp_target = extruder_array['targets'][-1]
-                if(self.isDisable == False):
+                if self.isDisable == False:
                     self.extruderLabel.set_label(str(round(self.extruder_temp,1)) + f"° / {self.extruder_temp_target}°")
             else:
-                if(self.isDisable == False):
+                if self.isDisable == False:
                     self.extruderLabel.set_label(str(-1) + f"° / {self.extruder_temp_target}°")
             if hasattr(data, "fan") and self.fan_spped != data['fan']['speed']:
                 self.fan_spped = data['fan']['speed'] 
@@ -520,7 +518,7 @@ class CoPrintTemperatureScreen(ScreenPanel, metaclass=Singleton):
         max_temp = float(self._printer.get_config_section('heater_bed')['max_temp'])
         if self.validate('heater_bed', temp, max_temp):
             self._screen._ws.klippy.set_bed_temp(temp)
-            if self.isDisable ==False:
+            if not self.isDisable:
                 self.start_timer()
             self.heatedBedLabel.set_label(str(round(self.heater_bed_temp,1)) + f"° / {temp}°")
 
@@ -544,7 +542,7 @@ class CoPrintTemperatureScreen(ScreenPanel, metaclass=Singleton):
         if self.validate('extrude', temp, max_temp):
 
             self._screen._ws.klippy.set_tool_temp(self._printer.get_tool_number('extruder'), temp)
-            if self.isDisable ==False:
+            if not self.isDisable:
                 self.start_timer()
             self.extruderLabel.set_label(str(round(self.extruder_temp,1)) + f"° / {temp}°")
 
@@ -554,20 +552,20 @@ class CoPrintTemperatureScreen(ScreenPanel, metaclass=Singleton):
 
     def up_down_button_clicked(self, widget, tempType , direction):
         value =0
-        if(direction =="+"):
-            if(tempType== "extruder"):
+        if direction == "+":
+            if tempType== "extruder":
                 value = self.extruder_temp_target + self.constant
             else:
                 value = self.heater_bed_temp_target + self.constant
         else:
-            if(tempType== "extruder"):
+            if tempType== "extruder":
                 value = self.extruder_temp_target - self.constant
             else:
                 value = self.heater_bed_temp_target - self.constant
 
-        if (value < 0):
+        if value < 0:
             value = 0
-        if(tempType == 'extruder'):
+        if tempType == 'extruder':
             self.change_extruder_temperature(value)
               
         else:
