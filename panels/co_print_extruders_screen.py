@@ -241,9 +241,9 @@ class CoPrintExtrudersScreen(ScreenPanel, metaclass=Singleton):
 
         if response == Gtk.ResponseType.OK:
             print(dialog.resp)
-            if(self.distance):
+            if self.distance:
                 self.distance = int(dialog.resp)
-            if(self.distanceLabel):
+            if self.distanceLabel:
                 self.distanceLabel.set_label(dialog.resp)
             
             
@@ -282,15 +282,15 @@ class CoPrintExtrudersScreen(ScreenPanel, metaclass=Singleton):
                 self.connectedExtruder.set_label(self._printer.data["toolhead"]["extruder"])
 
             extrude = self._printer.get_config_section(self.selectedExtruder)
-            if (extrude):
+            if extrude:
                 self.ExtruderMax_temp = float(self._printer.get_config_section(self.selectedExtruder)['max_temp'])
 
             extruder_temp = 0
             extruder_array = self._printer.get_temp_store(self.selectedExtruder)
             
-            if(extruder_array):
+            if extruder_array:
                 extruder_temp = extruder_array['temperatures'][-1]
-                if(self.temp_extruder_temp != extruder_temp):
+                if self.temp_extruder_temp != extruder_temp:
                     self.temp_extruder_temp = extruder_temp
                    
                     self.extruder_temp_target = extruder_array['targets'][-1]
@@ -299,13 +299,13 @@ class CoPrintExtrudersScreen(ScreenPanel, metaclass=Singleton):
                 
             else:
                 extruder_temp = -1
-                if(self.temp_extruder_temp != extruder_temp):
+                if self.temp_extruder_temp != extruder_temp:
                     self.temp_extruder_temp = extruder_temp
                     self.selectedExtruderLabel.set_label(str(round(extruder_temp,1)) + f"° / {0}°")
 
 
             
-        if(self.extruderChanged == False):
+        if self.extruderChanged == False:
             i = 0
             for d in (self._printer.get_tools() + self._printer.get_heaters()):
                 self.add_device(d)
