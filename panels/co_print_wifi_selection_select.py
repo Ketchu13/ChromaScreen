@@ -61,16 +61,16 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         self.selectedWifiBox.set_margin_left(self._gtk.action_bar_width  * 2.6)
         self.selectedWifiBox.set_margin_right(self._gtk.action_bar_width * 2.6)
 
-        refreshButton = Gtk.Button(_('Back'), name="flat-button-blue")
-        refreshButton.connect("clicked", self.on_click_back_button)
+        self.backButton = Gtk.Button(_('Back'), name="flat-button-blue")
+        self.backButton.connect("clicked", self.on_click_back_button)
 
-        self.continueButton = Gtk.Button(_('Connect'),name ="flat-button-blue")
+        self.continueButton = Gtk.Button(_('Connect'), name="flat-button-blue")
         self.continueButton.connect("clicked", self.on_click_continue_button)
 
         self.buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         self.buttonBox.set_halign(Gtk.Align.CENTER)
         self.buttonBox.pack_start(self.continueButton, False, False, 0)
-        self.buttonBox.pack_start(refreshButton, False, False, 0)
+        self.buttonBox.pack_start(self.backButton, False, False, 0)
 
         self.tempBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.tempBox.pack_start(self.buttonBox, False, False, 0)
@@ -143,7 +143,6 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
 
     def on_click_continue_button(self, continueButton):
         self.password = self.entry.get_text()
-        #self.execute_command_and_show_output()
 
         GLib.idle_add(self.execute_command_and_show_output)
         self.waitDialog = InfoDialog(
