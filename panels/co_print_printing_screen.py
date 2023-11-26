@@ -38,7 +38,8 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
     extruderChanged = False
     def __init__(self, screen, title):
         super().__init__(screen, title)
-        
+
+        self.extruder_temp_target = 0
         self.fanSpeed_newValue = 0
         self.speedFactor_newValue = 0
         self.extrusionFactor_newValue = 0
@@ -245,13 +246,13 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         changeOffsetBox.pack_end(changeOffsetButtonBox, False, False, 0)
         zoffset_box.pack_start(changeOffsetBox, False, False, 0)
         
-        self.speedFactor_widget = PercentageFactor(self, "hiz", ("Speed Factor"),900, 1, 'speedFactor')
+        self.speedFactor_widget = PercentageFactor(self, "hiz", "Speed Factor", 900, 1, 'speedFactor')
         speedFactor_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         speedFactor_box.set_name("zoffset-box")
         speedFactor_box.pack_start(self.speedFactor_widget, True, False, 0)
         self.speedFactor_widget.updateValue(100,'')
-        self.pressureAdvanceInput = CounterInputFloat(self, ("s"), ("Pressure Advance"), self.pressure_advance, "SET_PRESSURE_ADVANCE EXTRUDER=extruder ADVANCE=", 0.001)
-        self.smoothTimeInput = CounterInputFloat(self, ("s"), ("Smooth Time"), self.smooth_time, "SET_PRESSURE_ADVANCE EXTRUDER=extruder SMOOTH_TIME=", 0.01)
+        self.pressureAdvanceInput = CounterInputFloat(self, "s", "Pressure Advance", self.pressure_advance, "SET_PRESSURE_ADVANCE EXTRUDER=extruder ADVANCE=", 0.001)
+        self.smoothTimeInput = CounterInputFloat(self, "s", "Smooth Time", self.smooth_time, "SET_PRESSURE_ADVANCE EXTRUDER=extruder SMOOTH_TIME=", 0.01)
         pressure_smooth_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         pressure_smooth_box.set_valign(Gtk.Align.CENTER)
         pressure_smooth_box.pack_start(self.pressureAdvanceInput, True, True, 0)
@@ -262,7 +263,7 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         
         separator = Gtk.HSeparator()
         separatorsecond = Gtk.HSeparator()
-        self.extrusionFactor_widget = PercentageFactor(self, "extrudericon", ("Extrusion Factor"),200, 1, 'extrusionFactor')
+        self.extrusionFactor_widget = PercentageFactor(self, "extrudericon", "Extrusion Factor", 200, 1, 'extrusionFactor')
         extrusionFactor_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         extrusionFactor_box.set_name("zoffset-box")
         extrusionFactor_box.pack_start(self.extrusionFactor_widget, True, False, 0)
@@ -271,7 +272,7 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         #extrusionFactor_box.pack_start(separatorsecond, True, False, 0)
         #extrusionFactor_box.pack_start(filament_extrusion_box, True, False, 0)
         
-        self.fanSpeed_widget = PercentageFactor(self, "fanayari", ("Fan Speed"),100,0, 'fan')
+        self.fanSpeed_widget = PercentageFactor(self, "fanayari", "Fan Speed", 100, 0, 'fan')
         fanSpeed_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         fanSpeed_box.set_name("zoffset-box")
         fanSpeed_box.pack_start(self.fanSpeed_widget, True, False, 0)
@@ -280,7 +281,7 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         
         machineLabelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         machineImage = self._gtk.Image("motor", self._screen.width *.03, self._screen.width *.03)
-        machineLabel = Gtk.Label(("Machine"), name="zoffset-label")
+        machineLabel = Gtk.Label("Machine", name="zoffset-label")
         machineLabelBox.pack_start(machineImage, True, False, 10)
         machineLabelBox.pack_start(machineLabel, True, False, 0)
         machineLabelBox.set_valign(Gtk.Align.START)
@@ -288,8 +289,8 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         
         machineSeparatorFirst = Gtk.HSeparator()
         
-        self.velocityInput = CounterInput(self, ("mm/s"), ("Velocity"), "0", "SET_VELOCITY_LIMIT VELOCITY=", 5)
-        self.squareCornerInput = CounterInputFloat(self, ("mm/s"), ("Square Corner"), "0", "SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=", 0.1)
+        self.velocityInput = CounterInput(self, "mm/s", "Velocity", "0", "SET_VELOCITY_LIMIT VELOCITY=", 5)
+        self.squareCornerInput = CounterInputFloat(self, "mm/s", "Square Corner", "0", "SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=", 0.1)
         velocity_square_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         velocity_square_box.set_valign(Gtk.Align.CENTER)
         velocity_square_box.pack_start(self.velocityInput, True, True, 0)
@@ -297,8 +298,8 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         
         machineSeparatorSecond = Gtk.HSeparator()
         
-        self.acceleration = CounterInput(self, ("mm/s"), ("Acceleration"), "0", "SET_VELOCITY_LIMIT ACCEL=", 100)
-        self.maxAcceltoDecel = CounterInput(self, ("mm/s"), ("Max Accel to Decel"), "0", "SET_VELOCITY_LIMIT ACCEL_TO_DECEL=", 100)
+        self.acceleration = CounterInput(self, "mm/s", "Acceleration", "0", "SET_VELOCITY_LIMIT ACCEL=", 100)
+        self.maxAcceltoDecel = CounterInput(self, "mm/s", "Max Accel to Decel", "0", "SET_VELOCITY_LIMIT ACCEL_TO_DECEL=", 100)
         acceleration_maxAccel_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         acceleration_maxAccel_box.set_valign(Gtk.Align.CENTER)
         acceleration_maxAccel_box.pack_start(self.acceleration, True, True, 0)
@@ -314,7 +315,7 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         
         
         filamentIcon = self._gtk.Image("paintPalette", self._screen.width *.04, self._screen.width *.04)
-        filamentLabel = Gtk.Label(("Filament Change Count"))
+        filamentLabel = Gtk.Label("Filament Change Count")
         filametSeparatorFirst = Gtk.HSeparator()
         filametSeparatorSecond = Gtk.HSeparator()
         
@@ -337,9 +338,9 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
         filametChangeCountBox.pack_start(filametSeparatorSecond, False, False, 0)
         
         
-        releaseFilamentButton = Gtk.Button(("Release Filament"),name ="filament-button")
-        holdFilamentButton = Gtk.Button(("Hold Filament"),name ="filament-button")
-        changeFilamentButton = Gtk.Button(("Change Filament Count"),name ="filament-button")
+        releaseFilamentButton = Gtk.Button("Release Filament", name ="filament-button")
+        holdFilamentButton = Gtk.Button("Hold Filament", name ="filament-button")
+        changeFilamentButton = Gtk.Button("Change Filament Count", name ="filament-button")
         
         filamentButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         filamentButtonBox.set_hexpand(True)
@@ -465,34 +466,34 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
             heater_bed_temp = 0
             heater_bed_array = self._printer.get_temp_store('heater_bed')
             
-            if(heater_bed_array):
+            if heater_bed_array:
                 heater_bed_temp = heater_bed_array['temperatures'][-1]
                 self.heater_bed_temp_target = heater_bed_array['targets'][-1]
             
             extruder_temp = 0
             extruder_array = self._printer.get_temp_store('extruder')
-            if(extruder_array):
+            if extruder_array:
                 extruder_array = self._printer.get_temp_store('extruder')
                 extruder_temp = extruder_array['temperatures'][-1]
                 self.extruder_temp_target = extruder_array['targets'][-1]
             
             
-            if (('toolhead' in self._printer.data) and ('max_velocity' in self._printer.data['toolhead'])):
+            if ('toolhead' in self._printer.data) and ('max_velocity' in self._printer.data['toolhead']):
                 machine_velocity = self._printer.data['toolhead']['max_velocity']
                 square_corner_velocity = self._printer.data['toolhead']['square_corner_velocity']
                 max_accel = self._printer.data['toolhead']['max_accel']
                 max_accel_to_decel = self._printer.data['toolhead']['max_accel_to_decel']
                 
 
-                if(self.velocityInput.getValue() != int(machine_velocity)):
+                if self.velocityInput.getValue() != int(machine_velocity):
                     self.velocityInput.updateValue(int(machine_velocity))
                
-                if(self.squareCornerInput.getValue() != float(square_corner_velocity)):
+                if self.squareCornerInput.getValue() != float(square_corner_velocity):
                     self.squareCornerInput.updateValue(float(square_corner_velocity))
                 
-                if(self.acceleration.getValue() != int(max_accel)):
+                if self.acceleration.getValue() != int(max_accel):
                     self.acceleration.updateValue(int(max_accel))
-                if(self.maxAcceltoDecel.getValue() != int(max_accel_to_decel)):
+                if self.maxAcceltoDecel.getValue() != int(max_accel_to_decel):
                     self.maxAcceltoDecel.updateValue(int(max_accel_to_decel))
 
             if self.isFirst:
@@ -500,18 +501,18 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
                
             
             
-                if(self._printer.data['fan']['speed']):
+                if self._printer.data['fan']['speed']:
                     if  self.fanSpeed_newValue != self._printer.data['fan']['speed']:
                         self.fanSpeed_newValue = self._printer.data['fan']['speed']
                         self.fanSpeed_widget.updateValue(self.fanSpeed_newValue, str(self.fanSpeed_newValue))
                 
-                if(self._printer.data['gcode_move']['speed_factor']):
+                if self._printer.data['gcode_move']['speed_factor']:
                     if self.speedFactor_newValue != self._printer.data['gcode_move']['speed_factor'] :
                         self.speedFactor_newValue = self._printer.data['gcode_move']['speed_factor']
                         self.speedFactor_widget.updateValue(self.speedFactor_newValue, str(self.speedFactor_newValue))
             
-                if(self._printer.data['gcode_move']['extrude_factor']):
-                    if (self.extrusionFactor_newValue != self._printer.data['gcode_move']['extrude_factor']):
+                if self._printer.data['gcode_move']['extrude_factor']:
+                    if self.extrusionFactor_newValue != self._printer.data['gcode_move']['extrude_factor']:
                         self.extrusionFactor_newValue = self._printer.data['gcode_move']['extrude_factor']
                         self.extrusionFactor_widget.updateValue(self.extrusionFactor_newValue, str(self.extrusionFactor_newValue))
 
@@ -546,12 +547,12 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
 
 
           
-            if(self.extruder_temp_target != 0):
+            if self.extruder_temp_target != 0:
                     self.extruder.updateValue(extruder_temp/self.extruder_temp_target, str(round(extruder_temp,1)) + f"° / {self.extruder_temp_target}°")
             else:
                     self.extruder.updateValue(1/1, str(round(extruder_temp,1)) + f"° / {self.extruder_temp_target}°")
 
-            if(self.heater_bed_temp_target != 0):
+            if self.heater_bed_temp_target != 0:
                     self.heatedBed.updateValue(heater_bed_temp/self.heater_bed_temp_target, str(round(heater_bed_temp,1)) + f"° / {self.heater_bed_temp_target}°")
             else:
                     self.heatedBed.updateValue(1/1, str(round(heater_bed_temp,1)) + f"° / {self.heater_bed_temp_target}°")
@@ -559,7 +560,7 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
             
             
             
-            if(self.extruderChanged == False):
+            if self.extruderChanged == False:
                 i = 0
                 self.extruderChanged = True
                 for extruder in self._printer.get_tools():
@@ -669,7 +670,7 @@ class CoPrintPrintingScreen(ScreenPanel, metaclass=Singleton):
             progressValue= 1
 
         self.scale_printProgress.set_fraction(progressValue)
-        self.labels['status'].set_label(("Estimated Time") + ": " + remaining)
+        self.labels['status'].set_label("Estimated Time" + ": " + remaining)
 
     def update_file_metadata(self):
         if self._files.file_metadata_exists(self.filename):
