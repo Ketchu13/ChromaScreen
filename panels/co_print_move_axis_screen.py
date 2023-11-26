@@ -236,7 +236,7 @@ class CoPrintMoveAxisScreen(ScreenPanel, metaclass=Singleton):
 
         two_gcode  = self._printer.data["gcode_move"]["gcode_position"][2]
         two_homing = self._printer.data["gcode_move"]["homing_origin"][2]
-        if(zero_gcode + zero_homing == 0 and one_gcode + one_homing == 0 and two_gcode + two_homing == 0):
+        if zero_gcode + zero_homing == 0 and one_gcode + one_homing == 0 and two_gcode + two_homing == 0:
           dialog.response(Gtk.ResponseType.CANCEL)
           dialog.destroy()
         else:
@@ -297,13 +297,13 @@ class CoPrintMoveAxisScreen(ScreenPanel, metaclass=Singleton):
             extruder_array = self._printer.get_temp_store('extruder')
            
             extruder_temp_target = extruder_array['targets'][-1]
-            if(self.desiredExtruderTemp == -1):
+            if self.desiredExtruderTemp == -1:
                 self.desiredExtruderTemp = 0
-                if(extruder_temp_target >0 ):
-                    if(self.extruderSwitch.get_active() == False):
+                if extruder_temp_target >0:
+                    if self.extruderSwitch.get_active() == False:
                         self.extruderSwitch.set_active(True)
                 else:
-                    if(self.extruderSwitch.get_active()):
+                    if self.extruderSwitch.get_active():
                         self.extruderSwitch.set_active(False)
               
 

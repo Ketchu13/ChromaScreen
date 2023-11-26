@@ -202,14 +202,14 @@ class CoPrintNetworkSettingScreen(ScreenPanel):
             connected_wifi_list = self.what_wifi()
             for wifi in wifi_list[1:]:
                 wifiarray = wifi.split()
-                if(len(wifiarray)> 0):
+                if len(wifiarray)> 0:
                     bar = wifiarray.pop()
                     name = ' '.join(wifiarray)
-                    if(str(name)!= "SSID" and str(name) != "--"):
+                    if str(name)!= "SSID" and str(name) != "--":
                         icon = 'signal-low'
-                        if(len(bar) == 4):
+                        if len(bar) == 4:
                             icon = 'signal-high'
-                        if(len(bar) == 3):
+                        if len(bar) == 3:
                             icon = 'signal-medium'
                         if str(name) not in wifiNames:
                             wifiNames.append(str(name))
