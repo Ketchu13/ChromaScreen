@@ -168,26 +168,28 @@ class CoPrintProbeCalibrationScreen(ScreenPanel):
     def start_calibration(self):
         functions = []
         self.probe = self._printer.get_probe()
+        method = None
+
         if self._printer.config_section_exists("stepper_z") \
                 and not self._printer.get_config_section("stepper_z")['endstop_pin'].startswith("probe"):
             method = "endstop"
             functions.append("endstop")
+
         if self.probe:
-           
             method = "probe"
             functions.append("probe")
+
         if self._printer.config_section_exists("bed_mesh") and "probe" not in functions:
             # This is used to do a manual bed mesh if there is no probe
-            
             method = "mesh"
             functions.append("mesh")
+
         if "delta" in self._printer.get_config_section("printer")['kinematics']:
             if "probe" in functions:
-                
                 method = "delta"
                 functions.append("delta")
-            # Since probes may not be accturate enough for deltas, always show the manual method
-           
+
+            # Since probes may not be accurate enough for deltas, always show the manual method
             method = "delta_manual"
             functions.append("delta_manual")
 
@@ -206,6 +208,10 @@ class CoPrintProbeCalibrationScreen(ScreenPanel):
             self._screen._ws.klippy.gcode_script("DELTA_CALIBRATE METHOD=manual")
         elif method == "endstop":
             self._screen._ws.klippy.gcode_script(KlippyGcodes.Z_ENDSTOP_CALIBRATE)
+        else:
+            # error
+            logging.error("No calibration method found")
+            return
 
     def _move_to_position(self):
         x_position = y_position = None
