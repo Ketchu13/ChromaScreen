@@ -66,17 +66,19 @@ class CoPrintPrintingBrandSelection(ScreenPanel):
         self.continueButton = Gtk.Button(_('Finish'),name="flat-button-blue-brand")
         self.continueButton.connect("clicked", self.on_click_continue_button)
         self.continueButton.set_hexpand(True)
-        self.continueButton.set_always_show_image (True)
+        self.continueButton.set_always_show_image(True)
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
         
         backIcon = self._gtk.Image("back-arrow", 35, 35)
-        backLabel = Gtk.Label(_("Back"), name="bottom-menu-label")            
+        backLabel = Gtk.Label(_("Back"), name="bottom-menu-label")
+
         backButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         backButtonBox.set_halign(Gtk.Align.CENTER)
         backButtonBox.set_valign(Gtk.Align.CENTER)
         backButtonBox.pack_start(backIcon, False, False, 0)
         backButtonBox.pack_start(backLabel, False, False, 0)
+
         self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
         self.backButton.connect("clicked", self.on_click_back_button, 'co_print_printing_selection_port')
