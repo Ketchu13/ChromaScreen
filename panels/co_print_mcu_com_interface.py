@@ -15,14 +15,14 @@ def create_panel(*args):
 
 
 class CoPrintMcuComInterface(ScreenPanel):
-     
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
         self.selected = None
 
         chips = [
-            {'Name': "USB (on PA11/PA12)",  'Button': Gtk.RadioButton()},
+            {'Name': "USB (on PA11/PA12)"       ,  'Button': Gtk.RadioButton()},
             {'Name': "Serial (on USART1 PA10/PA9)",  'Button': Gtk.RadioButton()},
             {'Name': "Serial (on USART1 PB7/PB6)",  'Button': Gtk.RadioButton()},
             {'Name': "Serial (on USART2 PA3/PA2)", 'Button': Gtk.RadioButton()},
@@ -33,7 +33,7 @@ class CoPrintMcuComInterface(ScreenPanel):
             {'Name': "CAN bus (on PA11/PB9)",  'Button': Gtk.RadioButton()},
             {'Name': "CAN bus (on PA11/PB9)", 'Button': Gtk.RadioButton()}
         ]
-        
+
         self.labels['actions'] = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             hexpand=True,
@@ -48,7 +48,7 @@ class CoPrintMcuComInterface(ScreenPanel):
         initHeader = InitHeader(
             self,
             _('Com Interface'),
-            _('Select the com interface model located on the board you will be controlling.'), 
+            _('Select the com interface model located on the board you will be controlling.'),
             "mikrochip"
         )
 
@@ -113,7 +113,7 @@ class CoPrintMcuComInterface(ScreenPanel):
         self.scroll.get_overlay_scrolling()
         self.scroll.set_margin_left(self._gtk.action_bar_width *2)
         self.scroll.set_margin_right(self._gtk.action_bar_width*2)
-        
+
         self.scroll.add(gridBox)
         self._screen._fw_config["mcu"]["manual_cfg"] = True
         # get fw_config from screen to know if we are in manual or wizzard config
@@ -159,7 +159,7 @@ class CoPrintMcuComInterface(ScreenPanel):
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)

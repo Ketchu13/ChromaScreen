@@ -15,25 +15,16 @@ def create_panel(*args):
 
 
 class CoPrintMcuFlashChip(ScreenPanel):
-     
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
         self.selected = None
 
         chips = [
-            {'Name': "W25Q080 with CLKDIV 2      ",  'Button': Gtk.RadioButton()},
-            {'Name': "GENERIC_03H with CLKDIV 4      ",  'Button': Gtk.RadioButton()},
+            {'Name': "W25Q080 with CLKDIV 2      ", 'key': "c1", 'Button': Gtk.RadioButton()},
+            {'Name': "GENERIC_03H with CLKDIV 4  ", 'key': "c2", 'Button': Gtk.RadioButton()},
         ]
-        
-        self.labels['actions'] = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            hexpand=True,
-            vexpand=False,
-            halign=Gtk.Align.CENTER,
-            homogeneous=True
-        )
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
         group = None
 
@@ -52,8 +43,10 @@ class CoPrintMcuFlashChip(ScreenPanel):
         )
         row = 0
         count = 0
+
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
+
         if "flash_chip" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["flash_chip"] = None
 
@@ -65,7 +58,7 @@ class CoPrintMcuFlashChip(ScreenPanel):
 
             chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
             chip['Button'].set_alignment(1, 0.5)
-            chip['Button'].connect("toggled", self.radioButtonSelected, chip['Name'])
+            chip['Button'].connect("toggled", self.radioButtonSelected, chip)
 
             chipBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
 
@@ -80,13 +73,13 @@ class CoPrintMcuFlashChip(ScreenPanel):
 
             if self._screen._fw_config["mcu"]["flash_chip"] == chip['Name']:
                 chip['Button'].set_active(True)
-                self.selected = chip['Name']
+                self.selected = chip
                 group = chip['Button']
 
             # set group if chip name is the same as the one in fw_config
             if group is None:
                 group = chip['Button']
-                self.selected = chip['Name']
+                self.selected = chip
 
             count += 1
             if count % 1 == 0:
@@ -104,7 +97,7 @@ class CoPrintMcuFlashChip(ScreenPanel):
         self.scroll.get_overlay_scrolling()
         self.scroll.set_margin_left(self._gtk.action_bar_width *1)
         self.scroll.set_margin_right(self._gtk.action_bar_width*1)
-        
+
         self.scroll.add(gridBox)
         self._screen._fw_config["mcu"]["manual_cfg"] = True
         # get fw_config from screen to know if we are in manual or wizzard config
@@ -150,7 +143,7 @@ class CoPrintMcuFlashChip(ScreenPanel):
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)
@@ -173,8 +166,8 @@ class CoPrintMcuFlashChip(ScreenPanel):
     def on_click_back_button(self, button, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def radioButtonSelected(self, button, name):
-        self.selected = name
+    def radioButtonSelected(self, button, flash_chip):
+        self.selected = flash_chip
 
     def _resolve_radio(self, master_radio):
         active = next((

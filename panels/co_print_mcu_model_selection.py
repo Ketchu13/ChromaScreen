@@ -130,6 +130,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
             f.add(mcu_modelBox)
 
             grid.attach(f, count, row, 1, 1)
+
             if self._screen._fw_config["mcu"]["model"]:
                 if self._screen._fw_config["mcu"]["model"]['Name'] == mcu_model['Name']:
                     mcu_model['Button'].set_active(True)
@@ -221,7 +222,10 @@ class CoPrintMcuModelSelection(ScreenPanel):
         if self.selected:
             if "mcu" not in self._screen._fw_config:
                 self._screen._fw_config["mcu"] = {}
+
+            # save to fw_config
             self._screen._fw_config["mcu"]["model"] = self.selected
+            # open target panel
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):

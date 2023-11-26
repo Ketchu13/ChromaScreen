@@ -131,7 +131,7 @@ class CoPrintMcuClockReference(ScreenPanel):
 
             mcu_clock_reference['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
             mcu_clock_reference['Button'].set_alignment(1, 0.5)
-            mcu_clock_reference['Button'].connect("toggled", self.radioButtonSelected, mcu_clock_reference['key'])
+            mcu_clock_reference['Button'].connect("toggled", self.radioButtonSelected, mcu_clock_reference)
 
             mcu_clock_referenceBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
 
@@ -146,13 +146,13 @@ class CoPrintMcuClockReference(ScreenPanel):
 
             if self._screen._fw_config["mcu"]["clock_reference"] == mcu_clock_reference['Name']:
                 mcu_clock_reference['Button'].set_active(True)
-                self.selected = mcu_clock_reference['Name']
+                self.selected = mcu_clock_reference
                 group = mcu_clock_reference['Button']
 
             # set group if mcu_clock_reference name is the same as the one in fw_config
             if group is None:
                 group = mcu_clock_reference['Button']
-                self.selected = mcu_clock_reference['Name']
+                self.selected = mcu_clock_reference
 
             count += 1
             if count % 2 == 0:
@@ -242,8 +242,9 @@ class CoPrintMcuClockReference(ScreenPanel):
     def on_click_back_button(self, button, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def radioButtonSelected(self, button, name):
-        self.selected = name
+    def radioButtonSelected(self, button, mcu_clock_reference):
+        self.selected = mcu_clock_reference
+
 
     def _resolve_radio(self, master_radio):
         active = next((
