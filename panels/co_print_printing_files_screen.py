@@ -85,9 +85,9 @@ class CoPrintPrintingFilesScreen(ScreenPanel):
         self.selectCheck = Gtk.CheckButton(label="0" + " " + _("selected"))
         self.selectCheck.connect("toggled", self.on_button_toggled)
         
-        self.deleteButton = Gtk.Button(('Delete'),name ="file-delete-button")
+        self.deleteButton = Gtk.Button('Delete', name ="file-delete-button")
         self.deleteButton.connect("clicked", self.delete_selected)
-        self.homeButton = Gtk.Button(('Home'),name ="file-home-button")
+        self.homeButton = Gtk.Button('Home', name ="file-home-button")
         self.homeButton.connect("clicked", self.reload_files)
         deleteButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         deleteButtonBox.set_valign(Gtk.Align.CENTER)
@@ -100,7 +100,7 @@ class CoPrintPrintingFilesScreen(ScreenPanel):
         #addFileButtonBox.set_valign(Gtk.Align.CENTER)
         #addFileButtonBox.add(self.addFileButton)
     
-        self.fileCountLabel = Gtk.Label("0" + " " + ("files listed"), name="file-count-label")
+        self.fileCountLabel = Gtk.Label("0" + " " + "files listed", name="file-count-label")
         
         actionBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         actionBox.pack_start(selectButtonBox, False, False, 0)
@@ -272,7 +272,7 @@ class CoPrintPrintingFilesScreen(ScreenPanel):
 
         delete.connect("clicked", self.confirm_delete_file, f"gcodes/{fullpath}")
         
-        
+        row = None
         
         # row = Gtk.Grid()
         # row.get_style_context().add_class("frame-item")
