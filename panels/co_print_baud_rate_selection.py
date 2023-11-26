@@ -123,7 +123,7 @@ class CoPrintChipSelection(ScreenPanel):
         if "manual_cfg" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["manual_cfg"] = False
 
-        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+        if self._screen._fw_config["mcu"]["manual_cfg"]:
             validate_button["panel_link"] = "co_print_fwmenu_selection"
             validate_button["panel_link_b"] = "co_print_mcu_flash_chip"
             validate_button["text"] = _('Save')
