@@ -15,7 +15,7 @@ def create_panel(*args):
 
 
 class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
-     
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
@@ -31,15 +31,6 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
             {'Name': "2KiB bootloader\n(HID Bootloader)", 'Button': Gtk.RadioButton()},
             {'Name': "4KiB bootloader", 'Button': Gtk.RadioButton()},
         ]
-        
-        self.labels['actions'] = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            hexpand=True,
-            vexpand=False,
-            halign=Gtk.Align.CENTER,
-            homogeneous=True
-        )
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
         group = None
 
@@ -58,8 +49,10 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
         )
         row = 0
         count = 0
+
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
+
         if "bootloader" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["bootloader"] = None
 
@@ -71,7 +64,7 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
 
             bootloader['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
             bootloader['Button'].set_alignment(1, 0.5)
-            bootloader['Button'].connect("toggled", self.radioButtonSelected, bootloader['Name'])
+            bootloader['Button'].connect("toggled", self.radioButtonSelected, bootloader)
 
             bootloaderBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
 
@@ -84,15 +77,16 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
 
             grid.attach(f, count, row, 1, 1)
 
-            if self._screen._fw_config["mcu"]["bootloader"] == bootloader['Name']:
-                bootloader['Button'].set_active(True)
-                self.selected = bootloader['Name']
-                group = bootloader['Button']
+            if self._screen._fw_config["mcu"]["bootloader"]:
+                if self._screen._fw_config["mcu"]["bootloader"]['Name'] == bootloader['Name']:
+                    bootloader['Button'].set_active(True)
+                    self.selected = bootloader
+                    group = bootloader['Button']
 
             # set group if chip name is the same as the one in fw_config
             if group is None:
                 group = bootloader['Button']
-                self.seleccted = bootloader['Name']
+                self.seleccted = bootloader
 
             count += 1
             if count % 2 == 0:
@@ -110,7 +104,7 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
         self.scroll.get_overlay_scrolling()
         self.scroll.set_margin_left(self._gtk.action_bar_width *1)
         self.scroll.set_margin_right(self._gtk.action_bar_width*1)
-        
+
         self.scroll.add(gridBox)
         self._screen._fw_config["mcu"]["manual_cfg"] = True
         # get fw_config from screen to know if we are in manual or wizzard config
@@ -156,7 +150,7 @@ class CoPrintMcuBootloaderOfsetSelection(ScreenPanel):
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)

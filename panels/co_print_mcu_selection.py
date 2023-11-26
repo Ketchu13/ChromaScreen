@@ -15,7 +15,7 @@ def create_panel(*args):
 
 
 class CoPrintMcuSelection(ScreenPanel):
-     
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
@@ -32,7 +32,7 @@ class CoPrintMcuSelection(ScreenPanel):
             {'Name': "Linux Procces"        , 'key': "MACH_LINUX"   , 'Button': Gtk.RadioButton()},
             {'Name': "Host simulator"       , 'key': "MACH_HOST_SIM", 'Button': Gtk.RadioButton()}
         ]
-        
+
         self.labels['actions'] = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             hexpand=True,
@@ -83,6 +83,7 @@ class CoPrintMcuSelection(ScreenPanel):
             f.add(architectureBox)
 
             grid.attach(f, count, row, 1, 1)
+
             if self._screen._fw_config["mcu"]["architecture"]:
                 if self._screen._fw_config["mcu"]["architecture"]['Name'] == architecture['Name']:
                     architecture['Button'].set_active(True)
@@ -110,7 +111,7 @@ class CoPrintMcuSelection(ScreenPanel):
         self.scroll.get_overlay_scrolling()
         self.scroll.set_margin_left(self._gtk.action_bar_width *1)
         self.scroll.set_margin_right(self._gtk.action_bar_width*1)
-        
+
         self.scroll.add(gridBox)
         self._screen._fw_config["mcu"]["manual_cfg"] = True
         # get fw_config from screen to know if we are in manual or wizzard config
@@ -156,7 +157,7 @@ class CoPrintMcuSelection(ScreenPanel):
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)

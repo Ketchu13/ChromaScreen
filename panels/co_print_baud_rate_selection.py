@@ -15,34 +15,33 @@ def create_panel(*args):
 
 
 class CoPrintChipSelection(ScreenPanel):
-     
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
+        self.baudrates = []
         self.selected = None
 
-        baudrates = [
-            {'Name': "9600"  , 'Button': Gtk.RadioButton()},
-            {'Name': "14400" , 'Button': Gtk.RadioButton()},
-            {'Name': "19200" , 'Button': Gtk.RadioButton()},
-            {'Name': "38400" , 'Button': Gtk.RadioButton()},
-            {'Name': "57600" , 'Button': Gtk.RadioButton()},
-            {'Name': "115200", 'Button': Gtk.RadioButton()},
-            {'Name': "128000", 'Button': Gtk.RadioButton()},
-            {'Name': "256000", 'Button': Gtk.RadioButton()},
-        ]
-        
-        self.labels['actions'] = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            hexpand=True,
-            vexpand=False,
-            halign=Gtk.Align.CENTER,
-            homogeneous=True
-        )
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
+        curr_baudrate = 4800
+        for i in range(0, 225):
+            self.baudrates.append({'Name': str(curr_baudrate*i), 'key': str(curr_baudrate), 'Button': Gtk.RadioButton()})
+        if len(self.baudrates) > 0:
+            # sort baudrates by Name
+            self.baudrates = sorted(self.baudrates, key=lambda x: int(x['Name']))
+        else:
+            self.baudrates = [
+                {'Name': "9600"  , 'key': '9600'  , 'Button': Gtk.RadioButton()},
+                {'Name': "14400" , 'key': "14400" , 'Button': Gtk.RadioButton()},
+                {'Name': "19200" , 'key': "19200" , 'Button': Gtk.RadioButton()},
+                {'Name': "38400" , 'key': "38400" , 'Button': Gtk.RadioButton()},
+                {'Name': "57600" , 'key': "57600" , 'Button': Gtk.RadioButton()},
+                {'Name': "115200", 'key': "115200", 'Button': Gtk.RadioButton()},
+                {'Name': "128000", 'key': "128000", 'Button': Gtk.RadioButton()},
+                {'Name': "256000", 'key': "256000", 'Button': Gtk.RadioButton()},
+            ]
 
         group = None
-       
+
         initHeader = InitHeader(
             self,
             _('Select Baud Rate'),
@@ -58,40 +57,43 @@ class CoPrintChipSelection(ScreenPanel):
         )
         row = 0
         count = 0
+
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
-        if "baudrate" not in self._screen._fw_config["mcu"]:
-            self._screen._fw_config["mcu"]["baudrate"] = None
 
-        for baudrate in baudrates:
+        if "baudrate_serial" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["baudrate_serial"] = None
+
+        for baudrate in self.baudrates:
 
             baudrateName = Gtk.Label(baudrate['Name'], name="wifi-label")
             baudrateName.set_alignment(0, 0.5)
 
             baudrate['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
             baudrate['Button'].set_alignment(1, 0.5)
-            baudrate['Button'].connect("toggled", self.radioButtonSelected, baudrate['Name'])
+            baudrate['Button'].connect("toggled", self.radioButtonSelected, baudrate)
 
-            baudrateBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
+            baudrateBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20, name="chip")
 
             f = Gtk.Frame(name="chip")
 
-            baudrateBox.pack_start(baudrateName, False, True, 10)
-            baudrateBox.pack_end(baudrate['Button'], False, False, 10)
+            baudrateBox.pack_start(baudrateName, False, True, 5)
+            baudrateBox.pack_end(baudrate['Button'], False, False, 5)
 
             f.add(baudrateBox)
 
             grid.attach(f, count, row, 1, 1)
 
-            if self._screen._fw_config["mcu"]["baudrate"] == baudrate['Name']:
-                baudrate['Button'].set_active(True)
-                self.selected = baudrate['Name']
-                group = baudrate['Button']
+            if self._screen._fw_config["mcu"]["baudrate_serial"]:
+                if self._screen._fw_config["mcu"]["baudrate_serial"]['Name'] == baudrate['Name']:
+                    baudrate['Button'].set_active(True)
+                    self.selected = baudrate
+                    group = baudrate['Button']
 
             # set group if chip name is the same as the one in fw_config
             if group is None:
                 group = baudrate['Button']
-                self.selected = baudrate['name']
+                self.selected = baudrate
 
             count += 1
             if count % 2 == 0:
@@ -103,15 +105,17 @@ class CoPrintChipSelection(ScreenPanel):
         gridBox.add(grid)
 
         self.scroll = self._gtk.ScrolledWindow()
-        self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
-        self.scroll.set_min_content_height(self._screen.height * .3)
+        self.scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.scroll.set_max_content_height(self._screen.height * .3)
         self.scroll.set_kinetic_scrolling(True)
         self.scroll.get_overlay_scrolling()
-        self.scroll.set_margin_left(self._gtk.action_bar_width *1)
-        self.scroll.set_margin_right(self._gtk.action_bar_width*1)
-        
+        self.scroll.set_margin_left(self._gtk.action_bar_width *2.1)
+        self.scroll.set_margin_right(self._gtk.action_bar_width*2.1)
+
         self.scroll.add(gridBox)
+        self.scroll.set_size_request(-1, 10)
         self._screen._fw_config["mcu"]["manual_cfg"] = True
+
         # get fw_config from screen to know if we are in manual or wizzard config
         validate_button = {
             "text": _("Continue"),
@@ -127,6 +131,27 @@ class CoPrintChipSelection(ScreenPanel):
             validate_button["panel_link"] = "co_print_fwmenu_selection"
             validate_button["panel_link_b"] = "co_print_mcu_flash_chip"
             validate_button["text"] = _('Save')
+
+
+        self.selectedWifiName = Gtk.Label("Custom baud rate:", name="wifi-label")
+        self.selectedWifiName.set_alignment(0, 0.5)
+
+        self.entry = Gtk.Entry(name="device-name")
+        #self.entry.connect("activate", self.rename)
+        #self.entry.connect("touch-event", self.give_name)
+        # self.entry.connect("focus-in-event", self._screen.show_keyboard)
+
+        eventBox = Gtk.EventBox()
+        #eventBox.connect("button-press-event", self.give_name)
+        eventBox.add(self.entry)
+
+        self.selectedWifiBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0, name='wifi')
+
+        self.selectedWifiBox.pack_start(self.selectedWifiName, True, True, 5)
+        self.selectedWifiBox.pack_end(eventBox, True, True, 15)
+        self.selectedWifiBox.set_size_request(150, 70)
+        self.selectedWifiBox.set_margin_left(self._gtk.action_bar_width * 2.6)
+        self.selectedWifiBox.set_margin_right(self._gtk.action_bar_width * 2.6)
 
         self.continueButton = Gtk.Button(validate_button["text"], name="flat-button-blue", hexpand=True)
         self.continueButton.connect("clicked", self.on_click_continue_button, validate_button["panel_link"])
@@ -154,11 +179,12 @@ class CoPrintChipSelection(ScreenPanel):
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)
-        main.pack_end(buttonBox, False, False, 15)
+        main.pack_end(buttonBox, False, False, 10)
+        main.pack_end(self.selectedWifiBox, False, False, 10)
 
         page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         page.pack_start(mainBackButtonBox, False, False, 0)
@@ -168,17 +194,25 @@ class CoPrintChipSelection(ScreenPanel):
         # self._screen.base_panel.visible_menu(False)
 
     def on_click_continue_button(self, continueButton, target_panel):
+        custom_baudrate = self.entry.get_text()
+        go_next = False
+        if custom_baudrate and len(custom_baudrate) > 0:
+            self.selected = {'Name': custom_baudrate, 'key': custom_baudrate, 'Button': Gtk.RadioButton()}
+            go_next = True
         if self.selected:
             if "mcu" not in self._screen._fw_config:
                 self._screen._fw_config["mcu"] = {}
-            self._screen._fw_config["mcu"]["baudrate"] = self.selected
+
+            self._screen._fw_config["mcu"]["baudrate_serial"] = self.selected
+            go_next = True
+        if go_next:
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def radioButtonSelected(self, button, name):
-        self.selected = name
+    def radioButtonSelected(self, button, baudrate):
+        self.selected = baudrate
 
     def _resolve_radio(self, master_radio):
         active = next((

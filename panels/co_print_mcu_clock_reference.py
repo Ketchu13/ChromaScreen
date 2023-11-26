@@ -82,6 +82,7 @@ class CoPrintMcuClockReference(ScreenPanel):
             return
 
         self.mcu_clock_references = self.get_mcu_clock_references(self.architecture, self.selected_mcu_model)
+
         # debug
         if self.mcu_clock_references is None:
             self.mcu_clock_references = [
@@ -114,6 +115,7 @@ class CoPrintMcuClockReference(ScreenPanel):
 
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
+
         if "clock_reference" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["clock_reference"] = None
 
@@ -123,6 +125,7 @@ class CoPrintMcuClockReference(ScreenPanel):
 
             mcu_clock_referenceName = Gtk.Label(mcu_clock_reference['Name'], name="wifi-label")
             mcu_clock_referenceName.set_alignment(0, 0.5)
+
             # reduce font size if mcu model name is too long
             if len(mcu_clock_reference['Name']) > 30:
                 mcu_clock_referenceName.set_size_request(300, -1)
@@ -143,11 +146,11 @@ class CoPrintMcuClockReference(ScreenPanel):
             f.add(mcu_clock_referenceBox)
 
             grid.attach(f, count, row, 1, 1)
-
-            if self._screen._fw_config["mcu"]["clock_reference"] == mcu_clock_reference['Name']:
-                mcu_clock_reference['Button'].set_active(True)
-                self.selected = mcu_clock_reference
-                group = mcu_clock_reference['Button']
+            if self._screen._fw_config["mcu"]["clock_reference"]:
+                if self._screen._fw_config["mcu"]["clock_reference"]['Name'] == mcu_clock_reference['Name']:
+                    mcu_clock_reference['Button'].set_active(True)
+                    self.selected = mcu_clock_reference
+                    group = mcu_clock_reference['Button']
 
             # set group if mcu_clock_reference name is the same as the one in fw_config
             if group is None:
@@ -168,8 +171,8 @@ class CoPrintMcuClockReference(ScreenPanel):
         self.scroll.set_min_content_height(self._screen.height * .3)
         self.scroll.set_kinetic_scrolling(True)
         self.scroll.get_overlay_scrolling()
-        self.scroll.set_margin_left(self._gtk.action_bar_width *1)
-        self.scroll.set_margin_right(self._gtk.action_bar_width*1)
+        self.scroll.set_margin_left(self._gtk.action_bar_width * 1)
+        self.scroll.set_margin_right(self._gtk.action_bar_width * 1)
 
         self.scroll.add(gridBox)
 
@@ -244,7 +247,6 @@ class CoPrintMcuClockReference(ScreenPanel):
 
     def radioButtonSelected(self, button, mcu_clock_reference):
         self.selected = mcu_clock_reference
-
 
     def _resolve_radio(self, master_radio):
         active = next((

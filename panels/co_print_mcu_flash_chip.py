@@ -70,11 +70,11 @@ class CoPrintMcuFlashChip(ScreenPanel):
             f.add(chipBox)
 
             grid.attach(f, count, row, 1, 1)
-
-            if self._screen._fw_config["mcu"]["flash_chip"] == chip['Name']:
-                chip['Button'].set_active(True)
-                self.selected = chip
-                group = chip['Button']
+            if self._screen._fw_config["mcu"]["flash_chip"]:
+                if self._screen._fw_config["mcu"]["flash_chip"]['Name'] == chip['Name']:
+                    chip['Button'].set_active(True)
+                    self.selected = chip
+                    group = chip['Button']
 
             # set group if chip name is the same as the one in fw_config
             if group is None:
@@ -100,6 +100,7 @@ class CoPrintMcuFlashChip(ScreenPanel):
 
         self.scroll.add(gridBox)
         self._screen._fw_config["mcu"]["manual_cfg"] = True
+
         # get fw_config from screen to know if we are in manual or wizzard config
         validate_button = {
             "text": _("Continue"),
