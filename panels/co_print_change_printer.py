@@ -21,22 +21,7 @@ class CoPrintChangePrinter(ScreenPanel):
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
-        printingDetail1 = PrinterDetail(self, "Creality Ender 3", "Printer 1", _("Printing"),
-                                        "printer-status-continuing", "printer-1")
-        printingDetail2 = PrinterDetail(self, "Ender 3 S1 PRO", "Printer 2", _("Waiting"), "printer-status-paused",
-                                        "printer-2")
-        printingDetail3 = PrinterDetail(self, "Ender 3 S1 PRO", "Printer 3", _("Waiting"), "printer-status-paused",
-                                        "printer-3")
-        printingDetail4 = PrinterDetail(self, "Ender 3 S1 PRO", "Printer 4", _("Waiting"), "printer-status-paused",
-                                        "printer-4")
-        printingDetail5 = PrinterDetail(self, "Ender 3 S1 PRO", "Printer 5", _("Not Working"),
-                                        "printer-status-not-working", "printer-5")
-        printingDetail6 = PrinterDetail(self, "Ender 3 S1 PRO", "Printer 6", _("Not Working"),
-                                        "printer-status-not-working", "printer-6")
-        printingDetail7 = PrinterDetail(self, "Ender 3 S1 PRO", "Printer 7", _("Not Working"),
-                                        "printer-status-not-working", "printer-7")
-        printingDetail8 = PrinterDetail(self, "Ender 3 S1 PRO", "Printer 8", _("Not Working"),
-                                        "printer-status-not-working", "printer-8")
+        self.selected = None
 
         printers = self._config.get_printers()
 
@@ -84,8 +69,8 @@ class CoPrintChangePrinter(ScreenPanel):
 
         self.content.add(main)
 
-    def radioButtonSelected(self, button, baudRate):
-        self.selected = baudRate
+    def radioButtonSelected(self, button, printer):
+        self.selected = printer
 
     def on_button_toggled(self, button):
 
