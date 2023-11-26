@@ -16,6 +16,7 @@ def create_panel(*args):
 
 class CoPrintMacrosSettingScreen(ScreenPanel):
 
+    macro_flowbox: Gtk.Box
 
     def __init__(self, screen, title):
         super().__init__(screen, title)
@@ -25,13 +26,13 @@ class CoPrintMacrosSettingScreen(ScreenPanel):
         macroLabel = Gtk.Label(_("Predefined Macros"), name="macro-label")
   
         
-        macroone = Macros(self, ("Cancel_Print"))
-        macrotwo = Macros(self, ("Pause"))
-        macrothree = Macros(self, ("Bed Mesh"))
-        macrofour = Macros(self, ("Cancel_Print"))
-        macrofive = Macros(self, ("Pause"))
-        macrosix = Macros(self, ("Bed Mesh"))
-        macroseven = Macros(self, ("Bed Mesh"))
+        macroone = Macros(self, "Cancel_Print")
+        macrotwo = Macros(self, "Pause")
+        macrothree = Macros(self, "Bed Mesh")
+        macrofour = Macros(self, "Cancel_Print")
+        macrofive = Macros(self, "Pause")
+        macrosix = Macros(self, "Bed Mesh")
+        macroseven = Macros(self, "Bed Mesh")
 
         macro_flowbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         macro_flowbox.set_hexpand(True)
@@ -75,7 +76,6 @@ class CoPrintMacrosSettingScreen(ScreenPanel):
         self._screen._ws.klippy.gcode_script(f"{macro} {params}")
 
     def load_gcode_macros(self):
-
         self.macro_flowbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.macro_flowbox.set_hexpand(True)
 
@@ -83,14 +83,11 @@ class CoPrintMacrosSettingScreen(ScreenPanel):
             macro = macro[12:].strip()
             if macro.startswith("_"):  # Support for hiding macros by name
                 continue
-            macroone = Macros(self, macro)
-            self.macro_flowbox.pack_start(macroone, True, True, 0)
+            macro_one = Macros(self, macro)
+            self.macro_flowbox.pack_start(macro_one, True, True, 0)
 
         for child in self.scroll.get_children():
             self.scroll.remove(child)
-        
-
-     
 
         self.scroll.add(self.macro_flowbox)
         self.content.show_all()
