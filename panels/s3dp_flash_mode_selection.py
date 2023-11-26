@@ -5,14 +5,14 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango, GLib, Gdk
 
 from ks_includes.screen_panel import ScreenPanel
-
+from ks_includes.SDCardUtils import SDCardUtils
 
 def create_panel(*args):
     return CoPrintMcuModelSelection(*args)
 
 
 class CoPrintMcuModelSelection(ScreenPanel):
-     
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
@@ -22,15 +22,6 @@ class CoPrintMcuModelSelection(ScreenPanel):
             {'Name': "Updating via SD-Card", 'Button': Gtk.RadioButton()},
             {'Name': "Regular flashing method", 'Button': Gtk.RadioButton()}
         ]
-        
-        self.labels['actions'] = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            hexpand=True,
-            vexpand=False,
-            halign=Gtk.Align.CENTER,
-            homogeneous=True
-        )
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
         group = None
 
@@ -49,10 +40,12 @@ class CoPrintMcuModelSelection(ScreenPanel):
         )
         row = 0
         count = 0
+
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
-        if "usb_ids" not in self._screen._fw_config["mcu"]:
-            self._screen._fw_config["mcu"]["usb_ids"] = None
+
+        if "flash_method" not in self._screen._fw_config["mcu"]:
+            self._screen._fw_config["mcu"]["flash_method"] = None
 
         for flash_method in flash_methods:
             flash_methodImage = None
@@ -75,10 +68,11 @@ class CoPrintMcuModelSelection(ScreenPanel):
 
             grid.attach(f, count, row, 1, 1)
 
-            if self._screen._fw_config["mcu"]["flash_method"] == flash_method['Name']:
-                flash_method['Button'].set_active(True)
-                self.selected = flash_method['Name']
-                group = flash_method['Button']
+            if self._screen._fw_config["mcu"]["flash_method"]:
+                if self._screen._fw_config["mcu"]["flash_method"] == flash_method['Name']:
+                    flash_method['Button'].set_active(True)
+                    self.selected = flash_method['Name']
+                    group = flash_method['Button']
 
             # set group if chip name is the same as the one in fw_config
             if group is None:
@@ -101,7 +95,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.scroll.get_overlay_scrolling()
         self.scroll.set_margin_left(self._gtk.action_bar_width * 1)
         self.scroll.set_margin_right(self._gtk.action_bar_width * 1)
-        
+
         self.scroll.add(gridBox)
         self._screen._fw_config["mcu"]["manual_cfg"] = True
         # get fw_config from screen to know if we are in manual or wizzard config
@@ -116,7 +110,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         if "manual_cfg" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["manual_cfg"] = False
 
-        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+        if self._screen._fw_config["mcu"]["manual_cfg"]:
             validate_button["panel_link"] = "co_print_fwmenu_selection"
             validate_button["panel_link_b"] = "co_print_fwmenu_selection"
             validate_button["text"] = _('Save')
@@ -149,7 +143,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)
@@ -169,9 +163,17 @@ class CoPrintMcuModelSelection(ScreenPanel):
             self._screen._fw_config["mcu"]["flash_method"] = self.selected
             # check if selected name is "Updating via SD-Card" and if so, show the panel for it
             if self.selected == _("Updating via SD-Card"):
-                target_panel = "co_print_mcu_sd_card"
+                sdu = SDCardUtils()
+                existing_sd_card = sdu.get_existing_sd()
+                if existing_sd_card:
+                    print("Existing sd device:", existing_sd_card)
+                    target_panel = "co_print_sd_card_selection_process"
+                else:
+                    target_panel = "co_print_sd_card_selection_process_waiting"
+                sdu = None
+
             else:
-                target_panel = "co_print_mcu_flash_chip"
+                target_panel = "co_print_fwmenu_selection"
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):
