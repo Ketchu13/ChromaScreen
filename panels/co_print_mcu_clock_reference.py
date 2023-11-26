@@ -1,6 +1,8 @@
+import json
 import logging
 import os
-from ks_includes.widgets.checkbuttonbox import CheckButtonBox
+import re
+
 import gi
 
 from ks_includes.widgets.initheader import InitHeader
@@ -16,28 +18,81 @@ def create_panel(*args):
 
 class CoPrintMcuClockReference(ScreenPanel):
 
+    def get_mcu_clock_references(self, architecture, mcu_model):
+        # load json file
+        fw_configs = None
+        try:
+            with open(self.fw_configs_path, "r") as f:
+                fw_configs = json.load(f)
+        except Exception as e:
+            logging.error("Error while loading fwconfig.json: %s", e)
+            return None
+        if fw_configs is None:
+            return None
+        # get mcu models for the selected architecture from ./fwconfig.json
+        mcu_clock_references_tmp = []
+        formated_arch_name = architecture["key"]
+        if formated_arch_name in fw_configs["mcus"]:
+            current_arch_data = fw_configs["mcus"][formated_arch_name]
+            if "models" in current_arch_data:
+                mcu_models_tmp = current_arch_data["models"]
+                if "clock_reference" in current_arch_data:
+                    for clock_reference in current_arch_data["clock_reference"]:
+                        current_clock_reference = current_arch_data["clock_reference"][clock_reference]
+                        mcu_model_key_name = None
+                        if mcu_model["key"] in mcu_models_tmp:
+                            mcu_model_key_name = mcu_model["key"]
+
+                        if mcu_model_key_name is not None and mcu_model_key_name in current_clock_reference or "all" in current_clock_reference:
+                            mcu_clock_references_tmp.append(clock_reference)
+        mcu_clock_references = []
+        if mcu_clock_references_tmp is not None:
+            for mcu_clock_reference in mcu_clock_references_tmp:
+                # format clock reference name
+                new_name = mcu_clock_reference.replace("FREQ_", "").replace("Z", "z")
+                # add a space between number and letter
+                new_name = re.sub(r"(\d)([a-zA-Z])", r"\1 \2", new_name)
+
+                mcu_clock_references.append({'Name': new_name, 'key':mcu_clock_reference, 'Button': Gtk.RadioButton()})
+        return mcu_clock_references
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
+        self.fw_configs_path = os.path.join(os.path.dirname(__file__), "fwconfig", "fwconfig.json")
 
         self.selected = None
+        self.architecture = None
+        self.selected_mcu_model = None
+        self.selected_mcu_clock_reference = None
+        self.mcu_clock_references = None
 
-        chips = [
-            {'Name': "8 MHz crystal",  'Button': Gtk.RadioButton()},
-            {'Name': "12 MHz crystal",  'Button': Gtk.RadioButton()},
-            {'Name': "16 MHz crystal",  'Button': Gtk.RadioButton()},
-            {'Name': "20 MHz crystal", 'Button': Gtk.RadioButton()},
-            {'Name': "25 MHz crystal", 'Button': Gtk.RadioButton()},
-            {'Name': "Internal clock",  'Button': Gtk.RadioButton()},
-        ]
-        
-        self.labels['actions'] = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            hexpand=True,
-            vexpand=False,
-            halign=Gtk.Align.CENTER,
-            homogeneous=True
-        )
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
+        if "mcu" not in self._screen._fw_config:
+            self._screen._fw_config["mcu"] = {}
+
+        if "architecture" in self._screen._fw_config["mcu"]:
+            # get mcu models for the selected architecture from ./fwconfig.json
+            self.architecture = self._screen._fw_config["mcu"]["architecture"]
+
+        if "model" in self._screen._fw_config["mcu"]:
+            self.selected_mcu_model = self._screen._fw_config["mcu"]["model"]
+
+        if self.architecture is None or self.selected_mcu_model is None:
+            # return to previous panel if architecture is not selected
+            self._screen.show_panel("co_print_mcu_selection", "co_print_mcu_selection", None, 2)
+            return
+
+        self.mcu_clock_references = self.get_mcu_clock_references(self.architecture, self.selected_mcu_model)
+        # debug
+        if self.mcu_clock_references is None:
+            self.mcu_clock_references = [
+                {'Name': "8 MHz crystal", 'Button': Gtk.RadioButton()},
+                {'Name': "12 MHz crystal", 'Button': Gtk.RadioButton()},
+                {'Name': "16 MHz crystal", 'Button': Gtk.RadioButton()},
+                {'Name': "20 MHz crystal", 'Button': Gtk.RadioButton()},
+                {'Name': "25 MHz crystal", 'Button': Gtk.RadioButton()},
+                {'Name': "Internal clock", 'Button': Gtk.RadioButton()},
+            ]
+        # end debug
 
         group = None
 
@@ -56,42 +111,48 @@ class CoPrintMcuClockReference(ScreenPanel):
         )
         row = 0
         count = 0
+
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
         if "clock_reference" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["clock_reference"] = None
 
-        for chip in chips:
+        for mcu_clock_reference in self.mcu_clock_references:
 
 
 
-            chipName = Gtk.Label(chip['Name'], name="wifi-label")
-            chipName.set_alignment(0, 0.5)
+            mcu_clock_referenceName = Gtk.Label(mcu_clock_reference['Name'], name="wifi-label")
+            mcu_clock_referenceName.set_alignment(0, 0.5)
+            # reduce font size if mcu model name is too long
+            if len(mcu_clock_reference['Name']) > 30:
+                mcu_clock_referenceName.set_size_request(300, -1)
+                mcu_clock_referenceName.set_max_width_chars(30)
+                mcu_clock_referenceName.set_ellipsize(Pango.EllipsizeMode.END)
 
-            chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
-            chip['Button'].set_alignment(1, 0.5)
-            chip['Button'].connect("toggled", self.radioButtonSelected, chip['Name'])
+            mcu_clock_reference['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
+            mcu_clock_reference['Button'].set_alignment(1, 0.5)
+            mcu_clock_reference['Button'].connect("toggled", self.radioButtonSelected, mcu_clock_reference['key'])
 
-            chipBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
+            mcu_clock_referenceBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
 
             f = Gtk.Frame(name="chip")
 
-            chipBox.pack_start(chipName, False, True, 10)
-            chipBox.pack_end(chip['Button'], False, False, 10)
+            mcu_clock_referenceBox.pack_start(mcu_clock_referenceName, False, True, 10)
+            mcu_clock_referenceBox.pack_end(mcu_clock_reference['Button'], False, False, 10)
 
-            f.add(chipBox)
+            f.add(mcu_clock_referenceBox)
 
             grid.attach(f, count, row, 1, 1)
 
-            if self._screen._fw_config["mcu"]["clock_reference"] == chip['Name']:
-                chip['Button'].set_active(True)
-                self.selected = chip['Name']
-                group = chip['Button']
+            if self._screen._fw_config["mcu"]["clock_reference"] == mcu_clock_reference['Name']:
+                mcu_clock_reference['Button'].set_active(True)
+                self.selected = mcu_clock_reference['Name']
+                group = mcu_clock_reference['Button']
 
-            # set group if chip name is the same as the one in fw_config
+            # set group if mcu_clock_reference name is the same as the one in fw_config
             if group is None:
-                group = chip['Button']
-                self.selected = chip['Name']
+                group = mcu_clock_reference['Button']
+                self.selected = mcu_clock_reference['Name']
 
             count += 1
             if count % 2 == 0:
@@ -109,22 +170,25 @@ class CoPrintMcuClockReference(ScreenPanel):
         self.scroll.get_overlay_scrolling()
         self.scroll.set_margin_left(self._gtk.action_bar_width *1)
         self.scroll.set_margin_right(self._gtk.action_bar_width*1)
-        
+
         self.scroll.add(gridBox)
+
         self._screen._fw_config["mcu"]["manual_cfg"] = True
         # get fw_config from screen to know if we are in manual or wizzard config
+
         validate_button = {
             "text": _("Continue"),
             "panel_link": "co_print_mcu_com_interface",
             "panel_link_b": "co_print_mcu_bootloader_ofset"
         }
+
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
 
         if "manual_cfg" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["manual_cfg"] = False
 
-        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+        if self._screen._fw_config["mcu"]["manual_cfg"]:
             validate_button["panel_link"] = "co_print_fwmenu_selection"
             validate_button["panel_link_b"] = "co_print_fwmenu_selection"
             validate_button["text"] = _('Save')
@@ -155,7 +219,7 @@ class CoPrintMcuClockReference(ScreenPanel):
 
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.scroll, True, True, 0)
@@ -171,6 +235,7 @@ class CoPrintMcuClockReference(ScreenPanel):
         if self.selected:
             if "mcu" not in self._screen._fw_config:
                 self._screen._fw_config["mcu"] = {}
+
             self._screen._fw_config["mcu"]["clock_reference"] = self.selected
             self._screen.show_panel(target_panel, target_panel, None, 2)
 

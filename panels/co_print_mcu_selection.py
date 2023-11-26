@@ -5,7 +5,7 @@ import gi
 
 from ks_includes.widgets.initheader import InitHeader
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Pango, GLib, Gdk
+from gi.repository import Gtk
 
 from ks_includes.screen_panel import ScreenPanel
 
@@ -20,18 +20,17 @@ class CoPrintMcuSelection(ScreenPanel):
         super().__init__(screen, title)
 
         self.selected = None
-
-        chips = [
-            {'Name': "Atmega AVR",  'Button': Gtk.RadioButton()},
-            {'Name': "SAM 3 / 4 / E70",  'Button': Gtk.RadioButton()},
-            {'Name': "SAM D21 / SAM D51",  'Button': Gtk.RadioButton()},
-            {'Name': "LPC176X", 'Button': Gtk.RadioButton()},
-            {'Name': "STM 32", 'Button': Gtk.RadioButton()},
-            {'Name': "Raspberry Pİ RP2040",  'Button': Gtk.RadioButton()},
-            {'Name': "Beaglebone PRU", 'Button': Gtk.RadioButton()},
-            {'Name': "Linux Procces", 'Button': Gtk.RadioButton()},
-            {'Name': "Beaglebone PRU", 'Button': Gtk.RadioButton()},
-            {'Name': "Host simulator", 'Button': Gtk.RadioButton()},
+        # todo load from json
+        architectures = [
+            {'Name': "Atmega AVR"           , 'key': "MACH_AVR"     , 'Button': Gtk.RadioButton()},
+            {'Name': "SAM 3 / 4 / E70"      , 'key': "MACH_ATSAM"   , 'Button': Gtk.RadioButton()},
+            {'Name': "SAM D21 / SAM D51"    , 'key': "MACH_ATSAMD"  , 'Button': Gtk.RadioButton()},
+            {'Name': "LPC176X"              , 'key': "MACH_LPC176X" , 'Button': Gtk.RadioButton()},
+            {'Name': "STM 32"               , 'key': "MACH_STM32"   , 'Button': Gtk.RadioButton()},
+            {'Name': "Raspberry Pİ RP2040"  , 'key': "MACH_RP2040"  , 'Button': Gtk.RadioButton()},
+            {'Name': "Beaglebone PRU"       , 'key': "MACH_PRU"     , 'Button': Gtk.RadioButton()},
+            {'Name': "Linux Procces"        , 'key': "MACH_LINUX"   , 'Button': Gtk.RadioButton()},
+            {'Name': "Host simulator"       , 'key': "MACH_HOST_SIM", 'Button': Gtk.RadioButton()}
         ]
         
         self.labels['actions'] = Gtk.Box(
@@ -65,35 +64,35 @@ class CoPrintMcuSelection(ScreenPanel):
         if "architecture" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["architecture"] = None
 
-        for chip in chips:
+        for architecture in architectures:
 
-            chipName = Gtk.Label(chip['Name'], name="wifi-label")
-            chipName.set_alignment(0, 0.5)
+            architectureName = Gtk.Label(architecture['Name'], name="wifi-label")
+            architectureName.set_alignment(0, 0.5)
 
-            chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
-            chip['Button'].set_alignment(1, 0.5)
-            chip['Button'].connect("toggled", self.radioButtonSelected, chip['Name'])
+            architecture['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
+            architecture['Button'].set_alignment(1, 0.5)
+            architecture['Button'].connect("toggled", self.radioButtonSelected, architecture)
 
-            chipBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
+            architectureBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
 
             f = Gtk.Frame(name="chip")
 
-            chipBox.pack_start(chipName, False, True, 10)
-            chipBox.pack_end(chip['Button'], False, False, 10)
+            architectureBox.pack_start(architectureName, False, True, 10)
+            architectureBox.pack_end(architecture['Button'], False, False, 10)
 
-            f.add(chipBox)
+            f.add(architectureBox)
 
             grid.attach(f, count, row, 1, 1)
+            if self._screen._fw_config["mcu"]["architecture"]:
+                if self._screen._fw_config["mcu"]["architecture"]['Name'] == architecture['Name']:
+                    architecture['Button'].set_active(True)
+                    self.selected = architecture
+                    group = architecture['Button']
 
-            if self._screen._fw_config["mcu"]["architecture"] == chip['Name']:
-                chip['Button'].set_active(True)
-                self.selected = chip['Name']
-                group = chip['Button']
-
-            # set group if chip name is the same as the one in fw_config
+            # set group if architecture name is the same as the one in fw_config
             if group is None:
-                group = chip['Button']
-                self.selected = chip['Name']
+                group = architecture['Button']
+                self.selected = architecture
 
             count += 1
             if count % 2 == 0:
@@ -126,7 +125,7 @@ class CoPrintMcuSelection(ScreenPanel):
         if "manual_cfg" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["manual_cfg"] = False
 
-        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+        if self._screen._fw_config["mcu"]["manual_cfg"]:
             validate_button["panel_link"] = "co_print_fwmenu_selection"
             validate_button["panel_link_b"] = "co_print_fwmenu_selection"
             validate_button["text"] = _('Save')
@@ -172,16 +171,22 @@ class CoPrintMcuSelection(ScreenPanel):
 
     def on_click_continue_button(self, continueButton, target_panel):
         if self.selected:
+
             if "mcu" not in self._screen._fw_config:
                 self._screen._fw_config["mcu"] = {}
-            self._screen._fw_config["mcu"]["architecture"] = self.selected
+            if "architecture" not in self._screen._fw_config["mcu"]:
+                self._screen._fw_config["mcu"]["architecture"] = None
+            if self._screen._fw_config["mcu"]["architecture"] != self.selected:
+                self._screen._fw_config["mcu"] = {}
+                self._screen._fw_config["mcu"]["architecture"] = self.selected
+
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def radioButtonSelected(self, button, name):
-        self.selected = name
+    def radioButtonSelected(self, button, architecture):
+        self.selected = architecture
 
     def _resolve_radio(self, master_radio):
         active = next((

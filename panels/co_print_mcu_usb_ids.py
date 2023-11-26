@@ -16,9 +16,12 @@ def create_panel(*args):
 
 class CoPrintMcuUsbIds(ScreenPanel):
      
+    option_checked: bool
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
+        self.option_checked = False
         self.selected = None
 
         chips = [
@@ -119,14 +122,14 @@ class CoPrintMcuUsbIds(ScreenPanel):
         if "manual_cfg" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["manual_cfg"] = False
 
-        if self._screen._fw_config["mcu"]["manual_cfg"] == True:
+        if self._screen._fw_config["mcu"]["manual_cfg"]:
             validate_button["panel_link"] = "co_print_fwmenu_selection"
             validate_button["panel_link_b"] = "co_print_fwmenu_selection"
             validate_button["text"] = _('Save')
         if "serial_from" not in self._screen._fw_config["mcu"]:
             self._screen._fw_config["mcu"]["serial_from"] = False
 
-        self.checkButton = CheckButtonBox(self, _('USB serial number from CHIPID'))
+        self.checkButton = CheckButtonBox(self, _('USB serial number from CHIPID'), self.onCheck)
         self.checkButton.set_hexpand(True)
         self.checkButton.set_margin_left(self._gtk.action_bar_width * 3)
         self.checkButton.set_margin_right(self._gtk.action_bar_width * 3)
@@ -177,11 +180,19 @@ class CoPrintMcuUsbIds(ScreenPanel):
         self.content.add(page)
         # self._screen.base_panel.visible_menu(False)
 
+    def onCheck(self, active):
+        # save to fw_config
+        self.option_checked = active
+
     def on_click_continue_button(self, continueButton, target_panel):
         if self.selected:
             if "mcu" not in self._screen._fw_config:
                 self._screen._fw_config["mcu"] = {}
+
+            # save to fw_config
             self._screen._fw_config["mcu"]["usb_ids"] = self.selected
+            self._screen._fw_config["mcu"]["serial_from"] = self.option_checked
+            # open target panel
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):
