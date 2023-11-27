@@ -9,13 +9,13 @@
 
 
 spinner {
-    
+
     animation: spin 1s ease-in-out infinite;
 }
 
 button.menu {
     border-bottom: 0em;
-    
+
 }
 
 #region-select-box{
@@ -37,7 +37,7 @@ button.pause {
     padding-left: .4em;
     padding-right: .4em;
     background-color: #000000;
-    
+
 }
 
 button.close {
@@ -47,7 +47,7 @@ button.close {
     padding-left: .4em;
     padding-right: .4em;
     background-color: #000000;
-    
+
 }
 
 button.resume {
@@ -57,7 +57,7 @@ button.resume {
     padding-left: .4em;
     padding-right: .4em;
     background-color: #000000;
-    
+
 }
 
 
@@ -250,7 +250,7 @@ progressbar#printing-progress trough {
     background: linear-gradient(180deg, rgba(63, 63, 63, 0.90) 0%, rgba(63, 63, 63, 0.00) 100%);
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     border-radius: 15px;
-   
+
     padding: .5rem;
 }
 #printing-stop-button {
@@ -277,7 +277,7 @@ progressbar#printing-progress trough {
     background: linear-gradient(180deg, rgba(63, 63, 63, 0.9) 0%, rgba(63, 63, 63, 0) 100%);
     border-radius: 10px;
     min-height: 3em;
-   /*margin: 1em;*/ 
+   /*margin: 1em;*/
 
     padding-left: .6em;
     padding-right: .6em;
@@ -366,7 +366,7 @@ font-size: 1.4em;
     border-radius: 12px;
     min-height: 4rem;
     min-width: 3.5rem;
-    
+
 }
 
 #up-down-buttons:active {
@@ -374,7 +374,7 @@ font-size: 1.4em;
     border-radius: 12px;
     min-height: 4rem;
     min-width: 3.5rem;
-    
+
 }
 
 #move-grid-buttons{
@@ -382,7 +382,7 @@ font-size: 1.4em;
     border-radius: 12px;
     min-height: 6rem;
     min-width: 5rem;
-   
+
 }
 
 #move-grid-buttons:active {
@@ -390,7 +390,7 @@ font-size: 1.4em;
     border-radius: 12px;
     min-height: 6rem;
     min-width: 5rem;
-   
+
 }
 #home-buttons {
     background-color: #007B65;
@@ -433,7 +433,7 @@ font-size: 1.4em;
     border-bottom: 1px solid #C1C1C1;
 }
 #right-button-box {
-    
+
     border-radius: 0 1em 1em 0;
     padding: .5em;
     border-top: 1px solid #C1C1C1;
@@ -442,7 +442,7 @@ font-size: 1.4em;
 }
 #stepper-button-box {
     padding: .5em;
-   
+
 }
 #move-button {
     border-radius: .5em;
@@ -454,7 +454,7 @@ button.move-button-active {
     background-color: #00477B;
     border: 1px solid #00477B;
     min-height: 3.5rem;
-    
+
 }
 
 button.increase-button-active {
@@ -462,7 +462,7 @@ button.increase-button-active {
     border: 1px solid #6B6B6B;
     min-width:7rem;
     min-height: 3.5rem;
-  
+
 }
 
 
@@ -473,7 +473,7 @@ button.increase-button-active {
     padding-right: 1.2em;
     padding-left: 1.2em;
     min-width: 3rem;
-   
+
 }
 #extrusion-speed-button:focus {
     border-radius: .5em;
@@ -483,7 +483,7 @@ button.increase-button-active {
     padding-right: 1.2em;
     padding-left: 1.2em;
     min-width: 3rem;
-    
+
 }
 #move-label-box {
     min-height: 4em;
@@ -499,7 +499,7 @@ button.increase-button-active {
     margin-bottom: 4px;
 }
 button#increase-button {
-    
+
     border: 1px solid #6B6B6B;
     min-width:7rem;
     min-height: 3.5rem;
@@ -554,7 +554,7 @@ button#increase-button {
     min-width: 5rem;
     border-radius: 10px;
     min-height: 4.5rem;
-   
+
 }
 #selected-extuder-button:active label {
     color:#ffffff
@@ -571,7 +571,7 @@ button#increase-button {
     padding: .75rem;
     min-width: 5rem;
     border-radius: 7px;
-    
+
 }
 #z-offset-image {
     margin-top: 4.1rem;
@@ -650,7 +650,7 @@ scale.speed-factor-scale highlight{
     border-radius: 2rem;
     min-height: .3em;
     background-color: #00477B;
-  
+
 }
 scale.speed-factor-scale slider{
     background-image: none;
@@ -666,7 +666,7 @@ scale.fan-speed highlight{
     min-height: .1em;
     background-color: #00477B;
     color: #00477B;
-    
+
     border-radius:2rem 0 0 2rem;
 }
 scale.fan-speed slider{
@@ -689,14 +689,14 @@ scale.fan-speed slider{
 }
 
 #menu-buttons:active {
- 
+
     border-radius: 0px 0px 40px 40px;
     background-color: #333333;
     border: none;
 }
 
 #region-combo-button {
- 
+
     border-radius: 0px 0px 40px 40px;
     background-color: #333333;
     border: none;
@@ -733,11 +733,11 @@ button#pla-abs-button:active {
 
 button#pla-abs-button label{
     color: #FFFFFF;
-    
+
 }
 button#pla-abs-button:active label{
     color: #9A9A9A;
-    
+
 }
 
 /*General Button*/
@@ -777,12 +777,12 @@ button#flat-button-green {
 }
 
 button#flat-button-yellow label{
-   
+
     color: #F7BA17;
 }
 
 button#flat-button-green label{
-   
+
     color: #37AB56;
 }
 
@@ -926,7 +926,7 @@ button#printer-detail-button:active label{
 /*PopUp*/
 label#info-popup-label {
     color: #23A6F0;
-    font-size: 20px; 
+    font-size: 20px;
 }
 /*Home Button*/
 button#flat-icon-button-green {
@@ -973,7 +973,7 @@ button#flat-button-white {
 
 
 label#language-label {
-    font-size:18;
+    font-size:18px;
     color:#9A9A9A;
 }
 
@@ -1020,7 +1020,7 @@ label#contract-approval-label {
     font-size: .75em;
 }
 #contract-accept-label {
-    font-size: 20;
+    font-size: 20px;
 }
 #radio-selection-box {
     font-size: 2em;
@@ -1041,10 +1041,10 @@ label#contract-approval-label {
     border-radius: 15px;
 }
 #region-combobox-button {
- 
+
     margin: 0px;
     background-color: #20292F;
-  
+
 }
 #region-combobox window.popup {
     color: royalblue;
@@ -1059,7 +1059,7 @@ list#region {
     background-color: #333333;
     border: 1px solid #9D9797;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-   
+
     color: #1A1C1E;
     font-size: 25px;
     border: 0px;
@@ -1098,9 +1098,9 @@ entry#device-name {
     border-radius: 15px;
 }
 label#wifi-label {
-    
+
     color:#f0f0f0;
-    
+
 }
 
 treeview.view#tree-list {
@@ -1126,7 +1126,7 @@ entry#counter-input {
     background-color: transparent;
     color: #8C8888;
     border: 1px solid #000000;
-  
+
 }
 #counter-input-box {
     margin-left: .75rem;
@@ -1148,23 +1148,23 @@ window {
     -gtk-icon-shadow: none;
 }
 
-frame { 
+frame {
     border: 2px solid #fff;
     border-radius: 7px;
     min-height: .5em;
 }
 
-frame#chip { 
+frame#chip {
     border: 0px;
     border-radius: 10px
 }
 
-frame#extrude { 
+frame#extrude {
     border-radius: 10px;
     border: 0px solid #878787;
 }
 
-frame.extrude-active { 
+frame.extrude-active {
     border: 1px solid #878787;
     background-color: #9D9999;
     border-radius: 10px
@@ -1186,7 +1186,7 @@ frame#counter-frame>border {
 }
 
 label#counter-input-label{
-  
+
 
 }
 #home-multifilament-select-box {
@@ -1254,7 +1254,7 @@ button.color4 {
 }
 button.color5 {
     border-bottom: .4em solid #A7E100;
-    
+
 }
 
 
@@ -1300,13 +1300,13 @@ combobox arrow {
     margin-top: .6em;
     margin-bottom: .6em;
     border-radius: 0.5em;
-  
+
 }
 #extruder-switch-2  {
     min-width: 4em;
     min-height: 2em;
     border-radius: 0.5em;
-  
+
 }
 
 #extruder-switch slider {
@@ -1341,8 +1341,8 @@ label {
 
 #e1-button  {
   background-color: transparent;
- 
- 
+
+
 }
 
 #color-button-box {
@@ -1368,7 +1368,7 @@ trough {
     min-height: 2em;
     background-color: #404E57;
     color: white;
-   
+
 }
 
 trough highlight, trough progress {
@@ -1550,7 +1550,7 @@ trough {
     padding: 0.2em;
     border-radius: 5px;
     min-width: 5.7rem;
-   
+
 }
 
 .keyboard_pad_special {
@@ -1558,7 +1558,7 @@ trough {
     padding: 0.2em;
     border-radius: 5px;
     min-width: 5.7rem;
-   
+
 }
 
 .message_popup_popover {
@@ -1886,7 +1886,7 @@ button.macros label{
  font-size: .8em;
 }
 #bottom-menu-box {
-   
+
 }
 
 #auto-leveling-right-box {
@@ -1895,10 +1895,10 @@ button.macros label{
 .numpad-new-label {
     border: 1px solid #F3F3F3;
     background-color: #000000;
-    
+
 }
 #numpad-entry-box {
-    
+
     border-radius: 10px;
     min-height: 4rem;
 }
@@ -1939,7 +1939,7 @@ button.macros label{
     border-radius: 7px;
     border: 1.3px solid #9E9E9E;
     min-width: 11rem;
-   
+
 }
 #movement-name-box {
     min-width: 10rem;
@@ -2035,7 +2035,7 @@ box.auto-leveling-label-box-active-white {
     font-size: 1.1rem;
 }
 button#change-offset-button {
-    
+
     border: 2px solid #6B6B6B;
     min-width:3rem;
     min-height: 3.5rem;
@@ -2076,7 +2076,7 @@ button#change-offset-button2-active {
     border-radius: 0 .5rem .5rem 0;
 }
 button#probe-change-offset-button {
-    
+
     border: 1.5px solid #6B6B6B;
     min-width:3rem;
     min-height: 3.5rem;
@@ -2112,7 +2112,7 @@ scale.slicer-time-scale highlight{
     border-radius:2rem 0 0 2rem;
 }
 scale.slicer-time-scale slider{
-    
+
 }
 
 scale.movement-setting trough{
@@ -2126,7 +2126,7 @@ scale.movement-setting trough highlight{
     border-radius:1rem 0 0 1rem;
 }
 scale.movement-setting trough slider{
-   
+
 }
 #save-settings-button {
     background-color: #00477B;
@@ -2293,7 +2293,7 @@ combobox.adv-setting-combo window.popup *{
     background-color: #000000;
     border-radius: 15px;
     margin: 0 1rem;
-    
+
 }
 #adv-setting-switch {
     min-width: 3em;
@@ -2337,7 +2337,7 @@ combobox.adv-setting-combo window.popup *{
     border: 3px solid #23A6F0;
     padding: 2rem;
     background-color: #F8FAFF;
-  
+
     border-radius: 5px;
 }
 .alert-info-dialog label{
@@ -2372,8 +2372,8 @@ combobox.adv-setting-combo window.popup *{
 .numpad-new-button {
     border-radius: .4em;
     background-color: #D9D9D9;
-    
-    
+
+
 }
 .numpad-new-button label{
     color: #000000;
@@ -2387,9 +2387,9 @@ combobox.adv-setting-combo window.popup *{
 #numpad-approve-button {
     border-radius: .4em;
     background-color: #00477B;
-} 
+}
 #numpad-close-button {
-   
+
     background-color: transparent;
 }
 #numpad-close-button:active {
