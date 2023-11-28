@@ -20,36 +20,50 @@ class CoPrintSdCardSelectionProcess(ScreenPanel):
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
+
+        self.sdcard_utils = None
+
         initHeader = InitHeader(
             self,
             _('Writing to SD Card'),
-            _('Insert the SD Card of your printer into ChromaPad to change the program of your 3D printer.'),
+            _('USD drive insertion or existing USB Card Reader is detected.'),
             "sdkart"
         )
 
-        self.image = self._gtk.Image("usbstickokey", self._gtk.content_width * .25 , self._gtk.content_height * .25)
+        self.image = self._gtk.Image("usbstickokey", self._gtk.content_width * .25, self._gtk.content_height * .25)
 
-
-        self.continueButton = Gtk.Button(_('USB drive has been inserted.'),name ="flat-button-green")
+        self.continueButton = Gtk.Button(_('USB drive has been inserted.'), name="flat-button-green")
         self.continueButton.connect("clicked", self.on_click_continue_button)
         self.continueButton.set_hexpand(True)
         self.continueButton.set_margin_left(self._gtk.action_bar_width *3)
         self.continueButton.set_margin_right(self._gtk.action_bar_width*3)
+
+        self.continueButtonExplicit = Gtk.Button(_("Continue"), name="flat-button-blue", hexpand=True)
+        self.continueButtonExplicit.connect("clicked", self.on_click_continue_button)
+
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
         buttonBox.set_center_widget(self.continueButton)
 
+        buttonBoxExplicit = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        buttonBoxExplicit.pack_start(self.continueButtonExplicit, False, False, 0)
+        buttonBoxExplicit.set_center_widget(self.continueButtonExplicit)
+
         backIcon = self._gtk.Image("back-arrow", 35, 35)
         backLabel = Gtk.Label(_("Back"), name="bottom-menu-label")
-        backButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        backButtonBox.set_halign(Gtk.Align.CENTER)
-        backButtonBox.set_valign(Gtk.Align.CENTER)
+
+        backButtonBox = Gtk.Box(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            spacing=0,
+            halign=Gtk.Align.CENTER,
+            valign=Gtk.Align.CENTER
+        )
         backButtonBox.pack_start(backIcon, False, False, 0)
         backButtonBox.pack_start(backLabel, False, False, 0)
-        self.backButton = Gtk.Button(name ="back-button")
+        self.backButton = Gtk.Button(name="back-button")
         self.backButton.add(backButtonBox)
-        self.backButton.connect("clicked", self.on_click_back_button, 'co_print_sd_card_selection_process_waiting')
-        self.backButton.set_always_show_image (True)
+        self.backButton.connect("clicked", self.on_click_back_button, 's3dp_flash_mode_selection')
+        self.backButton.set_always_show_image(True)
         mainBackButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         mainBackButtonBox.pack_start(self.backButton, False, False, 0)
 
@@ -57,21 +71,19 @@ class CoPrintSdCardSelectionProcess(ScreenPanel):
         main.pack_start(mainBackButtonBox, False, False, 0)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(self.image, True, True, 25)
+        main.pack_end(buttonBoxExplicit, True, False, 5)
         main.pack_end(buttonBox, True, False, 15)
 
-
-
-
         self.content.add(main)
-        self._screen.base_panel.visible_menu(False)
 
-    def radioButtonSelected(self, button, baudRate):
-        self.selected = baudRate
-
+    def initialize(self, sdcard_utils):
+        self.sdcard_utils = sdcard_utils
 
     def on_click_continue_button(self, continueButton):
+        # TODO : build and save to sd card ..
+        #  panel or waiting dialog
+        #  unmount/disconnect usb drive after process success
         self._screen.show_panel("co_print_printing_selection", "co_print_printing_selection", None, 2)
 
     def on_click_back_button(self, button, data):
-
-        self._screen.show_panel(data, data, "Language", 1, False)
+        self._screen.show_panel(data, data, None, 2)
