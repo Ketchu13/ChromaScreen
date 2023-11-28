@@ -1,6 +1,6 @@
 import pygame
 
-logo_path = "/home/noya/init.png"
+logo_path = "/home/pi/init.png"
 
 pygame.init()
 screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
