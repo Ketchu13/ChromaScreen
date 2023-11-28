@@ -28,7 +28,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         self.labels['text'].set_halign(Gtk.Align.CENTER)
         self.labels['text'].set_valign(Gtk.Align.CENTER)
 
-        self.labels['menu'] = self._gtk.Button("settings", _("Menu Noya"), "color4")
+        self.labels['menu'] = self._gtk.Button("settings", _("Menu Network"), "color4")
         self.labels['menu'].connect("clicked", self._screen._go_to_submenu, "")
         self.labels['restart'] = self._gtk.Button("refresh", _("Klipper Restart"), "color1")
         self.labels['restart'].connect("clicked", self.restart)
@@ -60,7 +60,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         main.pack_start(info, True, True, 0)
         main.pack_end(self.labels['actions'], False, False, 0)
-        
+
         self.show_restart_buttons()
         self.start_timer()
         self.content.add(main)
@@ -75,7 +75,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
     def on_timeout(self, *args, **kwargs):
         """ A timeout function.
         Return True to stop it.
-        This is not a precise timer since next timeout  
+        This is not a precise timer since next timeout
         is recalculated based on the current time."""
         self._screen.show_panel("co_print_language_select_screen", "co_print_language_select_screen", "Language", 1,
                                 False)
@@ -86,15 +86,15 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             self._screen.show_panel("co_print_language_select_screen", "co_print_language_select_screen", "Language", 1, False)
             """
 
-        
+
         #self._screen.show_panel("co_print_network_setting_screen", "co_print_network_setting_screen", "Language", 1, False)
-        #self._screen.show_panel("co_print_change_printer", "co_print_change_printer", "Language", 1, False)        
-        #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", "Language", 1, False) 
-        
+        #self._screen.show_panel("co_print_change_printer", "co_print_change_printer", "Language", 1, False)
+        #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", "Language", 1, False)
+
         self.timeout_id = None
         #self.destroy()
         return False
-    
+
     def clear_action_bar(self):
         for child in self.labels['actions'].get_children():
             self.labels['actions'].remove(child)
