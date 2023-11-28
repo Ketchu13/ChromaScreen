@@ -1,7 +1,7 @@
 import logging
 import os
 import subprocess
-
+import time
 
 import gi
 from ks_includes.widgets.infodialog import InfoDialog
@@ -24,12 +24,13 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
+        self.prev_network = None
+        self.wifi = None
         self.waitDialog = None
         self.password = None
         self.dialog = None
         self.source = None
-        self.selectedMenu = None
-
+        self.selectedNetwork = None
         initHeader = InitHeader(
             self,
             _('Connection Settings'),
@@ -44,7 +45,7 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         self.selectedWifiImage.set_alignment(1, 0.5)
 
         self.entry = Gtk.Entry(name="device-name")
-        self.entry.connect("activate", self.rename)
+        self.entry.connect("activate", self.add_new_network)
         self.entry.connect("touch-event", self.give_name)
         #self.entry.connect("focus-in-event", self._screen.show_keyboard)
 
@@ -57,9 +58,26 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         self.selectedWifiBox.pack_start(self.selectedWifiName, True, True, 5)
         self.selectedWifiBox.pack_end(self.selectedWifiImage , True, True, 15)
         self.selectedWifiBox.pack_end(eventBox, True, True, 15)
-        self.selectedWifiBox.set_size_request(150, 70)
+        self.selectedWifiBox.set_size_request(300, 70)
         self.selectedWifiBox.set_margin_left(self._gtk.action_bar_width  * 2.6)
         self.selectedWifiBox.set_margin_right(self._gtk.action_bar_width * 2.6)
+
+        # add a label to show connection status and progresss
+        self.label_connecting_info = Gtk.Label("...")
+        self.label_connecting_info.set_halign(Gtk.Align.START)
+        self.label_connecting_info.set_valign(Gtk.Align.START)
+        self.label_connecting_info.set_line_wrap(True)
+        self.label_connecting_info.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+
+        self.scroll = self._gtk.ScrolledWindow()
+        self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        self.scroll.set_min_content_height(self._screen.height * .3)
+        self.scroll.set_kinetic_scrolling(True)
+        self.scroll.get_overlay_scrolling()
+        self.scroll.set_margin_left(self._gtk.action_bar_width * 1)
+        self.scroll.set_margin_right(self._gtk.action_bar_width * 1)
+
+        self.scroll.add(self.label_connecting_info)
 
         self.backButton = Gtk.Button(_('Back'), name="flat-button-blue")
         self.backButton.connect("clicked", self.on_click_back_button)
@@ -79,13 +97,15 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
 
         self.main.pack_start(initHeader, False, False, 0)
         self.main.pack_end(self.tempBox, False, True, 10)
+        self.main.pack_end(self.scroll, True, True, 10)
         self.main.pack_end(self.selectedWifiBox, False, True, 10)
 
         self.content.add(self.main)
 
-    def initialize(self, items):
-        self.selectedMenu = items
-        self.selectedWifiName.set_label(self.selectedMenu)
+    def initialize(self, _network, _wifi):
+        self.selectedNetwork = _network
+        self.wifi = _wifi
+        self.selectedWifiName.set_label(self.selectedNetwork["Name"])
 
     def give_name(self,a,b):
         for child in self.tempBox.get_children():
@@ -107,19 +127,88 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         self.tempBox.pack_start(self.buttonBox, False, False, 0)
         self.content.show_all()
 
-    def rename(self, widget):
-        params = {"source": self.source, "dest": f"gcodes/{self.labels['new_name'].get_text()}"}
+    def add_new_network(self, widget, event=None):
+        print("add new network")
+        self._screen.remove_keyboard()
+        psk = self.entry.get_text()
+        result = False
+        if len(psk) < 8:
+            self._screen.show_popup_message("Password must be at least 8 characters long")
+            return
+        # check if network already exists in supplicant
+        snets = self.wifi.get_supplicant_networks()
+        for netid, net in snets.items():
+            if net['ssid'] == self.selectedNetwork["Name"]:
+                result = True
+                # .wifi.delete_network(netid)
+                break
+            # add network again
+        if not result and len(psk)<=0:
+            result = self.wifi.add_network(self.selectedNetwork["Name"], psk)
+        elif result and len(psk)<=0:
+            result = self.wifi.modify_network(self.selectedNetwork["Name"], psk)
+        elif not result and (not psk or len(psk)<8):
+            self._screen.show_popup_message("For non known networks, you have to enter a password\nPassword must be at least 8 characters long")
+            return
+
+        if result:
+            print("SSID: %s - PSK: %s" % (self.selectedNetwork["Name"], psk))
+            print("result: ", result)
+            self.connect_network(widget, self.selectedNetwork["Name"])
+        else:
+            self._screen.show_popup_message("Error adding network %s" % self.selectedNetwork["Name"])
+
+    def connect_network(self, widget, ssid):
+
+        snets = self.wifi.get_supplicant_networks()
+        isdef = False
+        for netid, net in snets.items():
+            if net['ssid'] == ssid:
+                isdef = True
+                break
+        # if current network is not defined in supplicant
+        if not isdef:
+            self.showMessageBox(_('Connection failed.'))
+            return
+
+        # msg during connect attempt
+        self.prev_network = self.wifi.get_connected_ssid()
+
+        self.label_connecting_info.set_text(_("Starting WiFi Association"))
+        self.label_connecting_info.show_all()
+        self.wifi.add_callback("connecting_status", self.connecting_status_callback)
+        self.wifi.connect(ssid)
+
+    # connection progress terminal output
+    def connecting_status_callback(self, msg):
+        self.label_connecting_info.set_text(f"{self.label_connecting_info.get_text()}\n{msg}")
+        self.label_connecting_info.show_all()
+
+    def connected_callback(self, ssid, prev_ssid):
+        logging.info("Now connected to a new network")
+        if ssid is not None:
+            print("new ssid:", ssid)
+        else:
+            print("new ssid is None")
+            ssid = self.wifi.get_connected_ssid() or "UKN"
+        if prev_ssid is not None:
+            print("old ssid: ", prev_ssid)
+        self.connecting_status_callback(_("Connected to %s") % ssid)
+        self.wifi.remove_callback("connecting_status", self.connecting_status_callback)
+        self.wifi.remove_callback("connected", self.connected_callback)
+        time.sleep(3)
+        self.on_click_back_button(None)
 
     def on_click_back_button(self, button):
-        self._screen.show_panel("co_print_wifi_selection", "co_print_wifi_selection", None, 2)
+        self._screen.show_panel("network", "network", None, 2)
 
     def execute_command_and_show_output(self):
         try:
-            status = self.connect_to(self.selectedMenu, self.password)
+            status = self.connect_to(self.selectedNetwork, self.password)
 
             if status:
                 self.close_dialog(self.waitDialog)
-                self._screen.show_panel("co_print_wifi_selection_connect", "co_print_wifi_selection_connect", None, 2, True, items=self.selectedMenu, password=self.password)
+                self._screen.show_panel("co_print_wifi_selection_connect", "co_print_wifi_selection_connect", None, 2, True, items=self.selectedNetwork, password=self.password)
             else:
                 self.close_dialog(self.waitDialog)
                 self.showMessageBox(_('Connection failed.'))
@@ -142,19 +231,7 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         response = self.dialog.run()
 
     def on_click_continue_button(self, continueButton):
-        self.password = self.entry.get_text()
-
-        GLib.idle_add(self.execute_command_and_show_output)
-        self.waitDialog = InfoDialog(
-            self,
-            _("Please Wait"),
-            True
-        )
-        self.waitDialog.get_style_context().add_class("alert-info-dialog")
-
-        self.waitDialog.set_decorated(False)
-        self.waitDialog.set_size_request(0, 0)
-        response = self.waitDialog.run()
+        self.add_new_network(None)
 
     def what_wifi(self):
         process = subprocess.run(['nmcli', '-t', '-f', 'ACTIVE,SSID', 'dev', 'wifi'], stdout=subprocess.PIPE)

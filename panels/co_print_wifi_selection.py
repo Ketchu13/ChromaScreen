@@ -1,15 +1,14 @@
 import logging
 import os
-import re
 
 import gi
-import subprocess
-from ks_includes.widgets.wificard import WifiCard
-from ks_includes.widgets.initheader import InitHeader
-gi.require_version("Gtk", "3.0")
 import netifaces
-from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 
+from ks_includes.widgets.initheader import InitHeader
+from ks_includes.widgets.wificard2 import WifiCard2
+
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk, GLib
 from ks_includes.screen_panel import ScreenPanel
 
 
@@ -18,48 +17,65 @@ def create_panel(*args):
 
 
 class CoPrintWifiSelection(ScreenPanel):
-    def scan_wifi_networks(self, interface="wlan0"):
-        try:
-            # Exécute la commande pour scanner les réseaux WiFi
-            result = os.popen(f"sudo iw dev {interface} scan").read()
-
-            # Utiliser des expressions régulières pour extraire les informations des réseaux WiFi
-            pattern_ssid = re.compile(r"SSID: (.+)")
-            pattern_signal_strength = re.compile(r"signal: (.+) dBm")
-
-            # Rechercher les correspondances dans le résultat du scan
-            matches_ssid = pattern_ssid.findall(result)
-            matches_signal_strength = pattern_signal_strength.findall(result)
-
-            wifi_list = {}
-            # update Wi-Fi signal strength by a picture
-            for idx, matche_ssid in enumerate(matches_ssid):
-                wifi_list[str(idx)] = {"Name": matche_ssid}
-                signal_dbm = float(matches_signal_strength[idx])
-                wifi_list[str(idx)]["signal_dbm"] = signal_dbm
-                print(wifi_list[str(idx)]['Name'])
-                if int(signal_dbm) > -50:
-                    wifi_list[str(idx)]['Icon'] = 'signal-high'
-                elif int(signal_dbm) > -70:
-                    wifi_list[str(idx)]['Icon'] = 'signal-medium'
-                else:
-                    wifi_list[str(idx)]['Icon'] = 'signal-low'
-            # Écrire les informations dans un fichier JSON
-            return wifi_list
-
-        except Exception as e:
-            # Gérer les erreurs liées à l'exécution de la commande
-            print(f"Erreur lors de la récupération des réseaux WiFi : {str(e)}")
-            return None
+    initialized = False
 
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
         self.selectedWifiIndex = None
+        self.show_add = False
 
-        self.wifies = []
-        # self.wifi_list = self.scan_wifi_networks()
+        self.networks = {}
 
+        self.interface = None
+        self.prev_network = None
+
+        self.update_timeout = None
+
+        self.network_interfaces = netifaces.interfaces()
+        self.wireless_interfaces = [iface for iface in self.network_interfaces if iface.startswith('w')]
+
+        self.wifi = None
+
+        self.use_network_manager = os.system('systemctl is-active --quiet NetworkManager.service') == 0
+
+        if len(self.wireless_interfaces) > 0:
+            logging.info(f"Found wireless interfaces: {self.wireless_interfaces}")
+            if self.use_network_manager:
+                logging.info("Using NetworkManager")
+                from ks_includes.wifi_nm import WifiManager
+            else:
+                logging.info("Using wpa_cli")
+                from ks_includes.wifi import WifiManager
+            self.wifi = WifiManager(self.wireless_interfaces[0])
+        else:
+            # ChromaPad don't have any ethernet port, so we don't need to show ethernet networks
+            # and if no wireless interfaces found, I'm afraid Dave, we have to use loopback interface
+            logging.error("No wireless interfaces found")
+            # display msg
+            # for now just return
+            return
+
+        # Get interface
+        gws = netifaces.gateways()
+        if "default" in gws and netifaces.AF_INET in gws["default"]:
+            self.interface = gws["default"][netifaces.AF_INET][1]
+        else:
+            ints = netifaces.interfaces()
+            if 'lo' in ints:
+                ints.pop(ints.index('lo'))
+            if len(ints) > 0:
+                self.interface = ints[0]
+            else:
+                self.interface = 'lo'
+        # Get IP Address
+        res = netifaces.ifaddresses(self.interface)
+        if netifaces.AF_INET in res and len(res[netifaces.AF_INET]) > 0:
+            self.ip = res[netifaces.AF_INET][0]['addr']
+        else:
+            self.ip = None
+
+        # template try 1
         initHeader = InitHeader(
             self,
             _('Connection Settings'),
@@ -67,16 +83,10 @@ class CoPrintWifiSelection(ScreenPanel):
             "wifi"
         )
 
-        wifi_flowbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        wifi_flowbox.set_halign(Gtk.Align.CENTER)
-        wifi_flowbox.set_hexpand(True)
-
         spinner = Gtk.Spinner()
         spinner.props.width_request = 100
         spinner.props.height_request = 100
         spinner.start()
-
-        GLib.idle_add(self.refresh, None)
 
         self.scroll = self._gtk.ScrolledWindow()
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -86,20 +96,29 @@ class CoPrintWifiSelection(ScreenPanel):
         # self.scroll.set_min_content_width(self._screen.height * .3)
         self.scroll.add(spinner)
 
+        buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
+        buttonBox.set_halign(Gtk.Align.CENTER)
+
+        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue")
+        self.continueButton.connect("clicked", self.on_click_continue_button)
+        self.continueButton.set_sensitive(False)
+        buttonBox.pack_start(self.continueButton, False, False, 0)
+
+        self.ip_label = Gtk.Label()
+        self.ip_label.set_hexpand(True)
+        buttonBox.pack_start(self.ip_label, False, False, 0)
+
+        if self.ip is not None:
+            self.update_ip_label(ip=self.ip)
+
         refreshIcon = self._gtk.Image("update", self._screen.width * .028, self._screen.width * .028)
         refreshButton = Gtk.Button(name="setting-button")
-        refreshButton.connect("clicked", self.refresh)
+        refreshButton.connect("clicked", self.reload_networks)
         refreshButton.set_image(refreshIcon)
         refreshButton.set_always_show_image(True)
         refreshButtonBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         refreshButtonBox.set_valign(Gtk.Align.CENTER)
         refreshButtonBox.add(refreshButton)
-
-        self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue")
-        self.continueButton.connect("clicked", self.on_click_continue_button)
-        buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
-        buttonBox.set_halign(Gtk.Align.CENTER)
-        buttonBox.pack_start(self.continueButton, False, False, 0)
         buttonBox.pack_start(refreshButtonBox, False, False, 0)
 
         backIcon = self._gtk.Image("back-arrow", 35, 35)
@@ -130,66 +149,103 @@ class CoPrintWifiSelection(ScreenPanel):
 
         self.content.add(page)
 
-    def wifiChanged(self, widget, event, name):
-        self.selectedWifiIndex = name
-        self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True, items=self.selectedWifiIndex)
+        # self.wifi.add_callback("connected", self.connected_callback)
+        # self.wifi.add_callback("scan_results", self.scan_callback)
+        self.wifi.add_callback("popup", self.popup_callback)
 
-    def on_click_continue_button(self, continueButton):
-        """if self.selectedWifiIndex is not None:
-            self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True, items=self.selectedWifiIndex)
-        else:
-            #self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)"""
-        self._screen.show_panel("co_print_fwmenu_selection", "co_print_fwmenu_selection", None, 2)
+        GLib.idle_add(self.reload_networks, None)
 
-    #asıl kullanılan metod bu diğer metodu sayfayı görüntülemek için yazdım
-    def refresh(self, widget):
-        # refresh the Wi-Fi list
-        spinner = Gtk.Spinner()
-        spinner.props.width_request = 100
-        spinner.props.height_request = 100
-        spinner.start()
-        # clear the scroll
-        for child in self.scroll.get_children():
-            self.scroll.remove(child)
-        # display the spinner
-        self.scroll.add(spinner)
-        self.content.show_all()
+        if self.update_timeout is None:
+            self.update_timeout = GLib.timeout_add_seconds(5, self.reload_networks)
 
-        GLib.idle_add(self.wifi_process)
+        self.initialized = True
+
+    def update_ip_label(self, ip):
+        self.ip_label.set_text(f"IP: {ip}  ")
+        self.continueButton.set_sensitive(True)
+
+    @staticmethod
+    def get_signal_icon(signal_dbm):
+        icon = 'signal-none'
+        try:
+            signal_dbm = float(signal_dbm)
+            if int(signal_dbm) > -50:
+                icon = 'signal-high'
+            elif int(signal_dbm) > -70:
+                icon = 'signal-medium'
+            else:
+                icon = 'signal-low'
+        except Exception as e:
+            logging.error(f"Error getting signal icon: {e}")
+        return icon
+
+    def wifiChanged(self, widget, event, _network):
+        self.selectedWifiIndex = _network
+        if "Name" in _network:
+            if self.update_timeout is not None:
+                GLib.source_remove(self.update_timeout)
+                self.update_timeout = None
+            self._screen.show_panel("co_print_wifi_selection_select", "co_print_wifi_selection_select", None, 2, True,
+                                    _network=self.selectedWifiIndex, _wifi=self.wifi)
 
     def wifi_process(self):
-        wifi_flowbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        wifi_flowbox.set_halign(Gtk.Align.CENTER)
+        self.networks = self.wifi.get_networks()
+        if not self.networks:
+            return
+
+        wifi_flowbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
         wifi_flowbox.set_hexpand(True)
 
-        wifi_list = self.scan_wifi_networks()
-
-        if wifi_list:
-            connected_wifi = self.connected_wifi()
-            for wifi in wifi_list:
-                if wifi_list[wifi]['Name'] == connected_wifi:
-                    wifi_list[wifi]['Status'] = "Connected"
+        for network in self.networks:
+            curr_network = {'Name': network}
+            netinfo = self.wifi.get_network_info(network)
+            if "connected" in netinfo:
+                curr_network["connected"] = netinfo['connected']
+            else:
+                curr_network["connected"] = False
+            if curr_network["connected"] or self.wifi.get_connected_ssid() == network:
+                stream = os.popen('hostname -f')
+                hostname = stream.read().strip()
+                ifadd = netifaces.ifaddresses(self.interface)
+                if netifaces.AF_INET in ifadd and len(ifadd[netifaces.AF_INET]) > 0:
+                    self.ip = ifadd[netifaces.AF_INET][0]['addr']
+                    curr_network["ipv4"] = f"<b>IPv4:</b> {self.ip} "
+                    self.ip_label.set_text(self.ip)
                 else:
-                    wifi_list[wifi]['Status'] = "Available"
-                wifione = WifiCard(self, wifi_list[wifi]['Icon'], wifi_list[wifi]['Name'], wifi_list[wifi]['Status'])
-                wifi_flowbox.pack_start(wifione, False, False, 0)
-        # debug /show
-        else:
-            wifione     = WifiCard(self, "signal-high"  , "Co Print 5G"      , "Connected")
-            wifitwo     = WifiCard(self, "signal-high"  , "TurkTelekom Wifi" , "Click to connect.")
-            wifithree   = WifiCard(self, "signal-medium", "Superonline Wifi" , "Click to connect.")
-            wififour    = WifiCard(self, "signal-medium", "Superonline Wifi" , "Click to connect.")
-            wififive    = WifiCard(self, "signal-medium", "Superonline Wifi" , "Click to connect.")
-            wifisix     = WifiCard(self, "signal-low"   , "Superonline Wifi2", "Click to connect.")
-            wifiseven   = WifiCard(self, "signal-low"   , "Superonline Wifi2", "Click to connect.")
+                    curr_network["ipv4"] = ""
+                if netifaces.AF_INET6 in ifadd and len(ifadd[netifaces.AF_INET6]) > 0:
+                    curr_network["ipv6"] = f"<b>IPv6:</b> {ifadd[netifaces.AF_INET6][0]['addr'].split('%')[0]} "
+                else:
+                    curr_network["ipv6"] = ""
+                curr_network["info"] = '<b>' + _(
+                    "Hostname") + f':</b> {hostname}\n{curr_network["ipv4"]}\n{curr_network["ipv6"]}\n'
+            elif "psk" in netinfo:
+                curr_network["info"] = _("Password saved")
+            else:
+                curr_network["info"] = _("Available")
+            if "encryption" in netinfo:
+                if netinfo['encryption'] != "off":
+                    curr_network["encryption"] = netinfo['encryption'].upper()
+            if "frequency" in netinfo:
+                curr_network["frequency"] = "2.4 GHz" if netinfo['frequency'][0:1] == "2" else "5 Ghz"
+            if "channel" in netinfo:
+                curr_network["channel"] = _("Channel") + f' {netinfo["channel"]}'
+            if "signal_level_dBm" in netinfo:
+                curr_network["signal_level_dBm"] = f'{netinfo["signal_level_dBm"]} ' + _("dBm")
+                curr_network["signal_icon"] = self.get_signal_icon(netinfo["signal_level_dBm"])
+            # check item validity
+            if ("signal_icon" not in curr_network or
+                    "Name" not in curr_network or
+                    "connected" not in curr_network or
+                    (curr_network["connected"] is False and "info" not in curr_network)):
+                print("invalid network:", curr_network)
+                continue
 
-            wifi_flowbox.pack_start(wifione  , True, True, 0)
-            wifi_flowbox.pack_start(wifitwo  , True, True, 0)
-            wifi_flowbox.pack_start(wifithree, True, True, 0)
-            wifi_flowbox.pack_start(wififour , True, True, 0)
-            wifi_flowbox.pack_start(wififive , True, True, 0)
-            wifi_flowbox.pack_start(wifisix  , True, True, 0)
-            wifi_flowbox.pack_start(wifiseven, True, True, 0)
+            wifi_card = WifiCard2(
+                self,
+                curr_network
+            )
+            wifi_flowbox.pack_start(wifi_card, False, False, 0)
 
         # clear the scroll
         for child in self.scroll.get_children():
@@ -198,18 +254,53 @@ class CoPrintWifiSelection(ScreenPanel):
         self.scroll.add(wifi_flowbox)
         self.content.show_all()
 
-    @staticmethod
-    def connected_wifi():
-        try:
-            result = os.popen(f"iwgetid wlan0 -r").read().strip()
-            return result
-        except Exception as e:
-            print(f"Error while getting connected Wi-Fi name: {str(e)}")
-            return None
+    def popup_callback(self, msg):
+        print("popup_callback:", msg)
+        self._screen.show_popup_message(msg)
 
+    def connected_callback(self, ssid, prev_ssid):
+        print("Now connected to a new network")
+        self.reload_networks()
 
-    # def on_click_continue_button(self, continueButton):
-    #     self._screen.show_panel("co_print_fwmenu_selection", "co_print_fwmenu_selection", "Language", 1, False)
+    def get_connected_network_info(self):
+        stream = os.popen('hostname -f')
+        hostname = stream.read().strip()
+        ifadd = netifaces.ifaddresses(self.interface)
+        ipv4 = ""
+        ipv6 = ""
+        if netifaces.AF_INET in ifadd and len(ifadd[netifaces.AF_INET]) > 0:
+            ipv4 = ifadd[netifaces.AF_INET][0]['addr']
+            # self.labels['ip'].set_text(f"IP: {ifadd[netifaces.AF_INET][0]['addr']}  ")
+        if netifaces.AF_INET6 in ifadd and len(ifadd[netifaces.AF_INET6]) > 0:
+            ipv6 = ifadd[netifaces.AF_INET6][0]['addr'].split('%')[0]
 
-    def on_click_back_button(self, button, data):
-        self._screen.show_panel(data, data, "Language", None, 2)
+        network_infos = {
+            "hostname": hostname,
+            "ipv4": ipv4,
+            "ipv6": ipv6,
+            "interface": self.interface,
+            "connected": True
+        }
+        return network_infos
+
+    def reload_networks(self, widget=None):
+        if self.wifi.initialized:
+            # refresh the Wi-Fi list
+            spinner = Gtk.Spinner()
+            spinner.props.width_request = 100
+            spinner.props.height_request = 100
+            spinner.start()
+            # clear the scroll
+            for child in self.scroll.get_children():
+                self.scroll.remove(child)
+            # display the spinner
+            self.scroll.add(spinner)
+            self.content.show_all()
+            GLib.idle_add(self.wifi_process)
+
+    def on_click_continue_button(self, continueButton, target_panel=None):
+        logging.info("on_click_continue_button")
+        self._screen.show_panel("co_print_fwmenu_selection", "co_print_fwmenu_selection", None, 2)
+
+    def on_click_back_button(self, button, target_panel=None):
+        self._screen.show_panel("co_print_product_naming", "co_print_product_naming", None, 2)

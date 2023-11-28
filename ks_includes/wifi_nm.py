@@ -143,7 +143,14 @@ class WifiManager:
         if cb_type in self._callbacks:
             for cb in self._callbacks[cb_type]:
                 GLib.idle_add(cb, msg)
-
+    def modify_network(self, ssid, psk):
+        for ssid in self.known_networks:
+            con = self.known_networks[ssid]
+            if con.GetSettings()['connection']['id'] == ssid:
+                print(con.GetSettings())
+                con.GetSettings()['802-11-wireless-security']['psk'] = psk
+                print(con.GetSettings())
+        self._update_known_connections()
     def add_network(self, ssid, psk):
         aps = self._visible_networks_by_ssid()
         if ssid in aps:
