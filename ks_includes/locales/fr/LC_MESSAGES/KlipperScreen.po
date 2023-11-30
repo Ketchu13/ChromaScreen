@@ -500,13 +500,13 @@ msgid "Fine Tuning"
 msgstr "Réglages précis"
 
 msgid "Finish"
-msgstr "Terminée"
+msgstr "Terminer"
 
 msgid "Firmware Restart"
-msgstr "Redémarrer Firmware"
+msgstr "Redémarrer le firmware"
 
 msgid "First, tighten the tension screws to their maximum value. Then, for the first step, make a height adjustment using paper."
-msgstr "Tout d’abord, serrez les vis de tension à leur valeur maximale. Ensuite, pour la première étape, effectuez un réglage de la hauteur à l’aide de papier."
+msgstr "Tout d’abord, serrez les vis de tension à leur valeur maximale. Ensuite, effectuez un réglage de la hauteur à l’aide de papier."
 
 msgid "Flash Chip"
 msgstr "Flash Chip"
@@ -524,7 +524,7 @@ msgid "French"
 msgstr "Français"
 
 msgid "Full Update"
-msgstr "Mettre à jour"
+msgstr "Mettre tout à jour"
 
 msgid "Go Back"
 msgstr "Retour"
@@ -551,7 +551,7 @@ msgid "Hide temp."
 msgstr "Masquer temp."
 
 msgid "High"
-msgstr "concert"
+msgstr "Haut"
 
 msgid "Hold Filament"
 msgstr "Maintenir le filament"
@@ -614,7 +614,7 @@ msgid "Input Shaper"
 msgstr "Input Shaper"
 
 msgid "Insert the SD Card of your printer into ChromaPad to change the program of your 3D printer."
-msgstr "Insérez la carte SD de votre imprimante dans le ChromaPad pour changer le programme de votre imprimante 3D."
+msgstr "Insérez la carte SD de votre imprimante dans le ChromaPad pour changer le firmware."
 
 msgid "Interface"
 msgstr "Interface"
@@ -706,7 +706,7 @@ msgid "Load Average"
 msgstr "Charge moyenne"
 
 msgid "Lower Nozzle"
-msgstr "Rapprocher la buse"
+msgstr "Abaisser la buse"
 
 msgid "MCU Architecture"
 msgstr "MCU Architecture"
@@ -736,7 +736,7 @@ msgid "Max"
 msgstr "Max"
 
 msgid "Max Accel to Decel"
-msgstr "Max Accel à Décélération"
+msgstr "Max Accel à Décél."
 
 msgid "Max Acceleration"
 msgstr "Accélération maximale"
@@ -778,7 +778,7 @@ msgid "Moonraker: connected"
 msgstr "Moonraker: connecté"
 
 msgid "Move"
-msgstr "Mouvement"
+msgstr "Déplacer"
 
 msgid "Move Axis"
 msgstr "Déplacer l’axe"
@@ -790,7 +790,7 @@ msgid "Movement"
 msgstr "Mouvement"
 
 msgid "Movement Settings"
-msgstr "Paramètres de mouvement"
+msgstr "Paramètres de déplacement"
 
 msgid "Multi Filament Printing"
 msgstr "Impression multi-filaments"
@@ -802,7 +802,7 @@ msgid "Network"
 msgstr "Réseau"
 
 msgid "Network Info"
-msgstr "Réseau d’information"
+msgstr "Information sur le résseau"
 
 msgid "Never"
 msgstr "Jamais"
@@ -814,7 +814,7 @@ msgid "Next Step"
 msgstr "Prochaine étape"
 
 msgid "No Camera"
-msgstr "Pas d’appareil photo"
+msgstr "Pas de camera"
 
 msgid "Normal"
 msgstr "Normal"
@@ -823,7 +823,7 @@ msgid "Not Connected"
 msgstr "Non connecté"
 
 msgid "Not supported for auto-detection, it needs to be configured in klipperscreen.conf"
-msgstr "Non pris en charge pour la détection automatique, il doit être configuré dans klipperscreen.conf"
+msgstr "Non pris en charge pour la détection automatique, cela doit être configuré dans klipperscreen.conf"
 
 msgid "Not working"
 msgstr "Ne fonctionne pas"
@@ -838,7 +838,7 @@ msgid "Off"
 msgstr "Éteindre"
 
 msgid "Ok"
-msgstr "D’accord"
+msgstr "Ok"
 
 #, python-format
 msgid "Outdated by %d"
@@ -848,7 +848,7 @@ msgid "PSK for"
 msgstr "PSK pour"
 
 msgid "Package will be updated"
-msgstr "Le forfait sera mis à jour"
+msgstr "Le package sera mis à jour"
 
 msgid "Part Fan"
 msgstr "Ventilateurs de refroidissement"
@@ -866,7 +866,7 @@ msgid "Perform a full upgrade?"
 msgstr "Effectuer une mise à jour complète ?"
 
 msgid "Performing Auto Home"
-msgstr "Exécution de la maison automatique"
+msgstr "Exécution automatique de l'origine"
 
 msgid "Pins"
 msgstr "Pins"
@@ -920,19 +920,19 @@ msgid "Predefined Macros"
 msgstr "Macros prédéfinies"
 
 msgid "Preheat"
-msgstr "Préchauffeur"
+msgstr "Préchauffer"
 
 msgid "Preheat ABS"
 msgstr "Préchauffer l’ABS"
 
 msgid "Preheat For Extrude"
-msgstr "Préchauffer pour l’extrusion"
+msgstr "Préchauffer pour extruder"
 
 msgid "Preheat PLA"
 msgstr "Préchauffer le PLA"
 
 msgid "Pressure Advance"
-msgstr "Avance de pression"
+msgstr "Pressure Advance"
 
 msgid "Pressure Advance:"
 msgstr "Pressure Advance:"
@@ -1107,22 +1107,22 @@ msgid "Select"
 msgstr "Sélectionner"
 
 msgid "Select + - increase value"
-msgstr "Sélectionner + - augmenter la valeur"
+msgstr "Sélectionner + - augmente la valeur"
 
 msgid "Select Baud Rate"
 msgstr "Sélectionner la vitesse en bauds"
 
 msgid "Select Microcontroller"
-msgstr "Sélectionner le microcontrôleur"
+msgstr "Sélectionner le micro-contrôleur"
 
 msgid "Select Region"
-msgstr "Sélectionner une région"
+msgstr "Sélectionner votre région"
 
 msgid "Select Your Printer Type"
 msgstr "Sélectionnez votre type d’imprimante"
 
 msgid "Select the Baud Rate to communicate with the processor you will be using."
-msgstr "Sélectionnez le débit en bauds pour communiquer avec le processeur que vous utiliserez."
+msgstr "Sélectionnez le débit en bauds pour communiquer avec le processeur."
 
 msgid "Select the Chip Model"
 msgstr "Sélectionnez le modèle de puce"
@@ -1134,19 +1134,19 @@ msgid "Select the MCU model located on the board you will be controlling."
 msgstr "Sélectionnez le modèle de MCU situé sur la carte que vous contrôlerez."
 
 msgid "Select the bootloader offset located on the board you will be controlling."
-msgstr "Sélectionnez le décalage du chargeur d’amorçage situé sur la carte que vous contrôlerez."
+msgstr "Sélectionnez le décalage du chargeur d’amorçage situé."
 
 msgid "Select the chip model located on the board you will be controlling."
 msgstr "Sélectionnez le modèle de puce situé sur la carte que vous contrôlerez."
 
 msgid "Select the clock reference located on the board you will be controlling."
-msgstr "Sélectionnez la référence de l’horloge située sur la carte que vous contrôlerez."
+msgstr "Sélectionnez la référence de l’horloge située ."
 
 msgid "Select the com interface model located on the board you will be controlling."
-msgstr "Sélectionnez le modèle d’interface com situé sur la carte que vous contrôlerez."
+msgstr "Sélectionnez le modèle d’interface com."
 
 msgid "Select the usb ids located on the board you will be controlling."
-msgstr "Sélectionnez les identifiants USB situés sur la carte que vous contrôlerez."
+msgstr "Sélectionnez les identifiants USB."
 
 msgid "Send"
 msgstr "Envoyer"
