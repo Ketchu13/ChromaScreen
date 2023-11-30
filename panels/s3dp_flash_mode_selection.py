@@ -19,8 +19,8 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.selected = None
 
         flash_methods = [
-            {'Name': "Updating via SD-Card", 'Button': Gtk.RadioButton()},
-            {'Name': "Regular flashing method", 'Button': Gtk.RadioButton()}
+            {'Name': "Updating via SD-Card"     , 'key': 'sdcard', 'Button': Gtk.RadioButton()},
+            {'Name': "Regular flashing method"  , 'key': 'regular', 'Button': Gtk.RadioButton()}
         ]
 
         group = None
@@ -69,15 +69,15 @@ class CoPrintMcuModelSelection(ScreenPanel):
             grid.attach(f, count, row, 1, 1)
 
             if self._screen._fw_config["mcu"]["flash_method"]:
-                if self._screen._fw_config["mcu"]["flash_method"] == flash_method['Name']:
+                if self._screen._fw_config["mcu"]["flash_method"]['Name'] == flash_method['Name']:
                     flash_method['Button'].set_active(True)
-                    self.selected = flash_method['Name']
+                    self.selected = flash_method
                     group = flash_method['Button']
 
             # set group if chip name is the same as the one in fw_config
             if group is None:
                 group = flash_method['Button']
-                self.selected = flash_method['Name']
+                self.selected = flash_method
 
             count += 1
             if count % 2 == 0:
@@ -158,29 +158,32 @@ class CoPrintMcuModelSelection(ScreenPanel):
 
     def on_click_continue_button(self, continueButton, target_panel=None):
         if self.selected:
+            print(self.selected)
             if "mcu" not in self._screen._fw_config:
                 self._screen._fw_config["mcu"] = {}
             self._screen._fw_config["mcu"]["flash_method"] = self.selected
             # check if selected name is "Updating via SD-Card" and if so, show the panel for it
-            if self.selected == _("Updating via SD-Card"):
+            if self.selected['key'] == "sdcard":
                 sdu = SDCardUtils()
                 existing_sd_card = sdu.get_existing_sd()
+                sdcard = None
                 if existing_sd_card:
                     print("Existing sd device:", existing_sd_card)
                     target_panel = "co_print_sd_card_selection_process"
                 else:
                     target_panel = "co_print_sd_card_selection_process_waiting"
-                sdu = None
+                self._screen.show_panel(target_panel, target_panel, None, 2, sdcard_utils=sdu)
 
             else:
+                # curretly not implemented
                 target_panel = "co_print_fwmenu_selection"
-            self._screen.show_panel(target_panel, target_panel, None, 2)
+                self._screen.show_panel(target_panel, target_panel, None, 2)  # todo add msg="Erreur ..."
 
     def on_click_back_button(self, button, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
 
-    def radioButtonSelected(self, button, name):
-        self.selected = name
+    def radioButtonSelected(self, button, flash_method):
+        self.selected = flash_method
 
     def _resolve_radio(self, master_radio):
         active = next((
