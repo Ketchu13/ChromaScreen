@@ -51,7 +51,7 @@ class SDCardUtils:
     def wait_for_new_device(self):
         # timeout
         start_time = time.time()
-
+        self.process_run = True
         context = pyudev.Context()
         monitor = pyudev.Monitor.from_netlink(context)
         monitor.filter_by(subsystem='block', device_type='disk')
@@ -66,9 +66,9 @@ class SDCardUtils:
         except KeyboardInterrupt:
             pass
         finally:
+            self.process_run = False
             observer.stop()
             observer.join()
-            self.process_run = False
 
         return self.device
 
