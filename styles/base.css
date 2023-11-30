@@ -754,6 +754,22 @@ button#flat-button-blue:active {
     border-radius: 5px;
     min-width: 10rem;
 }
+button#flat-button-green2 {
+    background-color: #37AB56;
+    background: #37AB56;
+    font-size:30px;
+    border-radius: 10px;
+    padding: .5em;
+}
+button#flat-button-green2:focus {
+    background-color: #37AB56;
+    background: #37AB56;
+    border: 1px solid #EAEAEA;
+    font-size:1.5em;
+    border-radius: 10px;
+    padding: .5em;
+    min-width: 10rem;
+}
 button#flat-button-blue-brand {
     background-color: #00477B;
     background: #00477B;
