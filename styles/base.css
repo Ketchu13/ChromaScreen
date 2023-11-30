@@ -749,7 +749,7 @@ button#flat-button-blue {
     min-width: 10rem;
 }
 button#flat-button-blue:active {
-    background-color: #ffffff;
+    background-color: #000000;
     font-size: 1.5em;
     border-radius: 5px;
     min-width: 10rem;
