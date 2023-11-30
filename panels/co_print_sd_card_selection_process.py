@@ -42,11 +42,11 @@ class CoPrintSdCardSelectionProcess(ScreenPanel):
         self.continueButtonExplicit.connect("clicked", self.on_click_continue_button)
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        buttonBox.pack_start(self.continueButton, False, False, 0)
+        # buttonBox.pack_start(self.continueButton, False, False, 0)
         buttonBox.set_center_widget(self.continueButton)
 
         buttonBoxExplicit = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        buttonBoxExplicit.pack_start(self.continueButtonExplicit, False, False, 0)
+        # buttonBoxExplicit.pack_start(self.continueButtonExplicit, False, False, 0)
         buttonBoxExplicit.set_center_widget(self.continueButtonExplicit)
 
         backIcon = self._gtk.Image("back-arrow", 35, 35)

@@ -121,7 +121,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         self.continueButton.connect("clicked", self.on_click_continue_button, validate_button["panel_link"])
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        buttonBox.pack_start(self.continueButton, False, False, 0)
+        #buttonBox.pack_start(self.continueButton, False, False, 0)
         buttonBox.set_center_widget(self.continueButton)
 
         backIcon = self._gtk.Image("back-arrow", 35, 35)
