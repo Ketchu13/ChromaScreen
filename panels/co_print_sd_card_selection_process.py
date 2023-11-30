@@ -83,7 +83,7 @@ class CoPrintSdCardSelectionProcess(ScreenPanel):
         # TODO : build and save to sd card ..
         #  panel or waiting dialog
         #  unmount/disconnect usb drive after process success
-        self._screen.show_panel("co_print_printing_selection", "co_print_printing_selection", None, 2)
+        self._screen.show_panel("co_print_printing_selection", "co_print_printing_selection", None, 2 , device_utils=None)
 
     def on_click_back_button(self, button, data):
         self._screen.show_panel(data, data, None, 2)
