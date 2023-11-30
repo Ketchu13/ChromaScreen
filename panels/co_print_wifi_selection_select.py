@@ -63,11 +63,11 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         self.selectedWifiBox.set_margin_right(self._gtk.action_bar_width * 2.6)
 
         # add a label to show connection status and progresss
-        self.label_connecting_info = Gtk.Label("...")
+        self.label_connecting_info = Gtk.Label("", name="contract-approval-label")
         self.label_connecting_info.set_halign(Gtk.Align.START)
         self.label_connecting_info.set_valign(Gtk.Align.START)
         self.label_connecting_info.set_line_wrap(True)
-        self.label_connecting_info.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
+        self.label_connecting_info.set_max_width_chars(100)
 
         self.scroll = self._gtk.ScrolledWindow()
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -106,6 +106,11 @@ class CoPrintWifiSelectionSelect(ScreenPanel):
         self.selectedNetwork = _network
         self.wifi = _wifi
         self.selectedWifiName.set_label(self.selectedNetwork["Name"])
+        self.selectedWifiImage = self._gtk.Image(
+            self.selectedNetwork["signal_icon"],
+            self._gtk.content_width * .08,
+            self._gtk.content_height * .08
+        )
 
     def give_name(self,a,b):
         for child in self.tempBox.get_children():
