@@ -57,9 +57,9 @@ class CoPrintPrintingBrandSelection(ScreenPanel):
 
     def __init__(self, screen, title):
         super().__init__(screen, title)
-     
+
         initHeader = InitHeader(self, _('Connect Your 3D Printer'), _('Connect your 3D printer to Co Print Smart using a USB cable.'), "yazicibaglama")
-        
+
         self.image = self._gtk.Image("printer", self._gtk.content_width * .42 , self._gtk.content_height * .42)
         self.printers_folder = os.path.join(os.path.dirname(__file__), "printers")
 
@@ -69,7 +69,7 @@ class CoPrintPrintingBrandSelection(ScreenPanel):
         self.continueButton.set_always_show_image(True)
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
-        
+
         backIcon = self._gtk.Image("back-arrow", 35, 35)
         backLabel = Gtk.Label(_("Back"), name="bottom-menu-label")
 
@@ -131,22 +131,22 @@ class CoPrintPrintingBrandSelection(ScreenPanel):
 
         pageBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
         pageBox.set_name("brand-selection-box")
-    
+
         pageBox.set_halign(Gtk.Align.CENTER)
         pageBox.pack_start(self.scroll, False, False, 0)
         pageBox.pack_start(self.selectedPrinterBox, False, False, 0)
-        
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        
+
         main.pack_start(mainBackButtonBox, False, False, 0)
         main.pack_start(initHeader, False, False, 0)
         main.pack_start(pageBox, False, False, 0)
-      
+
         self.content.add(main)
 
     def on_click_continue_button(self, continueButton):
         self._screen.show_panel("co_print_home_screen", "co_print_home_screen", None, 2)
-        
+
     def on_tree_selection_changed(self, selection):
         # only one item can be selected
         model, iter_ = selection.get_selected()
@@ -190,6 +190,6 @@ class CoPrintPrintingBrandSelection(ScreenPanel):
                     )
 
                     print("You selected brand: %s and model: %s" % (parent_name, printer_selected["name"]))
-            
+
     def on_click_back_button(self, button, data):
-        self._screen.show_panel(data, data, "Language", 1, False)
+        self._screen.show_panel(data, data, None, 2, device_utils=None)
