@@ -33,14 +33,6 @@ class CoPrintMcuSelection(ScreenPanel):
             {'Name': "Host simulator"       , 'key': "MACH_HOST_SIM", 'Button': Gtk.RadioButton()}
         ]
 
-        self.labels['actions'] = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            hexpand=True,
-            vexpand=False,
-            halign=Gtk.Align.CENTER,
-            homogeneous=True
-        )
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
         group = None
         # TODO: Replace title by ... Architecture
