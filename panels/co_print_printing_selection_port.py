@@ -8,6 +8,8 @@ from ks_includes.widgets.checkbuttonbox import CheckButtonBox
 import gi
 
 from ks_includes.widgets.initheader import InitHeader
+from ks_includes.widgets.usbSerial import DeviceCard
+
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
 
@@ -36,11 +38,14 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
         new_menu_items = []
 
         menu_items = new_menu_items
-        self.contentBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
+        self.contentBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
         self.contentBox.set_hexpand(True)
+        self.contentBox.set_halign(Gtk.Align.CENTER)
+
         self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.rightBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
+        self.rightBox.set_hexpand(True)
         device = {'port': 'usb-0:1:1.0-port0', 'Name': 'usb-0:1:1.0-port0'}
         devices = [device, {"port": "usb-0:1:1.0-port1", "Name": "usb-0:1:1.0-port1"}]
         self.selectedDevice = device
@@ -61,9 +66,9 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
         # //---------Right Side---------//
         self.alpha_DescriptionLabel = Gtk.Label('', name="contract-approval-label")
         self.alpha_DescriptionLabel.set_line_wrap(True)
-        self.alpha_DescriptionLabel.set_max_width_chars(100)
+        self.alpha_DescriptionLabel.set_max_width_chars(200)
         self.alpha_DescriptionLabel.set_hexpand(True)
-        self.rightBox.pack_start(self.alpha_DescriptionLabel, False, False, 0)
+        self.rightBox.pack_start(self.alpha_DescriptionLabel, True, True, 0)
 
         self.rightScroll = self._gtk.ScrolledWindow()
         self.rightScroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -73,8 +78,8 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
         #self.rightScroll.set_margin_left(self._gtk.action_bar_width * 1)
         #self.rightScroll.set_margin_right(self._gtk.action_bar_width * 1)
         self.rightScroll.add(self.rightBox)
-        self.contentBox.pack_start(self.rightScroll, False, False, 0)
-        self.rightScroll.set_size_request(400, 400)
+        self.contentBox.pack_start(self.rightScroll, True, True, 0)
+        self.rightScroll.set_size_request(800, 400)
 
         self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue")
         self.continueButton.connect("clicked", self.on_click_continue_button)
@@ -107,7 +112,8 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
 
         main.pack_start(mainBackButtonBox, False, False, 0)
         main.pack_start(initHeader, False, False, 0)
-        main.pack_end(self.contentBox, False, False, 10)
+        main.pack_start(self.contentBox, True, True, 10)
+        main.pack_end(buttonBox, False, False, 10)
 
         self.content.add(main)
         GLib.idle_add(self.reload_devices_port)
@@ -125,13 +131,14 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
 
         print("initialized")
 
-    def on_click_port_button(self, button, device):
+    def on_click_callback(self, widget, event, device, devlink):
+        print(widget)
+        print(event)
+        print(device)
         self.selectedDevice = device
-        print(self.selectedDevice)
-        self.alpha_DescriptionLabel.set_text(json.dumps(device, indent=4))
-
-    def wait_for_new_devicex(self):
-        GLib.idle_add(self.device_utils.wait_for_new_devicez)
+        selectedDevice = self.device_utils.get_deviceDict_by_devlink(devlink)
+        print(selectedDevice)
+        self.alpha_DescriptionLabel.set_text(json.dumps(selectedDevice, indent=4))
 
     def reload_devices_port(self):
         print(self.selectedDevice)
@@ -139,33 +146,37 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
 
             for item in self.leftScroll.get_children():
                 self.leftScroll.remove(item)
-            self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+            self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, hexpand=True)
             self.devices = self.get_serial_devices_path()
             menu_items = self.devices  # get /dev/serial/by-path
             for menu_item in menu_items:
                 buttonStyle = "flat-button-black"
                 devlinks = self.selectedDevice["DEVLINKS"]
                 match_devbypath = re.search(r'/dev/serial/by-path/(\S+)', devlinks)
+                device = self.device_utils.get_deviceDict_by_devlink(menu_item["Name"])
+                print(device)
+                if device:
+                    if match_devbypath:
+                        devlink = match_devbypath.group(1)
+                        print(menu_item["Name"], devlink)
+                        if menu_item["Name"] == devlink:
+                            print("ok")
+                            buttonStyle = "flat-button-green2"
 
-                if match_devbypath:
-                    devlink = match_devbypath.group(1)
-                    print(menu_item["Name"], devlink)
-                    if menu_item["Name"] == devlink:
-                        print("ok")
-                        buttonStyle = "flat-button-green2"
-                        self.alpha_DescriptionLabel.set_text(json.dumps(self.selectedDevice, indent=4))
+                            self.alpha_DescriptionLabel.set_text(json.dumps(device, indent=4))
+                    devicecard = DeviceCard(
+                        self,
+                        device,
+                        menu_item["Name"]
+                    )
+                    self.leftBox.pack_start(devicecard, False, False, 0)
 
-                portItem = Gtk.Button(menu_item["Name"], name=buttonStyle)
-                portItem.set_hexpand(True)
-                portItemBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-                portItemBox.pack_start(portItem, False, False, 0)
-                portItem.connect("clicked", self.on_click_port_button, menu_item)
-                self.leftBox.pack_start(portItemBox, False, False, 0)
             self.leftScroll.add(self.leftBox)
             self.leftScroll.show_all()
 
-    def get_serial_devices_path(self):
-        device_path = []# ls /dev/serial/by-path
+    @staticmethod
+    def get_serial_devices_path():
+        # ls /dev/serial/by-path
         try:
             device_path = os.listdir("/dev/serial/by-path")
         except Exception as e:

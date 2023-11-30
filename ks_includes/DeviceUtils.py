@@ -34,15 +34,20 @@ class DeviceUtils:
             frdevice = {}
             # print("\n\n")
             device_props_keys = list(device.properties)
+            print("device_props_keys", device_props_keys)
             for device_p_prop in device_props_keys:
-                # print(device_p_prop,device.properties[device_p_prop])
+
+                print(device_p_prop,device.properties[device_p_prop])
                 frdevice[device_p_prop] = device.properties[device_p_prop]
+            """device_child_count = len(list(device.children))
+            print("device_child_count", device_child_count)
             device_data = list(device.children)[1].properties
+            print("device_data", device_data)
             properties = list(device_data)
-            # print(properties)
+            print(properties)
             for _property in properties:
-                # print(_property, device_data[_property])
-                frdevice[_property] = device_data[_property]
+                print(_property, device_data[_property])
+                frdevice[_property] = device_data[_property]"""
 
             return frdevice
         return None

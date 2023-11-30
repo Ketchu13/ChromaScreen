@@ -18,7 +18,7 @@ def create_panel(*args):
 
 
 class CoPrintSplashScreenPanel(ScreenPanel):
-     
+
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
@@ -33,7 +33,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             {'Lang':'it' ,'Name': _('Italian'), 'Icon': 'Italy'  , 'Button': Gtk.RadioButton()},
             {'Lang':'sp' ,'Name': _('Spanish'), 'Icon': 'Spain'  , 'Button': Gtk.RadioButton()},
         ]
-        
+
         self.labels['actions'] = Gtk.Box(
             orientation=Gtk.Orientation.HORIZONTAL,
             hexpand=True,
@@ -115,20 +115,20 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         gridBox.set_halign(Gtk.Align.CENTER)
         gridBox.add(grid)
 
-        
+
         # TODO add an apply bouton, avoid apply on select
 
         self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
-        self.continueButton.connect("clicked", self.on_click_continue_button, "co_print_contract_approval")
+        self.continueButton.connect("clicked", self.on_click_continue_button, "s3dp_flash_mode_selection")  #"co_print_contract_approval")
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
-       
+
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         main.pack_start(initHeader, True, True, 0)
         main.pack_end(buttonBox, True, True, 20)
         main.pack_end(gridBox, True, True, 20)
-        
+
         # self.show_restart_buttons()
 
         self.content.add(main)
@@ -181,7 +181,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
     def radioButtonSelected(self, button, lang):
         if button.get_active():
             self.changeLang(lang)
-    
+
     def eventBoxLanguage(self, button, gparam, lang):
         self.changeLang(lang)
 
@@ -196,7 +196,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
     def open_info_dialog(self):
         self.dialog = InfoDialog(self, _("Loading selected language.\nPlease wait.."), True)
         self.dialog.get_style_context().add_class("alert-info-dialog")
-      
+
         self.dialog.set_decorated(False)
         self.dialog.set_size_request(0, 0)
 
