@@ -77,16 +77,16 @@ class CoPrintSdCardSelectionProcessWaiting(ScreenPanel):
         self.content.add(main)
 
     def wait_for_sdcard(self):
-        self.new_device_detected(self.sdcard_utils.wait_for_sdcard())
+        self.new_device_detected(self.sdcard_utils.wait_for_new_device())
 
     def new_device_detected(self, device):
-        self._screen.show_panel("co_print_sd_card_selection_process", "co_print_sd_card_selection_process", None, 2, self.sdcard_utils)
+        self._screen.show_panel("co_print_sd_card_selection_process", "co_print_sd_card_selection_process", None, 2, sdcard_utils=self.sdcard_utils)
 
     def initialize(self, sdcard_utils):
         self.sdcard_utils = sdcard_utils
 
     def on_click_continue_button(self, continueButton):
-        self._screen.show_panel("co_print_sd_card_selection_process", "co_print_sd_card_selection_process", None, 2, self.sdcard_utils)
+        self._screen.show_panel("co_print_sd_card_selection_process", "co_print_sd_card_selection_process", None, 2, sdcard_utils=self.sdcard_utils)
 
     def on_click_back_button(self, button, data):
         self._screen.show_panel(data, data, None, 2)
