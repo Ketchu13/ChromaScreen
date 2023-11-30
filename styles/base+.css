@@ -9,13 +9,13 @@
 
 
 spinner {
-    
+
     animation: spin 1s ease-in-out infinite;
 }
 
 button.menu {
     border-bottom: 0em;
-    
+
 }
 
 label#progress-label {
@@ -31,7 +31,7 @@ button.pause {
     padding-left: .4em;
     padding-right: .4em;
     background-color: #000000;
-    
+
 }
 
 button.close {
@@ -41,7 +41,7 @@ button.close {
     padding-left: .4em;
     padding-right: .4em;
     background-color: #000000;
-    
+
 }
 #pause-cancel-button-box {
     background-color: #000000;
@@ -196,12 +196,12 @@ button#flat-button-green {
 }
 
 button#flat-button-yellow label{
-   
+
     color: #F7BA17;
 }
 
 button#flat-button-green label{
-   
+
     color: #37AB56;
 }
 
@@ -217,13 +217,29 @@ button#flat-button-yellow {
 button#flat-button-black {
     background-color: #161616;
     background: #161616;
-    font-size:30;
+    font-size:30px;
     border-radius: 10px;
     padding: .5em;
 }
 button#flat-button-black:focus {
     background-color: #161616;
     background: #161616;
+    border: 1px solid #EAEAEA;
+    font-size:1.5em;
+    border-radius: 10px;
+    padding: .5em;
+    min-width: 10rem;
+}
+button#flat-button-green2 {
+    background-color: #37AB56
+    background: #37AB56;
+    font-size:30px;
+    border-radius: 10px;
+    padding: .5em;
+}
+button#flat-button-green2:focus {
+    background-color: #37AB56;
+    background: #37AB56;
     border: 1px solid #EAEAEA;
     font-size:1.5em;
     border-radius: 10px;
@@ -244,7 +260,7 @@ button#menu-button:active {
 /*PopUp*/
 label#info-popup-label {
     color: #23A6F0;
-    font-size: 20px; 
+    font-size: 20px;
 }
 /*Home Button*/
 button#flat-icon-button-green {
@@ -354,7 +370,7 @@ label#contract-approval-label {
     border-radius: 15px;
 }
 #region-combobox button {
- 
+
     font-size: 16px;
     background-color: #333333;
     border-radius: 5px;
@@ -411,9 +427,9 @@ entry#device-name {
     border-radius: 15px;
 }
 label#wifi-label {
-    
+
     color:#f0f0f0;
-    
+
 }
 
 #tree-list {
@@ -444,12 +460,12 @@ window {
     -gtk-icon-shadow: none;
 }
 
-frame { 
+frame {
     border: 1px solid #fff;
     border-radius: 10px
 }
 
-frame#chip { 
+frame#chip {
     border: 0px;
     border-radius: 10px
 }
@@ -514,7 +530,7 @@ button.color4 {
 }
 button.color5 {
     border-bottom: .4em solid #A7E100;
-    
+
 }
 
 
