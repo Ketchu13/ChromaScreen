@@ -44,15 +44,11 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
 
         self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.rightBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-
         self.rightBox.set_hexpand(True)
-        device = {'port': 'usb-0:1:1.0-port0', 'Name': 'usb-0:1:1.0-port0'}
-        devices = [device, {"port": "usb-0:1:1.0-port1", "Name": "usb-0:1:1.0-port1"}]
-        self.selectedDevice = device
+
+        self.selectedDevice = None
 
         # //---------Left Side---------//
-
-
         self.leftScroll = self._gtk.ScrolledWindow()
         self.leftScroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.leftScroll.set_min_content_height(self._screen.height * .3)
@@ -146,7 +142,7 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
 
             for item in self.leftScroll.get_children():
                 self.leftScroll.remove(item)
-            self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, hexpand=True)
+            self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)  # , hexpand=True)
             self.devices = self.get_serial_devices_path()
             menu_items = self.devices  # get /dev/serial/by-path
             for menu_item in menu_items:

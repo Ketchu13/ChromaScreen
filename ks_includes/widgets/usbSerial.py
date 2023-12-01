@@ -20,8 +20,8 @@ class DeviceCard(Gtk.Box):
 
         image = self.parent._gtk.Image(
             "approve",
-            self.parent._gtk.content_width * .08,
-            self.parent._gtk.content_height * .08
+            32,
+            32
         )
 
         device_devname = "<b>%s</b>" % self.device['DEVNAME']
@@ -32,7 +32,7 @@ class DeviceCard(Gtk.Box):
         deviceNameLabel.set_markup(device_devname)
         # reduce font size if mcu model name is too long
         if len(device_devname) > 30:
-            deviceNameLabel.set_size_request(200, 200)
+            deviceNameLabel.set_size_request(200, 30)
             deviceNameLabel.set_max_width_chars(30)
             deviceNameLabel.set_ellipsize(Pango.EllipsizeMode.START)
         deviceNameLabelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -41,9 +41,9 @@ class DeviceCard(Gtk.Box):
         deviceDevlinkPathLabel = Gtk.Label("", name="wifi-status-label")
         deviceDevlinkPathLabel.set_markup(device_devlink_path)
         deviceDevlinkPathLabel.set_justify(Gtk.Justification.LEFT)
-        if len(device_devlink_path) > 30:
-            deviceDevlinkPathLabel.set_size_request(200, 200)
-            deviceDevlinkPathLabel.set_max_width_chars(30)
+        if len(device_devlink_path) > 120:
+            deviceDevlinkPathLabel.set_size_request(200, 30)
+            deviceDevlinkPathLabel.set_max_width_chars(120)
             deviceDevlinkPathLabel.set_ellipsize(Pango.EllipsizeMode.START)
         deviceDevlinkPathLabelBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         deviceDevlinkPathLabelBox.pack_start(deviceDevlinkPathLabel, False, False, 0)
