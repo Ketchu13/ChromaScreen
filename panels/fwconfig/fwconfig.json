@@ -1,0 +1,395 @@
+{
+    "mcus": {
+        "MACH_AVR": {
+            "name": "Atmega AVR",
+            "description": "Atmel AVR 8-bit micro-controllers",
+            "models": {
+                "MACH_atmega168":   {
+                    "name": "atmega168"
+                },
+                "MACH_atmega328" :  {
+                    "name": "atmega328"
+                },
+                "MACH_atmega328p":  {
+                    "name": "atmega328p"
+                },
+                "MACH_atmega1284p": {
+                    "name": "atmega1284p"
+                },
+                "MACH_atmega644p":  {
+                    "name": "atmega644p"
+                },
+                "MACH_at90usb1286": {
+                    "name": "at90usb1286"
+                },
+                "MACH_at90usb646":  {
+                    "name": "at90usb646"
+                },
+                "MACH_atmega32u4":  {
+                    "name": "atmega32u4"
+                },
+                "MACH_atmega1280":  {
+                    "name": "atmega1280"
+                },
+                "MACH_atmega2560":  {
+                    "name": "atmega2560"
+                }
+            },
+            "com_interface": {
+                "AVR_SERIAL_UART0": "all",
+                "AVR_SERIAL_UART1": [
+                    "MACH_atmega1280",
+                    "MACH_atmega2560",
+                    "MACH_atmega1284p",
+                    "MACH_atmega644p",
+                    "MACH_atmega328p",
+                    "MACH_atmega328",
+                    "MACH_atmega168"
+                ],
+                "AVR_SERIAL_UART2": [
+                    "MACH_atmega1280",
+                    "MACH_atmega2560"
+                ],
+                "AVR_SERIAL_UART3": [
+                    "MACH_atmega1280",
+                    "MACH_atmega2560"
+                ],
+                "AVR_USB": [
+                    "MACH_at90usb1286",
+                    "MACH_at90usb646",
+                    "MACH_atmega32u4"
+                ]
+            },
+            "usb_ids": {
+                "MACH_at90usb1286": {
+                    "name": "at90usb1286",
+                    "vid": "0x03EB",
+                    "pid": "0x2064"
+                },
+                "MACH_at90usb646": {
+                    "name": "at90usb646",
+                    "vid": "0x03EB",
+                    "pid": "0x2066"
+                },
+                "MACH_atmega32u4": {
+                    "name": "atmega32u4",
+                    "vid": "0x2341",
+                    "pid": "0x8036"
+                }
+            },
+            "clock_speed_df": "FREQ_16MHZ",
+            "clock_reference": {
+                "FREQ_16MHZ": "all",
+                "FREQ_20MHZ": [
+                    "MACH_atmega168",
+                    "MACH_atmega328",
+                    "MACH_atmega328p",
+                    "MACH_atmega1284p",
+                    "MACH_atmega644p"
+                ],
+                "FREQ_8MHZ": "all"
+            },
+            "CLEAR_PRESCALER": {
+                "name": "Clear prescaler",
+                "description": "Manually clear the CPU prescaler field at startup",
+                "default": true,
+                "models": [
+                    "MACH_at90usb1286",
+                    "MACH_at90usb646",
+                    "MACH_atmega32u4"
+                ]
+            },
+            "SIMULAVR": {
+                "name": "Simulavr",
+                "description": "Compile the code to run on simulavr software emulation instead of for real hardware. This disables support for \"U2Xbaud\" mode which is not supported on simulavr.",
+                "default": false
+            },
+            "low-level": {
+                "baudrate_serial": "all",
+                "com_interface": "all",
+                "usb_ids": "all",
+                "clock_reference": "all",
+                "CLEAR_PRESCALER": "all",
+                "gpio_pins": "all",
+                "SIMULAVR": [
+                    "MACH_atmega1284p",
+                    "MACH_atmega644p",
+                    "MACH_atmega328p",
+                    "MACH_atmega328",
+                    "MACH_atmega168"
+                ]
+            },
+            "options": {
+                "architecture": "all",
+                "model": "all"
+            },
+            "properrties": {
+                "HAVE_GPIO": "all",
+                "HAVE_GPIO_ADC": "all",
+                "HAVE_GPIO_SPI": "all",
+                "HAVE_GPIO_I2C": "all",
+                "HAVE_GPIO_HARD_PWM": "all",
+                "HAVE_STRICT_TIMING": "all",
+                "HAVE_LIMITED_CODE_SIZE": [
+                    "MACH_atmega168",
+                    "MACH_atmega328",
+                    "MACH_atmega328p"
+                ],
+                "AVRDUDE_PROTOCOL": [
+                    {
+                        "name": "wiring",
+                        "models": [
+                            "MACH_atmega2560"
+                        ]
+                    },
+                    {
+                        "name": "avr109",
+                        "models": [
+                            "MACH_at90usb1286",
+                            "MACH_at90usb646",
+                            "MACH_atmega32u4"
+                        ]
+                    },
+                    {
+                        "name": "arduino",
+                        "models": "all",
+                        "default": true
+                    }
+                ]
+
+
+            },
+            "board_dir": "avr"
+        },
+        "MACH_ATSAM": {
+            "name": "SAM3/SAM4/SAM E70 (Due and Duet)",
+            "description": "Atmel SAM3/SAM4/SAM E70 ARM micro-controllers",
+            "clock_speed_df": "FREQ_84MHZ",
+            "models": {
+                "MACH_SAM3X8E": {
+                    "name": "SAM3x8e (Arduino Due)"
+                },
+                "MACH_SAM3X8C": {
+                    "name": "SAM3x8c (Printrboard G2)"
+                },
+                "MACH_SAM4S8C": {
+                    "name": "SAM4s8c (Duet Maestro)"
+                },
+                "MACH_SAM4E8E": {
+                    "name": "SAM4e8e (Duet Wifi/Eth)"
+                },
+                "MACH_SAME70Q20B": {
+                    "name": "SAME70Q20B (Duet 3 6HC)"
+                }
+            },
+            "com_interface": "",
+            "low-level":{
+                "Usb_ids":"",
+                "gpio_pins": ""
+            }
+        },
+        "MACH_ATSAMD": {
+            "name": "SAMC21/SAMD21/SAMD51/SAME5x",
+            "description": "Atmel SAMC21/SAMD21/SAMD51/SAME5x ARM micro-controllers",
+            "models": {
+                "MACH_SAMC21G18": {
+                    "name": "SAMC21G18 (Duet 3 Toolboard 1LC)"
+                },
+                "MACH_SAMD21G18": {
+                    "name": "SAMD21G18 (Arduino Zero)"
+                },
+                "MACH_SAMD21E18": {
+                    "name": "SAMD21E18 (Adafruit Trinket M0)"
+                },
+                "MACH_SAMD21J18": {
+                    "name": "SAMD21J18 (ReprapWorld Minitronics v2)"
+                },
+                "MACH_SAMD21E15": {
+                    "name": "SAMD21E15"
+                },
+                "MACH_SAMD51G19": {
+                    "name": "SAMD51G19 (Adafruit ItsyBitsy M4)"
+                },
+                "MACH_SAMD51J19": {
+                    "name": "SAMD51J19 (Adafruit Metro M4)"
+                },
+                "MACH_SAMD51N19": {
+                    "name": "SAMD51N19"
+                },
+                "MACH_SAMD51P20": {
+                    "name": "SAMD51P20 (Adafruit Grand Central)"
+                },
+                "MACH_SAME51J19": {
+                    "name": "SAME51J19"
+                },
+                "MACH_SAME54P20": {
+                    "name": "SAME54P20"
+                }
+            },
+            "clock_speed_df": "FREQ_48MHZ",
+            "clock_reference": {
+                "FREQ_48MHZ": "all",
+                "FREQ_96MHZ": [
+                    "MACH_samd51g19a",
+                    "MACH_samd51j19a",
+                    "MACH_samd51j20a",
+                    "MACH_samd51j19a",
+                    "MACH_samd51j20a",
+                    "MACH_samd51n19a",
+                    "MACH_samd51n20a",
+                    "MACH_samd51p19a",
+                    "MACH_samd51p20a"
+                ]
+            }
+        },
+        "MACH_LPC176X": {
+            "name": "LPC176x (Smoothieboard)",
+            "description": "NXP LPC176x ARM micro-controllers",
+            "clock_speed_df": "FREQ_100MHZ",
+            "models": {
+                "MACH_LPC1768": {
+                    "name": "lpc1768 (100 MHz)"
+                },
+                "MACH_LPC1769": {
+                    "name": "lpc1769 (120 MHz)"
+                }
+            }
+        },
+        "MACH_STM32": {
+            "name": "STMicroelectronics STM32",
+            "description": "STMicroelectronics STM32 ARM micro-controllers",
+            "clock_speed_df": "FREQ_72MHZ",
+            "models": {
+                "MACH_STM32F103": {
+                    "name": "STM32F103"
+                },
+                "MACH_STM32F207": {
+                    "name": "STM32F207"
+                },
+                "MACH_STM32F401": {
+                    "name": "STM32F401"
+                },
+                "MACH_STM32F405": {
+                    "name": "STM32F405"
+                },
+                "MACH_STM32F407": {
+                    "name": "STM32F407"
+                },
+                "MACH_STM32F429": {
+                    "name": "STM32F429"
+                },
+                "MACH_STM32F446": {
+                    "name": "STM32F446"
+                },
+                "MACH_STM32F765": {
+                    "name": "STM32F765"
+                },
+                "MACH_STM32F031": {
+                    "name": "STM32F031"
+                },
+                "MACH_STM32F042": {
+                    "name": "STM32F042"
+                },
+                "MACH_STM32F070": {
+                    "name": "STM32F070"
+                },
+                "MACH_STM32F072": {
+                    "name": "STM32F072"
+                },
+                "MACH_STM32G070": {
+                    "name": "STM32G070"
+                },
+                "MACH_STM32G071": {
+                    "name": "STM32G071"
+                },
+                "MACH_STM32G0B0": {
+                    "name": "STM32G0B0"
+                },
+                "MACH_STM32G0B1": {
+                    "name": "STM32G0B1"
+                },
+                "MACH_STM32G431": {
+                    "name": "STM32G431"
+                },
+                "MACH_STM32H723": {
+                    "name": "STM32H723"
+                },
+                "MACH_STM32H743": {
+                    "name": "STM32H743"
+                },
+                "MACH_STM32H750": {
+                    "name": "STM32H750"
+                },
+                "MACH_STM32L412": {
+                    "name": "STM32L412"
+                },
+                "MACH_N32G452": {
+                    "name": "Nation N32G452"
+                },
+                "MACH_N32G455": {
+                    "name": "Nation N32G455"
+                }
+            }
+        },
+        "MACH_HC32F460": {
+            "name": "Huada Semiconductor HC32F460",
+            "description": "Huada Semiconductor HC32F460 ARM micro-controllers",
+            "clock_speed_df": "FREQ_72MHZ",
+            "models": {
+                "MACH_HC32F460": {
+                    "name": "Huada Sem.C. HC32F460"
+                }
+            }
+        },
+        "MACH_RP2040": {
+            "name": "Raspberry Pi RP2040",
+            "description": "Raspberry Pi RP2040 ARM micro-controllers",
+            "clock_speed_df": "FREQ_125MHZ",
+            "models": {
+                "MACH_RP2040": {
+                    "name": "Raspberry Pi RP2040"
+                }
+            }
+        },
+        "MACH_PRU": {
+            "name": "Beaglebone PRU",
+            "description": "Beaglebone PRU ARM micro-controllers",
+            "clock_speed_df": "FREQ_200MHZ",
+            "models": {
+                "MACH_PRU": {
+                    "name": "Beaglebone PRU"
+                }
+            }
+        },
+        "MACH_AR100": {
+            "name": "Allwinner A64 AR100",
+            "description": "Allwinner A64 AR100 ARM micro-controllers",
+            "clock_speed_df": "FREQ_1GHZ",
+            "models": {
+                "MACH_AR100": {
+                    "name": "llwinner A64 AR100"
+                }
+            }
+        },
+        "MACH_LINUX": {
+            "name": "Linux process",
+            "description": "Linux process",
+            "clock_speed_df": "FREQ_1GHZ",
+            "models": {
+                "MACH_LINUX": {
+                    "name": "Linux process"
+                }
+            }
+        },
+        "MACH_SIMU": {
+            "name": "Host simulator",
+            "description": "Host simulator",
+            "clock_speed_df": "FREQ_1GHZ",
+            "models": {
+                "MACH_SIMU": {
+                    "name": "Host simulator"
+                }
+            }
+        }
+    }
+}
