@@ -157,7 +157,7 @@ class KlipperScreen(Gtk.Window):
             # Prevent this dialog from being destroyed
             self.dialogs = []
         self.set_screenblanking_timeout(self._config.get_main_config().get('screen_blanking'))
-        
+
 
         self.initial_connection()
 
@@ -311,7 +311,7 @@ class KlipperScreen(Gtk.Window):
             self.attach_panel(panel_name)
         except Exception as e:
             logging.exception(f"Error attaching panel:\n{e}")
-        
+
 
     def attach_panel(self, panel_name):
         self.base_panel.add_content(self.panels[panel_name])
@@ -329,16 +329,16 @@ class KlipperScreen(Gtk.Window):
         dialog.response(Gtk.ResponseType.CANCEL)
         dialog.destroy()
     def show_popup_message(self, message, level=3):
-        self.base_panel.visible_menu(False) 
+        self.base_panel.visible_menu(False)
         self.dialog = InfoDialog(self, message, True)
         self.dialog.get_style_context().add_class("alert-info-dialog")
-    
+
         self.dialog.set_decorated(False)
         self.dialog.set_size_request(0, 0)
         timer_duration = 1000
         GLib.timeout_add(timer_duration, self.close_dialog, self.dialog)
         response = self.dialog.run()
-         
+
         # self.close_screensaver()
         # if self.popup_message is not None:
         #     self.close_popup_message()
@@ -436,7 +436,7 @@ class KlipperScreen(Gtk.Window):
         theme = os.path.join(klipperscreendir, "styles", self.theme)
         theme_style = os.path.join(theme, "style.css")
         theme_style_conf = os.path.join(theme, "style.conf")
-
+        print(theme_style)
         if os.path.exists(theme_style):
             with open(theme_style) as css:
                 css_data += css.read()
@@ -523,7 +523,7 @@ class KlipperScreen(Gtk.Window):
             self.panels[self._cur_panels[-1]].deactivate()
         if hasattr(self.panels[self._cur_panels[-1]], "del_obj"):
                     self.panels[self._cur_panels[-1]].del_obj()
-             
+
         if self._cur_panels[-1] in self.subscriptions:
             self.subscriptions.remove(self._cur_panels[-1])
         if pop:
@@ -765,7 +765,7 @@ class KlipperScreen(Gtk.Window):
                 elif data.startswith("!! "):
                     self.show_popup_message(data[3:], 3)
 
-                  
+
                 elif "unknown" in data.lower() and \
                         not ("TESTZ" in data or "MEASURE_AXES_NOISE" in data or "ACCELEROMETER_QUERY" in data):
                     self.show_popup_message(data)
@@ -938,13 +938,13 @@ class KlipperScreen(Gtk.Window):
         self.close_popup_message()
         self.show_panel('co_print_splash_screen', "co_print_splash_screen", None, 2, items=self._config.get_menu_items("__main"))
         self.base_panel_show_all()
-        self.base_panel.visible_menu(False) 
+        self.base_panel.visible_menu(False)
 
     def printer_printing(self):
         self.close_screensaver()
         self.close_popup_message()
         self.base_panel_show_all()
-        self.base_panel.visible_menu(False) 
+        self.base_panel.visible_menu(False)
         for dialog in self.dialogs:
             self.gtk.remove_dialog(dialog)
         self.show_panel('co_print_printing_screen', "co_print_printing_screen", None, 2, items=self._config.get_menu_items("__main"))
