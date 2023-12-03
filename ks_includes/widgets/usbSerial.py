@@ -16,7 +16,7 @@ class DeviceCard(Gtk.Box):
         self.parent = this
 
         self.status = None
-
+        self.selected = False
 
         image = self.parent._gtk.Image(
             "approve",
@@ -25,7 +25,7 @@ class DeviceCard(Gtk.Box):
         )
 
         device_devname = "<b>%s</b>" % self.device['DEVNAME']
-        device_devlink_path = "<b>%s</b>" % self.devlink
+        device_devlink_path = "<i>%s</i>" % self.devlink
 
         deviceNameLabel = Gtk.Label('', name="wifi-name-label")
         deviceNameLabel.set_justify(Gtk.Justification.LEFT)
@@ -53,12 +53,27 @@ class DeviceCard(Gtk.Box):
         deviceLabelsBox.pack_start(deviceDevlinkPathLabelBox, False, False, 0)
 
         deviceCardBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        deviceCardBox.set_name("wifi-card-box")
+        deviceCardBox.set_name("device-card-box")
         deviceCardBox.pack_start(deviceLabelsBox, False, False, 0)
         deviceCardBox.pack_end(image, False, False, 0)
 
-        cartesianTypeEventBox = Gtk.EventBox()
-        cartesianTypeEventBox.connect("button-press-event", this.on_click_callback, self.device, self.devlink)
-        cartesianTypeEventBox.add(deviceCardBox)
+        deviceCardButton = Gtk.Button(name="flat-button-green2")
+        deviceCardButton.set_size_request(200, 50)
+        deviceCardButton.add(deviceCardBox)
+        deviceCardButton.connect("clicked", this.on_click_callback, self.device, self.devlink)
 
-        self.add(cartesianTypeEventBox)
+        # cartesianTypeEventBox = Gtk.EventBox()
+        # cartesianTypeEventBox.connect("button-press-event", this.on_click_callback, self.device, self.devlink)
+        # cartesianTypeEventBox.add(deviceCardBox)
+
+        self.add(deviceCardButton)  # cartesianTypeEventBox)
+
+    def set_selected(self, selected: bool):
+        self.selected = selected
+        if self.selected:
+            self.get_style_context().add_class("selected")  # Ajoute une classe CSS pour la sélection
+        else:
+            self.get_style_context().remove_class("selected")  # Retire la classe CSS de sélection
+
+    def get_selected(self) -> bool:
+        return self.selected
