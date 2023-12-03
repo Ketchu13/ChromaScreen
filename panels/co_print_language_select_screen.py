@@ -151,7 +151,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             )
 
     def radioButtonSelected(self, button, lang):
-        print(lang)
+        print(button)
         if button.get_active():
             print("radiobutton selected event")
             print(button.get_active())
@@ -159,7 +159,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             GLib.timeout_add(1500, self.changeLang, lang)
 
     def eventBoxLanguage(self, event, button, radio, lang=None):
-
+        radio.set_active(not radio.get_active())
         self.radioButtonSelected(radio, lang)
 
     def get_system_region(self):
