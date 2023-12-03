@@ -1,5 +1,6 @@
 import logging
 import os
+import time
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -62,22 +63,26 @@ class CoPrintSplashScreenPanel(ScreenPanel):
 
         info = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         info.pack_start(image, False, True, 100)
-        info.pack_end(scroll, False, False, 20)
+        #info.pack_end(scroll, False, False, 20)
 
-        main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0,  vexpand=True)
         main.pack_start(info, True, True, 0)
         main.pack_end(self.labels['actions'], False, False, 0)
-
+        main.set_halign(Gtk.Align.CENTER)
+        main.set_valign(Gtk.Align.CENTER)
         self.show_restart_buttons()
         #self.start_timer()
         self.content.add(main)
+        self.content.show_all()
+        time.sleep(3)
 
     def update_text(self, text):
         self.show_restart_buttons()
 
     def start_timer(self):
         """ Start the timer. """
-        self.timeout_id = GLib.timeout_add(1500, self.on_timeout, None)
+
+        self.timeout_id = GLib.timeout_add(1000, self.on_timeout, None)
 
     def on_timeout(self, *args, **kwargs):
         """ A timeout function.

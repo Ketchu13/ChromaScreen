@@ -19,10 +19,10 @@ class S3DPLangWaitMsg(ScreenPanel):
         super().__init__(screen, title)
         self.initialized = False
 
-        spinner = Gtk.Spinner()
-        spinner.props.width_request = 50
-        spinner.props.height_request = 50
-        spinner.start()
+        self.spinner = Gtk.Spinner()
+        self.spinner.props.width_request = 50
+        self.spinner.props.height_request = 50
+        self.spinner.start()
 
         msglabel = Gtk.Label(_("Loading selected language.\nPlease wait.."))
 
@@ -47,12 +47,16 @@ class S3DPLangWaitMsg(ScreenPanel):
 
         main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, vexpand=True)
         main.pack_start(initHeader, True, True, 0)
-        main.pack_start(spinner, True, True, 0)
+        main.pack_start(self.spinner, True, True, 0)
         main.set_halign(Gtk.Align.CENTER)
         main.set_valign(Gtk.Align.CENTER)
 
         self.content.add(main)
-        GLib.idle_add(self.apply_locale)
+        GLib.idle_add(self.pre_apply__shrug)
+    def pre_apply__shrug(self):
+        self.spinner.start()
+        self.content.show_all()
+        self.apply_locale()
 
     def apply_locale(self):
         if not self.initialized:

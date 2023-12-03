@@ -162,7 +162,8 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         radio.set_active(not radio.get_active())
         self.radioButtonSelected(radio, lang)
 
-    def get_system_region(self):
+    @staticmethod
+    def get_system_region():
         region = 'en_US'
         try:
             system_locale = locale.getlocale()
