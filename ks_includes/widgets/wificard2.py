@@ -18,8 +18,11 @@ class WifiCard2(Gtk.Box):
         else:
             self.status = _("Connected")
 
-        image = self.parent._gtk.Image(self.network["signal_icon"], self.parent._gtk.content_width * .08,
-                                                                    self.parent._gtk.content_height * .08)
+        image = self.parent._gtk.Image(
+            self.network["signal_icon"],
+            self.parent._gtk.content_width * .08,
+            self.parent._gtk.content_height * .08
+        )
 
         display_name = _("Hidden") if self.network['Name'].startswith("\x00") or self.network['Name'].startswith(
             "\\x00") else f"{self.network['Name']}"
