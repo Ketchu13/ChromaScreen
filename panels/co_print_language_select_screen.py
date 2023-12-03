@@ -1,17 +1,12 @@
-import logging
-import os
-import subprocess
-import sys
 import locale
 import gi
-from ks_includes.widgets.infodialog import InfoDialog
 
 from ks_includes.widgets.initheader import InitHeader
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, Pango, GLib, Gdk
+from gi.repository import Gtk, GLib
 
 from ks_includes.screen_panel import ScreenPanel
-import gettext
+
 
 def create_panel(*args):
     return CoPrintSplashScreenPanel(*args)
@@ -22,7 +17,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
-        self.dialog = Gtk.Dialog()
         self.selected = None
 
         languages = [
@@ -33,15 +27,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             {'Lang':'it' ,'Name': _('Italian'), 'Icon': 'Italy'  , 'Button': Gtk.RadioButton()},
             {'Lang':'sp' ,'Name': _('Spanish'), 'Icon': 'Spain'  , 'Button': Gtk.RadioButton()},
         ]
-
-        self.labels['actions'] = Gtk.Box(
-            orientation=Gtk.Orientation.HORIZONTAL,
-            hexpand=True,
-            vexpand=False,
-            halign=Gtk.Align.CENTER,
-            homogeneous=True
-        )
-        self.labels['actions'].set_size_request(self._gtk.content_width, -1)
 
         group = None
 
@@ -72,19 +57,9 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             if checked:
                 if not language['Button'].get_active():
                     language['Button'].set_active(True)
-                    # group = language['Button']
             else:
                 language['Button'].set_active(False)
-            #{if current_lang == language['Lang']:
-            #    language['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
 
-            """languageName = Gtk.Label(language['Name'], name="language-label")
-
-            language['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
-            # check the radio button if it is the current language and it is not already checked
-            if current_lang == language['Lang'] and not language['Button'].get_active():
-                language['Button'].set_active(True)
-            """
             language['Button'].connect("toggled", self.radioButtonSelected, language['Lang'])
 
             languageBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
@@ -97,7 +72,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
             languageBox.set_size_request(50, 50)
 
             eventBox = Gtk.EventBox()
-            eventBox.connect("button-press-event", self.eventBoxLanguage, language['Lang'])
+            eventBox.connect("button-press-event", self.eventBoxLanguage, language['Button'], language['Lang'])
             eventBox.add(languageBox)
 
             f.add(eventBox)
@@ -115,7 +90,6 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         gridBox.set_halign(Gtk.Align.CENTER)
         gridBox.add(grid)
 
-
         # TODO add an apply bouton, avoid apply on select
 
         self.continueButton = Gtk.Button(_('Continue'), name="flat-button-blue", hexpand=True)
@@ -124,15 +98,14 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)
 
-        main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        main = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, vexpand=True)
         main.pack_start(initHeader, True, True, 0)
         main.pack_end(buttonBox, True, True, 20)
         main.pack_end(gridBox, True, True, 20)
-
-        # self.show_restart_buttons()
+        main.set_halign(Gtk.Align.CENTER)
+        main.set_valign(Gtk.Align.CENTER)
 
         self.content.add(main)
-        # self._screen.base_panel.visible_menu(False)
 
     def on_click_continue_button(self, continueButton, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
@@ -166,51 +139,28 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         current_system_lang = self.get_system_region()
         # only apply if the system language is different from the selected language
         if current_system_lang != locale_code:
-            # self.open_info_dialog()
-            sudoPassword = 'c317tek'
-            command = 'locale-gen ' + locale_code_language
-            p = os.system('echo %s|sudo -S %s' % (sudoPassword, command))
-
-            command2 = 'update-locale LANG=' + locale_code
-            p = os.system('echo %s|sudo -S %s' % (sudoPassword, command2))
-
-            command3 = 'update-locale LC_ALL=' + locale_code
-            p = os.system('echo %s|sudo -S %s' % (sudoPassword, command3))
-            # self.close_dialog(self.dialog)
+            self._screen.show_panel(
+                's3dp_language_wait_msg',
+                's3dp_language_wait_msg',
+                None,
+                2,
+                data={
+                    "locale_code": locale_code,
+                    "locale_code_language": locale_code_language
+                }
+            )
 
     def radioButtonSelected(self, button, lang):
+        print(lang)
         if button.get_active():
-            self.changeLang(lang)
+            print("radiobutton selected event")
+            print(button.get_active())
+            button.set_active(True)
+            GLib.timeout_add(1500, self.changeLang, lang)
 
-    def eventBoxLanguage(self, button, gparam, lang):
-        self.changeLang(lang)
+    def eventBoxLanguage(self, event, button, radio, lang=None):
 
-    def _resolve_radio(self, master_radio):
-        active = next((
-        radio for radio in
-        master_radio.get_group()
-        if radio.get_active()
-        ))
-        return active
-
-    def open_info_dialog(self):
-        self.dialog = InfoDialog(self, _("Loading selected language.\nPlease wait.."), True)
-        self.dialog.get_style_context().add_class("alert-info-dialog")
-
-        self.dialog.set_decorated(False)
-        self.dialog.set_size_request(0, 0)
-
-        #timer_duration = 30000
-        #GLib.timeout_add(timer_duration, self.close_dialog, self.dialog)
-        response = self.dialog.run()
-        return False
-
-    def finished(self):
-        self.dialog.response(Gtk.ResponseType.CANCEL)
-        self.dialog.destroy()
-    def close_dialog(self, dialog):
-        dialog.response(Gtk.ResponseType.CANCEL)
-        dialog.destroy()
+        self.radioButtonSelected(radio, lang)
 
     def get_system_region(self):
         region = 'en_US'

@@ -19,9 +19,11 @@ class CoPrintSplashScreenPanel(ScreenPanel):
 
         self.timeout_id = None
 
-        image = self._gtk.Image("coPrint", self._gtk.content_width , self._gtk.content_height * .20)
+        image = self._gtk.Image("coPrint", self._gtk.content_width, self._gtk.content_height * .20)
+
         spinner = Gtk.Spinner()
         spinner.start()
+
         self.labels['text'] = Gtk.Label(_("Initializing printer..."))
         self.labels['text'].set_line_wrap(True)
         self.labels['text'].set_line_wrap_mode(Pango.WrapMode.WORD_CHAR)
@@ -30,14 +32,19 @@ class CoPrintSplashScreenPanel(ScreenPanel):
 
         self.labels['menu'] = self._gtk.Button("settings", _("Menu Network"), "color4")
         self.labels['menu'].connect("clicked", self._screen._go_to_submenu, "")
+
         self.labels['restart'] = self._gtk.Button("refresh", _("Klipper Restart"), "color1")
         self.labels['restart'].connect("clicked", self.restart)
+
         self.labels['firmware_restart'] = self._gtk.Button("refresh", _("Firmware Restart"), "color2")
         self.labels['firmware_restart'].connect("clicked", self.firmware_restart)
+
         self.labels['restart_system'] = self._gtk.Button("refresh", _("System Restart"), "color1")
         self.labels['restart_system'].connect("clicked", self.restart_system)
+
         self.labels['shutdown'] = self._gtk.Button("shutdown", _('System Shutdown'), "color2")
         self.labels['shutdown'].connect("clicked", self.shutdown)
+
         self.labels['retry'] = self._gtk.Button("load", _('Retry'), "color3")
         self.labels['retry'].connect("clicked", self.retry)
 
@@ -62,7 +69,7 @@ class CoPrintSplashScreenPanel(ScreenPanel):
         main.pack_end(self.labels['actions'], False, False, 0)
 
         self.show_restart_buttons()
-        self.start_timer()
+        #self.start_timer()
         self.content.add(main)
 
     def update_text(self, text):
