@@ -8,10 +8,10 @@ from ks_includes.screen_panel import ScreenPanel
 from ks_includes.SDCardUtils import SDCardUtils
 
 def create_panel(*args):
-    return CoPrintMcuModelSelection(*args)
+    return S3DPFlashModeSelect(*args)
 
 
-class CoPrintMcuModelSelection(ScreenPanel):
+class S3DPFlashModeSelect(ScreenPanel):
 
     def __init__(self, screen, title):
         super().__init__(screen, title)
