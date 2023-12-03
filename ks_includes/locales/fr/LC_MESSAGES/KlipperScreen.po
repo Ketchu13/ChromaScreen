@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: KlipperScreen\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-11-30 18:17-0300\n"
-"PO-Revision-Date: 2023-11-19 18:56+0100\n"
+"PO-Revision-Date: 2023-12-01 22:22+0100\n"
 "Last-Translator: ketchu13\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.2\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #, python-format
 msgid "%s will be updated to version"
@@ -151,7 +151,7 @@ msgid "Bootloader Offset"
 msgstr "Décalage du chargeur d’amorçage"
 
 msgid "Botloader Offset"
-msgstr "Décalage du chargeur de bots"
+msgstr "Décalage du chargeur d’amorçage"
 
 msgid "Calibrate"
 msgstr "Calibrer"
@@ -175,7 +175,7 @@ msgid "Calibration will disconnect from other printers. Please make sure that ot
 msgstr "L’étalonnage se déconnectera des autres imprimantes. Veuillez vous assurer que d’autres imprimantes ne sont pas en cours d’utilisation"
 
 msgid "Cam Settings"
-msgstr "Paramètres de la came"
+msgstr "Paramètres de la camera"
 
 msgid "Camera"
 msgstr "Caméra"
