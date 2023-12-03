@@ -2,6 +2,7 @@ import fnmatch
 import logging
 import os
 import re
+import time
 
 from ks_includes.widgets.checkbuttonbox import CheckButtonBox
 import gi
@@ -23,12 +24,13 @@ class CoPrintPrintingSelection(ScreenPanel):
     def __init__(self, screen, title):
         super().__init__(screen, title)
 
+        self.update_timeout = None
         self.device = None
         self.selected = None
 
         self.device_utils = DeviceUtils(120, self.new_device_detected)
-        self.printers = self._config.get_printers()
-        print("Printers: ", self.printers)
+        #self.printers = self._config.get_printers()
+        #print("Printers: ", self.printers)
 
         initHeader = InitHeader(
             self,
@@ -73,67 +75,40 @@ class CoPrintPrintingSelection(ScreenPanel):
 
         self.content.add(main)
         self.content.show_all()
-        GLib.idle_add(function=self.load_devices)
+
+        if self.update_timeout is None:
+            self.update_timeout = GLib.timeout_add_seconds(5, self.load_devices)
+
         self.initialized = True
 
-    def get_usb_devices(self): # TODO LOOK at octoprint
-        regex_serial_devices = re.compile(r"^(?:ttyUSB|ttyACM|tty\.usb|cu\.|cuaU|ttyS|rfcomm).*")
-        """Regex used to filter out valid tty devices"""
-        candidates = []
-        try:
-            with os.scandir("/dev") as it:
-                for entry in it:
-                    if regex_serial_devices.match(entry.name):
-                        candidates.append(entry.path)
-        except Exception as e:
-            logging.error(
-                "Could not scan /dev for serial ports on the system",
-                exc_info=e
-            )
-
-        # additional ports
-        # additionalPorts = settings().get(["serial", "additionalPorts"])
-        # if additionalPorts:
-        #    for additional in additionalPorts:
-        #        candidates += glob.glob(additional)
-
-        # blacklisted ports
-        blacklistedPorts = False # self._screen._fw_config.get(["serial", "blacklistedPorts"])
-        #if blacklistedPorts:
-        #    for pattern in blacklistedPorts:
-        #        candidates = list(
-        #            filter(lambda x: not fnmatch.fnmatch(x, pattern), candidates)
-        #        )
-
-        # last used port = first to try, move to start
-        # prev = settings().get(["serial", "port"])
-        # if prev in candidates:
-        #    candidates.remove(prev)
-        #    candidates.insert(0, prev)
-
-        return candidates
-
     def load_devices(self):
-
-        # refresh the Wi-Fi list
-        spinner = Gtk.Spinner()
-        spinner.props.width_request = 100
-        spinner.props.height_request = 100
-        spinner.start()
-        self.content.show_all()
-        GLib.idle_add(self.device_utils.wait_for_new_devicez)
+        if self.initialized:
+            # refresh the Wi-Fi list
+            spinner = Gtk.Spinner()
+            spinner.props.width_request = 100
+            spinner.props.height_request = 100
+            spinner.start()
+            self.content.show_all()
+            GLib.idle_add(self.device_utils.wait_for_new_devicez)
 
     def new_device_detected(self, device):
         self.device = device
+        self.device_utils.stop()
+        time.sleep(1)
         # todo display
-        self.on_click_continue_button(None)
+        self._screen.show_panel(
+            "co_print_printing_selection_port",
+            "co_print_printing_selection_port",
+            None,
+            remove=2,
+            device=self.device
+        )
 
     def initialize(self, device_utils=None):
-        self.device_utils = device_utils if device_utils is not None else DeviceUtils(120, self.new_device_detected)
-
+        pass
 
     def on_click_continue_button(self, continueButton):
-        self._screen.show_panel("co_print_printing_selection_port", "co_print_printing_selection_port", None, 2, device_utils=self.device_utils, device=self.device)
+        print("click")
 
     def on_click_back_button(self, button, data):
-        self._screen.show_panel(data, data, None, 2)
+        self._screen.show_panel(data, data, None, 1)

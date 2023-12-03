@@ -26,8 +26,10 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
 
     def __init__(self, screen, title):
         super().__init__(screen, title)
+        self.selectedDevice = None
+        self.device_utils = DeviceUtils(120, self.new_device_detected)
+        self.update_timeout = None
 
-        self.update_timeout = False
         initHeader = InitHeader(
             self,
             _('Connect Your 3D Printer'),
@@ -35,9 +37,6 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
             "yazicibaglama"
         )
 
-        new_menu_items = []
-
-        menu_items = new_menu_items
         self.contentBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
         self.contentBox.set_hexpand(True)
         self.contentBox.set_halign(Gtk.Align.CENTER)
@@ -45,8 +44,6 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
         self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.rightBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.rightBox.set_hexpand(True)
-
-        self.selectedDevice = None
 
         # //---------Left Side---------//
         self.leftScroll = self._gtk.ScrolledWindow()
@@ -58,7 +55,8 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
         #self.leftScroll.set_margin_right(self._gtk.action_bar_width * 1)
         self.leftScroll.add(self.leftBox)
         self.contentBox.pack_start(self.leftScroll, False, False, 0)
-        self.leftScroll.set_size_request(200,200)
+        self.leftScroll.set_size_request(200, 200)
+
         # //---------Right Side---------//
         self.alpha_DescriptionLabel = Gtk.Label('', name="contract-approval-label")
         self.alpha_DescriptionLabel.set_line_wrap(True)
@@ -112,32 +110,27 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
         main.pack_end(buttonBox, False, False, 10)
 
         self.content.add(main)
-        GLib.idle_add(self.reload_devices_port)
+        self.content.show_all()
 
         if self.update_timeout is None:
-            self.update_timeout = GLib.timeout_add_seconds(5, self.reload_devices_port)
+            self.update_timeout = GLib.timeout_add(500, self.reload_devices_port)
 
         self.initialized = True
 
-    def initialize(self, device_utils,  device=None):
-        self.device_utils = device_utils if device_utils else DeviceUtils(120, self.new_device_detected)
+    def initialize(self, device=None):
         self.selectedDevice = device
-        print(self.device_utils)
-        print(self.selectedDevice)
 
-        print("initialized")
-
-    def on_click_callback(self, widget, event, device, devlink):
-        print(widget)
-        print(event)
-        print(device)
+    def on_click_callback(self, widget, device, devlink):
+        # print(widget)
+        # print(event)
+        # print(device)
         self.selectedDevice = device
         selectedDevice = self.device_utils.get_deviceDict_by_devlink(devlink)
-        print(selectedDevice)
+        #print(selectedDevice)
         self.alpha_DescriptionLabel.set_text(json.dumps(selectedDevice, indent=4))
 
     def reload_devices_port(self):
-        print(self.selectedDevice)
+        # print(self.selectedDevice)
         if self.initialized:
 
             for item in self.leftScroll.get_children():
@@ -145,20 +138,23 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
             self.leftBox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)  # , hexpand=True)
             self.devices = self.get_serial_devices_path()
             menu_items = self.devices  # get /dev/serial/by-path
-            for menu_item in menu_items:
-                buttonStyle = "flat-button-black"
+            match_devbypath = None
+
+            if self.selectedDevice:
                 devlinks = self.selectedDevice["DEVLINKS"]
                 match_devbypath = re.search(r'/dev/serial/by-path/(\S+)', devlinks)
-                device = self.device_utils.get_deviceDict_by_devlink(menu_item["Name"])
-                print(device)
-                if device:
-                    if match_devbypath:
-                        devlink = match_devbypath.group(1)
-                        print(menu_item["Name"], devlink)
-                        if menu_item["Name"] == devlink:
-                            print("ok")
-                            buttonStyle = "flat-button-green2"
 
+            for menu_item in menu_items:
+                buttonStyle = "flat-button-black"
+                device = self.device_utils.get_deviceDict_by_devlink(menu_item["Name"])
+                # print(device)
+                if device:
+                    if self.selectedDevice and match_devbypath:
+                        devlink = match_devbypath.group(1)
+                        # print(menu_item["Name"], devlink)
+                        if menu_item["Name"] == devlink:
+                            # print("ok")
+                            # buttonStyle = "flat-button-green2"
                             self.alpha_DescriptionLabel.set_text(json.dumps(device, indent=4))
                     devicecard = DeviceCard(
                         self,
@@ -169,21 +165,26 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
 
             self.leftScroll.add(self.leftBox)
             self.leftScroll.show_all()
+            self.update_timeout = None
 
     @staticmethod
     def get_serial_devices_path():
+        dir_ = "/dev/serial/by-path"
         # ls /dev/serial/by-path
         try:
-            device_path = os.listdir("/dev/serial/by-path")
+            device_path = os.listdir(dir_)
         except Exception as e:
             logging.error(e)
             return None
         devices_paths = []
         for device in device_path:
-            devices_paths.append({"Name": device, "path": "/dev/serial/by-path/%s" % device})
+            devices_paths.append(
+                {"Name": device, "path": "%s/%s" % (dir_, device)}
+            )
         return devices_paths
 
-    def new_device_detected(self, devices, device=None):
+    @staticmethod
+    def new_device_detected(devices, device=None):
         print(device)
         print(devices)
 
@@ -191,4 +192,6 @@ class CoPrintPrintingSelectionPort(ScreenPanel):
         self._screen.show_panel("co_print_printing_brand_selection", "co_print_printing_brand_selection", None, 2)
 
     def on_click_back_button(self, button, data):
+        self.initialized = False
+        self.update_timeout = None
         self._screen.show_panel(data, data, None, 2, device_utils=None)

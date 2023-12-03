@@ -1,4 +1,4 @@
-import subprocess
+import logging
 import time
 
 import pyudev
@@ -58,28 +58,32 @@ class DeviceUtils:
 
         context_udev = pyudev.Context()
 
-        monitor = pyudev.Monitor.from_netlink(context_udev)
-        monitor.filter_by(subsystem='usb')
-        monitor.start()
-        print("monitor started")
-        self.observer = pyudev.MonitorObserver(monitor, self.events_manager)
+        self.monitor = pyudev.Monitor.from_netlink(context_udev)
+        # monitor.filter_by(subsystem='usb')
+        self.monitor.start()
+        logging.debug(_("Devices monitor started."))
 
-
+        self.observer = pyudev.MonitorObserver(self.monitor, self.events_manager)
         try:
             self.observer.start()
-            print("observer started")
+            logging.debug(_("Devices observer started."))
             while self.process_run and ((time.time() - start_time) < self.wait_device_timeout):
                 continue
-        except KeyboardInterrupt:
-            pass
+        except:
+            self.stop()
         finally:
-            self.process_run = False
-            self.observer.stop()
-            self.observer.join()
+            self.stop()
 
     # stop observer
     def stop(self):
         self.process_run = False
+        try:
+            self.observer.stop()
+            del self.monitor
+            logging.debug(_("Devices observer stopped."))
+            self.observer.join()
+        except Exception as e:
+            logging.error(e)
 
     # start observer
     def start(self):
@@ -88,42 +92,48 @@ class DeviceUtils:
 
     # events manager for observer
     def events_manager(self, action, device, oth=None):
-        if device.action == "remove":
+        # Check if it's an add event, if not, ignore it
+        if device.action != "add" or not self.process_run:
             return None
-        if device.action == "add":
-            frdevice = {}
-            #print("\n\n")
-            device_props_keys = list(device.properties)
-            for device_p_prop in device_props_keys:
-                # print(device_p_prop,device.properties[device_p_prop])
-                frdevice[device_p_prop] = device.properties[device_p_prop]
+        # Create a dict with the device's properties
+        frdevice = {}
+
+        device_props_keys = list(device.properties)
+        #print("device_props_keys", device_props_keys)
+        for device_p_prop in device_props_keys:
+            #print(device_p_prop,device.properties[device_p_prop])
+            frdevice[device_p_prop] = device.properties[device_p_prop]
+
+        if len(list(device.children))>1:
             device_data = list(device.children)[1].properties
             properties = list(device_data)
-            # print(properties)
-            if "SUBSYSTEM" in properties:
+            #print("device child properties")
 
-                for _property in properties:
-                    #print(_property, device_data[_property])
-                    frdevice[_property] = device_data[_property]
+            for _property in properties:
+                #print(_property, device_data[_property])
+                frdevice[_property] = device_data[_property]
 
-                if "DEVNAME" in frdevice:
-                    device_name = frdevice["DEVNAME"]
-                    device_exist = False
-                    for detected_device in self.detected_devices:
-                        if detected_device["DEVNAME"] == device_name or detected_device["ID_PATH"] == frdevice["ID_PATH"] or detected_device["ID_PATH"].startswith(frdevice["ID_PATH"]) or frdevice["ID_PATH"].startswith(detected_device["ID_PATH"]):
-                            device_exist = True
-                            detected_device.update(frdevice)
-                            break
+            if "ID_PATH" in frdevice:
+                #device_name = frdevice["DEVNAME"]
+                device_exist = False
+                for detected_device in self.detected_devices:
+                    if detected_device["ID_PATH"] == frdevice["ID_PATH"] or \
+                            detected_device["ID_PATH"].startswith(frdevice["ID_PATH"]) or \
+                            frdevice["ID_PATH"].startswith(detected_device["ID_PATH"]):
+                        device_exist = True
+                        detected_device.update(frdevice)
+                        break
 
-                    if not device_exist:
-                        # print(self.detected_devices)
-                        self.detected_devices.append(frdevice)
-                        # print(self.detected_devices)
+                if not device_exist:
+                    # print(self.detected_devices)
+                    self.detected_devices.append(frdevice)
+                    # print(self.detected_devices)
 
                 # serial available stop now
-                if device_data["SUBSYSTEM"] == "tty" and frdevice["DEVTYPE"] == "usb_interface":
+                if "SUBSYSTEM" in frdevice and frdevice["SUBSYSTEM"] == "tty" and "DEVLINKS" in self.detected_devices[0]:
                     # callbak device ready to test
                     # print("call callback")
+                    # print("detected_devices: ", frdevice)
+                    self.process_run = False
                     self.callback(self.detected_devices[0])
-                    self.stop()
-                    return
+        return None
