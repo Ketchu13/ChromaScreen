@@ -144,7 +144,7 @@ class NetworkPanel(ScreenPanel):
             display_name += " (" + _("Connected") + ")"
 
         name = Gtk.Label("")
-        name.set_markup(f"<big><b>Noya {display_name}</b></big>")
+        name.set_markup(f"<big><b>{display_name}</b></big>")
         name.set_hexpand(True)
         name.set_halign(Gtk.Align.START)
         name.set_line_wrap(True)
@@ -390,16 +390,20 @@ class NetworkPanel(ScreenPanel):
                 self.labels['ip'].set_text(f"IP: {ifadd[netifaces.AF_INET][0]['addr']}  ")
             if netifaces.AF_INET6 in ifadd and len(ifadd[netifaces.AF_INET6]) > 0:
                 ipv6 = f"<b>IPv6:</b> {ifadd[netifaces.AF_INET6][0]['addr'].split('%')[0]} "
-            info = '<b>' + _("Hostname Noya") + f':</b> {hostname}\n{ipv4}\n{ipv6}\n'
+            info = '<b>' + _("Hostname") + f':</b> {hostname}\n{ipv4}\n{ipv6}\n'
         elif "psk" in netinfo:
             info = _("Password saved")
+
         if "encryption" in netinfo:
             if netinfo['encryption'] != "off":
                 encr = netinfo['encryption'].upper()
+
         if "frequency" in netinfo:
             freq = "2.4 GHz" if netinfo['frequency'][0:1] == "2" else "5 Ghz"
+
         if "channel" in netinfo:
             chan = _("Channel") + f' {netinfo["channel"]}'
+
         if "signal_level_dBm" in netinfo:
             lvl = f'{netinfo["signal_level_dBm"]} ' + _("dBm")
 
@@ -414,14 +418,14 @@ class NetworkPanel(ScreenPanel):
         ipv4 = ""
         ipv6 = ""
         if netifaces.AF_INET in ifadd and len(ifadd[netifaces.AF_INET]) > 0:
-            ipv4 = f"<b>IPv4 Noya:</b> {ifadd[netifaces.AF_INET][0]['addr']} "
+            ipv4 = f"<b>IPv4 :</b> {ifadd[netifaces.AF_INET][0]['addr']} "
             self.labels['ip'].set_text(f"IP: {ifadd[netifaces.AF_INET][0]['addr']}  ")
         if netifaces.AF_INET6 in ifadd and len(ifadd[netifaces.AF_INET6]) > 0:
             ipv6 = f"<b>IPv6:</b> {ifadd[netifaces.AF_INET6][0]['addr'].split('%')[0]} "
         connected = (
             f'<b>{self.interface}</b>\n\n'
             f'<small><b>' + _("Connected") + f'</b></small>\n'
-            + '<b>' + _("Hostname Noya") + f':</b> {hostname}\n'
+            + '<b>' + _("Hostname") + f':</b> {hostname}\n'
             f'{ipv4}\n'
             f'{ipv6}\n'
         )
