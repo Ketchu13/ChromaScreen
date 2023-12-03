@@ -28,11 +28,12 @@ class ConfigError(Exception):
 
 class KlipperScreenConfig:
     config = None
-    configfile_name = "KlipperScreen.conf"
+    configfile_name = "ChromaScreen.conf"
     do_not_edit_line = "#~# --- Do not edit below this line. This section is auto generated --- #~#"
     do_not_edit_prefix = "#~#"
 
     def __init__(self, configfile, screen=None):
+        self.current_lang = None
         self.lang_list = None
         self.errors = []
         self.default_config_path = os.path.join(klipperscreendir, "ks_includes", "defaults.conf")
@@ -64,7 +65,7 @@ class KlipperScreenConfig:
             # This is the final config
             # self.log_config(self.config)
             if self.validate_config():
-                logging.info('Configuration validated succesfuly')
+                logging.info('Configuration validated successfully')
             else:
                 logging.error('Invalid configuration detected !!!')
                 logging.info('Loading default config')
@@ -90,12 +91,12 @@ class KlipperScreenConfig:
 
         self.printers = [
             {printer[8:]: {
-                "moonraker_host": self.config.get(printer, "moonraker_host", fallback="127.0.0.1"),
-                "moonraker_port": self.config.get(printer, "moonraker_port", fallback="7125"),
+                "moonraker_host":    self.config.get(printer, "moonraker_host"   , fallback="127.0.0.1"),
+                "moonraker_port":    self.config.get(printer, "moonraker_port"   , fallback="7125"),
                 "moonraker_api_key": self.config.get(printer, "moonraker_api_key", fallback="").replace('"', '')
             }} for printer in printers
         ]
-        i =0
+        i = 0
         for printer in self.printers:
             i += 1
             name = list(printer)[0]
@@ -106,7 +107,7 @@ class KlipperScreenConfig:
 
         conf_printers_debug = copy.deepcopy(self.printers)
         for printer in conf_printers_debug:
-            i +=1
+            i += 1
             name = list(printer)[0]
             item = conf_printers_debug[conf_printers_debug.index(printer)]
             item[name]['moonraker_port'] = str(7124 + i)
@@ -125,13 +126,13 @@ class KlipperScreenConfig:
             self.langs[lng] = gettext.translation('KlipperScreen', localedir=lang_path, languages=[lng], fallback=True)
 
         lang = self.get_main_config().get("language", None)
-        logging.debug(f"Selected lang: {lang} OS lang: {locale.getdefaultlocale()[0]}")
+        logging.debug(f"Selected lang: {lang} OS lang: {locale.getlocale()[0]}")
         self.install_language(lang)
 
     def install_language(self, lang):
         if lang is None or lang == "system_lang":
             for language in self.lang_list:
-                if locale.getdefaultlocale()[0].startswith(language):
+                if locale.getlocale()[0].startswith(language):
                     logging.debug("Using system lang")
                     lang = language
         if lang is not None and lang not in self.lang_list:
@@ -146,7 +147,7 @@ class KlipperScreenConfig:
             lang = "en"
         logging.info(f"Using lang {lang}")
         self.lang = self.langs[lang]
-        self.current_lang= lang
+        self.current_lang = lang
         self.lang.install(names=['gettext', 'ngettext'])
 
     def validate_config(self):
@@ -385,7 +386,7 @@ class KlipperScreenConfig:
         return ["\n".join(user_def), None if saved_def is None else "\n".join(saved_def)]
 
     def get_config_file_location(self, file):
-        # Passed config (-c) by default is ~/KlipperScreen.conf
+        # Passed config (-c) by default is ~/ChromaScreen.conf
         logging.info(f"Passed config (-c): {file}")
         if os.path.exists(file):
             return file
@@ -460,7 +461,6 @@ class KlipperScreenConfig:
     def get_printer_config(self, name):
         if not name.startswith("printer "):
             name = f"printer {name}"
-
         return None if name not in self.config else self.config[name]
 
     def get_printers(self):
