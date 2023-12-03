@@ -2036,7 +2036,13 @@ box.auto-leveling-label-box-active-white {
     border-radius: 10px;
     min-width: 37rem;
 }
-
+#device-card-box {
+    background: linear-gradient(180deg, rgba(63, 63, 63, 0.90) 0%, rgba(63, 63, 63, 0.00) 100%);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 2px solid #878787;
+    min-width: 37rem;
+}
 #system-setting-card-box {
     background: linear-gradient(180deg, rgba(63, 63, 63, 0.90) 0%, rgba(63, 63, 63, 0.00) 100%);
     padding: 1rem;
@@ -2051,7 +2057,6 @@ box.auto-leveling-label-box-active-white {
     font-size: 1.1rem;
 }
 button#change-offset-button {
-
     border: 2px solid #6B6B6B;
     min-width:3rem;
     min-height: 3.5rem;
