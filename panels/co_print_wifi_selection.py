@@ -11,7 +11,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, GLib
 from ks_includes.screen_panel import ScreenPanel
 
-
+# TODO add message / display to notify that no wireless interface found
 def create_panel(*args):
     return CoPrintWifiSelection(*args)
 
@@ -36,7 +36,7 @@ class CoPrintWifiSelection(ScreenPanel):
         self.wireless_interfaces = [iface for iface in self.network_interfaces if iface.startswith('w')]
 
         self.wifi = None
-
+        self.ip = None
         self.use_network_manager = os.system('systemctl is-active --quiet NetworkManager.service') == 0
 
         if len(self.wireless_interfaces) > 0:
@@ -48,32 +48,32 @@ class CoPrintWifiSelection(ScreenPanel):
                 logging.info("Using wpa_cli")
                 from ks_includes.wifi import WifiManager
             self.wifi = WifiManager(self.wireless_interfaces[0])
+
+
+            # Get interface
+            gws = netifaces.gateways()
+            if "default" in gws and netifaces.AF_INET in gws["default"]:
+                self.interface = gws["default"][netifaces.AF_INET][1]
+            else:
+                ints = netifaces.interfaces()
+                if 'lo' in ints:
+                    ints.pop(ints.index('lo'))
+                if len(ints) > 0:
+                    self.interface = ints[0]
+                else:
+                    self.interface = 'lo'
+            # Get IP Address
+            res = netifaces.ifaddresses(self.interface)
+            if netifaces.AF_INET in res and len(res[netifaces.AF_INET]) > 0:
+                self.ip = res[netifaces.AF_INET][0]['addr']
+            else:
+                self.ip = None
         else:
             # ChromaPad don't have any ethernet port, so we don't need to show ethernet networks
             # and if no wireless interfaces found, I'm afraid Dave, we have to use loopback interface
             logging.error("No wireless interfaces found")
             # display msg
             # for now just return
-            return
-
-        # Get interface
-        gws = netifaces.gateways()
-        if "default" in gws and netifaces.AF_INET in gws["default"]:
-            self.interface = gws["default"][netifaces.AF_INET][1]
-        else:
-            ints = netifaces.interfaces()
-            if 'lo' in ints:
-                ints.pop(ints.index('lo'))
-            if len(ints) > 0:
-                self.interface = ints[0]
-            else:
-                self.interface = 'lo'
-        # Get IP Address
-        res = netifaces.ifaddresses(self.interface)
-        if netifaces.AF_INET in res and len(res[netifaces.AF_INET]) > 0:
-            self.ip = res[netifaces.AF_INET][0]['addr']
-        else:
-            self.ip = None
 
         # template try 1
         initHeader = InitHeader(
@@ -148,12 +148,12 @@ class CoPrintWifiSelection(ScreenPanel):
         page.pack_start(self.main, False, True, 0)
 
         self.content.add(page)
+        self.content.show_all()
 
         # self.wifi.add_callback("connected", self.connected_callback)
         # self.wifi.add_callback("scan_results", self.scan_callback)
-        self.wifi.add_callback("popup", self.popup_callback)
-
-        GLib.idle_add(self.reload_networks, None)
+        if self.wifi:
+            self.wifi.add_callback("popup", self.popup_callback)
 
         if self.update_timeout is None:
             self.update_timeout = GLib.timeout_add_seconds(5, self.reload_networks)
@@ -284,7 +284,7 @@ class CoPrintWifiSelection(ScreenPanel):
         return network_infos
 
     def reload_networks(self, widget=None):
-        if self.wifi.initialized:
+        if self.wifi and self.wifi.initialized:
             # refresh the Wi-Fi list
             spinner = Gtk.Spinner()
             spinner.props.width_request = 100
