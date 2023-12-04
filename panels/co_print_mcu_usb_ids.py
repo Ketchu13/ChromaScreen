@@ -1,9 +1,12 @@
+import json
 import logging
 import os
 from ks_includes.widgets.checkbuttonbox import CheckButtonBox
 import gi
 
 from ks_includes.widgets.initheader import InitHeader
+from ks_includes.widgets.usbIDsCard import UsbIdCard
+
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk, Pango, GLib, Gdk
 
@@ -24,81 +27,50 @@ class CoPrintMcuUsbIds(ScreenPanel):
         self.usb_ids = None
         self.option_checked = False
         self.selected = None
+        self.usbbIdsCards = []
 
         self.usb_ids = [
-            {'Name': "(0x1d50) USB vendor ID" , 'key': "uv0x1", 'Button': Gtk.RadioButton()},
-            {'Name': "(0x614e) USB  device ID", 'key': "uv0x2", 'Button': Gtk.RadioButton()},
+            {'desc': "USB vendor ID", 'type': 'vendor', 'id': '0x1d50', 'id_default': '0x1d50'},
+            {'desc': "USB device ID", 'type': 'device', 'id': '0x614e', 'id_default': '0x614e'},
         ]
-
+        #  self._screen._fw_config["mcu"]["manual_cfg"] = True
+        # get fw_config from screen to know if we are in manual or wizzard config
+        validate_button = {
+            "panel_link": "co_print_fwmenu_selection",
+            "panel_link_b": "co_print_fwmenu_selection",
+            "text": _('Save')
+        }
         if "mcu" not in self._screen._fw_config:
             self._screen._fw_config["mcu"] = {}
 
         if "usb_ids" not in self._screen._fw_config["mcu"]:
-            self._screen._fw_config["mcu"]["usb_ids"] = None
+            self._screen._fw_config["mcu"]["usb_ids"] = {}
 
-        group = None
+        if "serial_from" not in self._screen._fw_config["mcu"]["usb_ids"]:
+            self._screen._fw_config["mcu"]["usb_ids"]["serial_from"] = False
+
+        if "vendor" not in self._screen._fw_config["mcu"]["usb_ids"]:
+            self._screen._fw_config["mcu"]["usb_ids"]["vendor"] = self.usb_ids[0]["id_default"]
+        if "device" not in self._screen._fw_config["mcu"]["usb_ids"]:
+            self._screen._fw_config["mcu"]["usb_ids"]["device"] = self.usb_ids[1]["id_default"]
 
         initHeader = InitHeader(
             self,
             _('USB IDS'),
-            _('Select the usb ids located on the board you will be controlling.'),
+            _('Set the usb ids that you will use to identify your board. Use default values if you are not sure.'),
             "mikrochip"
         )
 
-        '''diller bitis'''
-        grid = Gtk.Grid(
-            column_homogeneous=True,
-            column_spacing=10,
-            row_spacing=10
-        )
-        row = 0
-        count = 0
+        usbIdsflowbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0, halign=Gtk.Align.CENTER)
+        usbIdsflowbox.set_hexpand(True)
 
-        for chip in self.usb_ids:
-
-
-            chipName = Gtk.Label(chip['Name'], name="wifi-label")
-            chipName.set_alignment(0, 0.5)
-            # reduce font size if mcu model name is too long
-            if len(chip['Name']) > 30:
-                chipName.set_size_request(300, -1)
-                chipName.set_max_width_chars(30)
-                chipName.set_ellipsize(Pango.EllipsizeMode.END)
-
-            chip['Button'] = Gtk.RadioButton.new_with_label_from_widget(group, "")
-            chip['Button'].set_alignment(1, 0.5)
-            chip['Button'].connect("toggled", self.radioButtonSelected, chip)
-
-            chipBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40, name="chip")
-
-            f = Gtk.Frame(name="chip")
-
-            chipBox.pack_start(chipName, False, True, 10)
-            chipBox.pack_end(chip['Button'], False, False, 10)
-
-            f.add(chipBox)
-
-            grid.attach(f, count, row, 1, 1)
-
-            if self._screen._fw_config["mcu"]["usb_ids"]:
-                if self._screen._fw_config["mcu"]["usb_ids"]['Name'] == chip['Name']:
-                    chip['Button'].set_active(True)
-                    self.selected = chip
-                    group = chip['Button']
-
-            # set group if chip name is the same as the one in fw_config
-            if group is None:
-                group = chip['Button']
-                self.selected = chip
-
-            count += 1
-            if count % 2 == 0:
-                count = 0
-                row += 1
-
-        gridBox = Gtk.FlowBox()
-        gridBox.set_halign(Gtk.Align.CENTER)
-        gridBox.add(grid)
+        for usb_id in self.usb_ids:
+            # check if data exists in fw_config
+            if usb_id["type"] in self._screen._fw_config["mcu"]["usb_ids"]:
+                usb_id["id"] = self._screen._fw_config["mcu"]["usb_ids"][usb_id["type"]]
+            usb_idCard = UsbIdCard(self, usb_id)
+            usbIdsflowbox.pack_start(usb_idCard, False, False, 0)
+            self.usbbIdsCards.append(usb_idCard)
 
         self.scroll = self._gtk.ScrolledWindow()
         self.scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -107,34 +79,15 @@ class CoPrintMcuUsbIds(ScreenPanel):
         self.scroll.get_overlay_scrolling()
         self.scroll.set_margin_left(self._gtk.action_bar_width * 1)
         self.scroll.set_margin_right(self._gtk.action_bar_width * 1)
-
-        self.scroll.add(gridBox)
-        self._screen._fw_config["mcu"]["manual_cfg"] = True
-        # get fw_config from screen to know if we are in manual or wizzard config
-        validate_button = {
-            "text": _("Continue"),
-            "panel_link": "co_print_mcu_flash_chip",
-            "panel_link_b": "co_print_mcu_com_interface"
-        }
-        if "mcu" not in self._screen._fw_config:
-            self._screen._fw_config["mcu"] = {}
-
-        if "manual_cfg" not in self._screen._fw_config["mcu"]:
-            self._screen._fw_config["mcu"]["manual_cfg"] = False
-
-        if self._screen._fw_config["mcu"]["manual_cfg"]:
-            validate_button["panel_link"] = "co_print_fwmenu_selection"
-            validate_button["panel_link_b"] = "co_print_fwmenu_selection"
-            validate_button["text"] = _('Save')
-
-        if "serial_from" not in self._screen._fw_config["mcu"]:
-            self._screen._fw_config["mcu"]["serial_from"] = False
+        self.scroll.add(usbIdsflowbox)
+        self.scroll.set_halign(Gtk.Align.CENTER)
+        self.scroll.set_valign(Gtk.Align.CENTER)
 
         self.checkButton = CheckButtonBox(self, _('USB serial number from CHIPID'), self.onCheck)
         self.checkButton.set_hexpand(True)
         self.checkButton.set_margin_left(self._gtk.action_bar_width * 3)
         self.checkButton.set_margin_right(self._gtk.action_bar_width * 3)
-        self.checkButton.set_active(self._screen._fw_config["mcu"]["serial_from"])
+        self.checkButton.set_active(self._screen._fw_config["mcu"]["usb_ids"]["serial_from"])
 
         checkButtonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         checkButtonBox.pack_start(self.checkButton, False, True, 0)
@@ -186,27 +139,23 @@ class CoPrintMcuUsbIds(ScreenPanel):
         # save to fw_config
         self.option_checked = active
 
-    def on_click_continue_button(self, continueButton, target_panel):
-        if self.selected:
+    def on_click_continue_button(self, continueButton, target_panel=None):
+        config_ok = True
+        usb_ids_result = {}
+        for usb_idCard in self.usbbIdsCards:
+            if usb_idCard._on_check_button_clicked(None):
+                usb_ids_result[usb_idCard.usb_id["type"]] = usb_idCard.usb_id["id"]
+            else:
+                config_ok = False
+        if config_ok:
             if "mcu" not in self._screen._fw_config:
                 self._screen._fw_config["mcu"] = {}
 
             # save to fw_config
-            self._screen._fw_config["mcu"]["usb_ids"] = self.selected
-            self._screen._fw_config["mcu"]["serial_from"] = self.option_checked
+            self._screen._fw_config["mcu"]["usb_ids"] = usb_ids_result
+            self._screen._fw_config["mcu"]["usb_ids"]["serial_from"] = self.option_checked
             # open target panel
             self._screen.show_panel(target_panel, target_panel, None, 2)
 
     def on_click_back_button(self, button, target_panel):
         self._screen.show_panel(target_panel, target_panel, None, 2)
-
-    def radioButtonSelected(self, button, usb_id):
-        self.selected = usb_id
-
-    def _resolve_radio(self, master_radio):
-        active = next((
-            radio for radio in
-            master_radio.get_group()
-            if radio.get_active()
-        ))
-        return active

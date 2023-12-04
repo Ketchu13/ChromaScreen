@@ -30,6 +30,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
         # get mcu models for the selected architecture from ./fwconfig.json
         mcu_models_tmp = None
         formated_arch_name = architecture["key"]
+        current_arch_data = None
         if formated_arch_name in fw_configs["mcus"]:
             current_arch_data = fw_configs["mcus"][formated_arch_name]
             if "models" in current_arch_data:
@@ -41,6 +42,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
                     {
                         'Name': mcu_models_tmp[mcu_model]["name"],
                         'key': mcu_model,
+                        'properties': current_arch_data,
                         'Button': Gtk.RadioButton()
                     }
                 )
@@ -225,6 +227,7 @@ class CoPrintMcuModelSelection(ScreenPanel):
 
             # save to fw_config
             self._screen._fw_config["mcu"]["model"] = self.selected
+
             # open target panel
             self._screen.show_panel(target_panel, target_panel, None, 2)
 

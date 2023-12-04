@@ -39,7 +39,10 @@ class CoPrintChipSelection(ScreenPanel):
         normal_options = []
         if normal_options_tmp is not None:
             for normal_option in normal_options_tmp:
-                normal_options.append(normal_option)
+                if mcu_model and mcu_model in normal_options_tmp[normal_option]:
+                    normal_options.append(normal_option)
+                elif normal_options_tmp[normal_option] == "all":
+                    normal_options.append(normal_option)
 
         return normal_options
 
@@ -111,7 +114,12 @@ class CoPrintChipSelection(ScreenPanel):
             {'Name': _("USB ids")               , 'key': 'usb_ids'          , "panel_link": "co_print_mcu_usb_ids"},
             {'Name': _("Serial Baud Rate")      , 'key': 'baudrate_serial'  , "panel_link": "co_print_baud_rate_selection"},
             {'Name': _("MCU startup GPIO pin")  , 'key': 'gpio-pins'        , "panel_link": "co_print_mcu_usb_ids"},
-            {'Name': _("Simulate AVR")          , 'key': 'SIMULAVR'         , "panel_link": "co_print_mcu_usb_ids"}
+            {'Name': _("Simulate AVR")          , 'key': 'SIMULAVR'         , "panel_link": "co_print_mcu_usb_ids"},
+            {'Name': _("GPIO pins")             , 'key': 'gpio_pins'        , "panel_link": "co_print_mcu_usb_ids"},
+            {'Name': _("Optional features")     , 'key': 'opt_features'     , "panel_link": "co_print_mcu_usb_ids"}
+
+            # {'Name': _("MCU Speed")             , 'key': 'SIMULAVR'         , "panel_link": "co_print_mcu_usb_ids"}
+            # {'Name': _("GPIO pins")          , 'key': 'gpio_pins'         , "panel_link": "co_print_mcu_usb_ids"}
         ]
 
         self.menu_items = menu_items
@@ -127,6 +135,31 @@ class CoPrintChipSelection(ScreenPanel):
 
         if "model" in self._screen._fw_config["mcu"] and "key" in self._screen._fw_config["mcu"]["model"]:
             self.mcu_model_selected = self._screen._fw_config["mcu"]["model"]["key"]
+            mcu_model = self._screen._fw_config["mcu"]["model"]
+            self.mcu_properties = mcu_model["properties"]["properties"]
+            future_properties = {}
+
+            for prop in self.mcu_properties:
+                if self.mcu_properties[prop] is not None:
+                    if isinstance(self.mcu_properties[prop], list):
+                        if isinstance(self.mcu_properties[prop][0], dict):
+                            for prop_item in self.mcu_properties[prop]:
+                                if mcu_model and mcu_model["key"] in prop_item["models"] or prop_item["models"] == "all":
+                                    future_properties[prop] = prop_item['name']
+                                    break
+                        else:
+                            if mcu_model and mcu_model["key"] in self.mcu_properties[prop]:
+                                future_properties[prop] = True
+                            else:
+                                future_properties[prop] = False
+                    if isinstance(self.mcu_properties[prop], str):
+                        if self.mcu_properties[prop] == "all":
+                            future_properties[prop] = True
+                        elif self.mcu_properties[prop] == mcu_model["key"]:
+                            future_properties[prop] = True
+                        else:
+                            future_properties[prop] = self.mcu_properties[prop]
+            print(json.dumps(future_properties, indent=4, sort_keys=True))
 
         if "architecture" in self._screen._fw_config["mcu"] and self._screen._fw_config["mcu"]["architecture"]:
             self.architecture_selected = self._screen._fw_config["mcu"]["architecture"]
@@ -165,7 +198,12 @@ class CoPrintChipSelection(ScreenPanel):
                     self._screen._fw_config["mcu"][menu_item['key']] is not None and
                     len(self._screen._fw_config["mcu"][menu_item['key']]) > 1):
                 menu_image_name = "approve"
-                menu_item_value = self._screen._fw_config["mcu"][menu_item['key']]
+                if menu_item['key'] == "usb_ids":
+                    vendor = self._screen._fw_config["mcu"][menu_item['key']]["vendor"]
+                    device = self._screen._fw_config["mcu"][menu_item['key']]["device"]
+                    menu_item_value = {"Name": f"{vendor} {device}", "key": "usb_ids"}
+                else:
+                    menu_item_value = self._screen._fw_config["mcu"][menu_item['key']]
             else:
                 menu_image_name = "support"
 
@@ -230,6 +268,7 @@ class CoPrintChipSelection(ScreenPanel):
         self.wizardButton = Gtk.Button(_('Start Wizard'), name="flat-button-blue")
         self.wizardButton.connect("clicked", self.on_click_wizzard_button)
         self.wizardButton.set_hexpand(True)
+        self.wizardButton.set_sensitive(False)
 
         buttonBox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         buttonBox.pack_start(self.continueButton, False, False, 0)

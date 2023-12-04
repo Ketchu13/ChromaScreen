@@ -60,23 +60,6 @@
                     "MACH_atmega32u4"
                 ]
             },
-            "usb_ids": {
-                "MACH_at90usb1286": {
-                    "name": "at90usb1286",
-                    "vid": "0x03EB",
-                    "pid": "0x2064"
-                },
-                "MACH_at90usb646": {
-                    "name": "at90usb646",
-                    "vid": "0x03EB",
-                    "pid": "0x2066"
-                },
-                "MACH_atmega32u4": {
-                    "name": "atmega32u4",
-                    "vid": "0x2341",
-                    "pid": "0x8036"
-                }
-            },
             "clock_speed_df": "FREQ_16MHZ",
             "clock_reference": {
                 "FREQ_16MHZ": "all",
@@ -98,6 +81,12 @@
                     "MACH_at90usb646",
                     "MACH_atmega32u4"
                 ]
+            },
+            "gpio_pins": {
+                "name": "GPIO pins",
+                "description": "GPIO pins to set at micro-controller startup",
+                "default": "",
+                "models": "all"
             },
             "SIMULAVR": {
                 "name": "Simulavr",
@@ -121,9 +110,48 @@
             },
             "options": {
                 "architecture": "all",
-                "model": "all"
+                "model": "all",
+                "opt_features": [
+                    "MACH_atmega328p"
+                ]
             },
-            "properrties": {
+            "opt_features": {
+                "name": "Features",
+                "description": "Optional features (to reduce code size)",
+                "items": {
+                    "WANT_GPIO_BITBANGING": {
+                        "name": "GPIO bitbanging",
+                        "description": "Support GPIO \"bit-banging\" devices",
+                        "default": true
+                    },
+                    "WANT_DISPLAYS": {
+                        "name": "LCD Devices",
+                        "description": "Support LCD devices",
+                        "default": true
+                    },
+                    "WANT_SENSORS": {
+                        "name": "External sensor device",
+                        "description": "Support external sensor devices",
+                        "default": true
+                    },
+                    "WANT_LIS2DW": {
+                        "name": "LIS2DW accelerometer",
+                        "description": "Support lis2dw 3-axis accelerometer\n",
+                        "default": true
+                    },
+                    "WANT_SOFTWARE_I2C": {
+                        "name": "Software I2C",
+                        "description": "Support software based I2C \"bit-banging\"",
+                        "default": true
+                    },
+                    "WANT_SOFTWARE_SPI": {
+                        "name": "Software SPI",
+                        "description": "Support software based SPI \"bit-banging\"",
+                        "default": true
+                    }
+                }
+            },
+            "properties": {
                 "HAVE_GPIO": "all",
                 "HAVE_GPIO_ADC": "all",
                 "HAVE_GPIO_SPI": "all",
@@ -135,6 +163,7 @@
                     "MACH_atmega328",
                     "MACH_atmega328p"
                 ],
+                "AVR_WATCHDOG": "all",
                 "AVRDUDE_PROTOCOL": [
                     {
                         "name": "wiring",
@@ -156,15 +185,27 @@
                         "default": true
                     }
                 ]
-
-
             },
             "board_dir": "avr"
         },
+
         "MACH_ATSAM": {
             "name": "SAM3/SAM4/SAM E70 (Due and Duet)",
             "description": "Atmel SAM3/SAM4/SAM E70 ARM micro-controllers",
             "clock_speed_df": "FREQ_84MHZ",
+            "clock_reference": {
+                "FREQ_120MHZ": [
+                    "MACH_SAM4S8C",
+                    "MACH_SAM4E8E"
+                ],
+                "FREQ_300MHZ": [
+                    "MACH_SAME70Q20B"
+                ],
+                "FREQ_84MHZ": [
+                    "MACH_SAM3X8E",
+                    "MACH_SAM3X8C"
+                ]
+            },
             "models": {
                 "MACH_SAM3X8E": {
                     "name": "SAM3x8e (Arduino Due)"
@@ -182,12 +223,103 @@
                     "name": "SAME70Q20B (Duet 3 6HC)"
                 }
             },
-            "com_interface": "",
+            "com_interface": {
+                "ATSAM_USB": {
+                    "name": "USB",
+                    "models": "all"
+                },
+                "ATSAM_SERIAL": {
+                    "name": "Serial",
+                    "models": "all"
+                },
+                "ATSAM_MMENU_CANBUS_PC12_PD12": {
+                    "name": "CAN bus (on PC12/PD12)",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                },
+                "ATSAM_MMENU_CANBUS_PB3-PB2": {
+                    "name": "CAN bus (on PB3/PB2)",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                },
+                "ATSAM_USBCANBUS": {
+                    "name": "USB to CAN bus bridge",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                }
+            },
             "low-level":{
-                "Usb_ids":"",
-                "gpio_pins": ""
-            }
+                "gpio_pins": "all",
+                "usb_ids": "all"
+            },
+            "gpio_pins": {
+                "name": "GPIO pins",
+                "description": "GPIO pins to set at micro-controller startup",
+                "default": "",
+                "models": "all"
+            },
+            "options": {
+                "architecture": "all",
+                "model": "all",
+                "com_interface": "all"
+            },
+            "properties": {
+                "HAVE_GPIO": "all",
+                "HAVE_GPIO_ADC": "all",
+                "HAVE_GPIO_I2C": "all",
+                "HAVE_GPIO_SPI": "all",
+                "HAVE_GPIO_HARD_PWM": [
+                    "MACH_SAME70Q20B"
+                ],
+                "HAVE_STRICT_TIMING": "all",
+                "HAVE_CHIPID": "all",
+                "HAVE_STEPPER_BOTH_EDGE": "all",
+                "HAVE_BOOTLOADER_REQUEST": "all",
+                "FLASH_SIZE": "0x80000",
+                "FLASH_BOOT_ADDRESS": "0x0",
+                "RAM_START": {
+                    "0x20400000": [
+                        "MACH_SAM70Q20B"
+                    ],
+                    "0x20000000": [
+                        "MACH_SAM4E8E",
+                        "MACH_SAM4S8C",
+                        "MACH_SAM3X8E",
+                        "MACH_SAM3X8C"
+                    ]
+                },
+                "RAM_SIZE": {
+                    "0x18000": [
+                        "MACH_SAM3X8E",
+                        "MACH_SAM3X8C"
+                    ],
+                    "0x20000": [
+                        "MACH_SAM4E8E",
+                        "MACH_SAM4S8C"
+                    ],
+                    "0x40000": [
+                        "MACH_SAM70Q20B"
+                    ]
+                },
+                "STACK_SIZE": 512,
+                "FLASH_APPLICATION_ADDRESS" : {
+                    "0x400000": [
+                        "MACH_SAM4E8E",
+                        "MACH_SAM4S8C",
+                        "MACH_SAM70Q20B"
+                    ],
+                    "0x80000": [
+                        "MACH_SAM3X8E",
+                        "MACH_SAM3X8C"
+                    ]
+                }
+            },
+            "board_dir": "atsam"
         },
+
         "MACH_ATSAMD": {
             "name": "SAMC21/SAMD21/SAMD51/SAME5x",
             "description": "Atmel SAMC21/SAMD21/SAMD51/SAME5x ARM micro-controllers",
@@ -226,26 +358,208 @@
                     "name": "SAME54P20"
                 }
             },
-            "clock_speed_df": "FREQ_48MHZ",
+            "com_interface": {
+                "ATSAMD_USB": {
+                    "name": "USB",
+                    "models": "all"
+                },
+                "ATSAMD_SERIAL": {
+                    "name": "Serial",
+                    "models": "all"
+                },
+                "ATSAMD_MMENU_CANBUS_PA23_PA22": {
+                    "name": "CAN bus (on PA23/PA22)",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                },
+                "ATSAMD_MMENU_CANBUS_PA25_PA24": {
+                    "name": "CAN bus (on PA25/PA24)",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                },
+                "ATSAMD_MMENU_CANBUS_PB11_PB10": {
+                    "name": "CAN bus (on PB11/PB10)",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                },
+                "ATSAMD_MMENU_CANBUS_PB13_PB12": {
+                    "name": "CAN bus (on PB13/PB12)",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                },
+                "ATSAMD_MMENU_CANBUS_PB15_PB14": {
+                    "name": "CAN bus (on PB15/PB14)",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                },
+                "ATSAMD_USBCANBUS": {
+                    "name": "USB to CAN bus bridge",
+                    "models": [
+                        "MACH_SAME70Q20B"
+                    ]
+                }
+            },
+            "clock_speed_df": "CLOCK_REF_X32K",
             "clock_reference": {
-                "FREQ_48MHZ": "all",
-                "FREQ_96MHZ": [
-                    "MACH_samd51g19a",
-                    "MACH_samd51j19a",
-                    "MACH_samd51j20a",
-                    "MACH_samd51j19a",
-                    "MACH_samd51j20a",
-                    "MACH_samd51n19a",
-                    "MACH_samd51n20a",
-                    "MACH_samd51p19a",
-                    "MACH_samd51p20a"
+                "CLOCK_REF_X32K": {
+                    "name": "32.768 kHz crystal",
+                    "models": [
+                        "MACH_SAMD21G18",
+                        "MACH_SAMD21E18",
+                        "MACH_SAMD21J18",
+                        "MACH_SAMD21E15",
+                        "MACH_SAMD51G19",
+                        "MACH_SAMD51J19",
+                        "MACH_SAMD51N19",
+                        "MACH_SAMD51P20",
+                        "MACH_SAME51J19",
+                        "MACH_SAME54P20"
+                    ]
+                },
+                "CLOCK_REF_X12M": {
+                    "name": "12 MHz crystal",
+                    "models": [
+                        "MACH_SAMC21G18"
+                    ]
+                },
+                "CLOCK_REF_X25M": {
+                    "name": "25 MHz crystal",
+                    "models": [
+                        "MACH_SAME51J19",
+                        "MACH_SAME54P20"
+                    ]
+                },
+                "CLOCK_REF_INTERNAL": {
+                    "name": "Internal oscillator",
+                    "models": [
+                        "MACH_SAMD21G18",
+                        "MACH_SAMD21E18",
+                        "MACH_SAMD21J18",
+                        "MACH_SAMD21E15",
+                        "MACH_SAMD51G19",
+                        "MACH_SAMD51J19",
+                        "MACH_SAMD51N19",
+                        "MACH_SAMD51P20",
+                        "MACH_SAME51J19",
+                        "MACH_SAME54P20"
+                    ]
+                }
+            },
+            "mcu_speed_df": "FREQ_120MHZ",
+            "mcu_speed": {
+                "FREQ_120MHZ": {
+                    "name": "120 MHz (standard)",
+                    "models": [
+                        "MACH_SAMD51G19",
+                        "MACH_SAMD51J19",
+                        "MACH_SAMD51N19",
+                        "MACH_SAMD51P20",
+                        "MACH_SAME51J19",
+                        "MACH_SAME54P20"
+                    ]
+                },
+                "FREQ_150MHZ": {
+                    "name": "150 MHz (overclock)",
+                    "models": [
+                        "MACH_SAMD51G19",
+                        "MACH_SAMD51J19",
+                        "MACH_SAMD51N19",
+                        "MACH_SAMD51P20",
+                        "MACH_SAME51J19",
+                        "MACH_SAME54P20"
+                    ]
+                },
+                "FREQ_180MHZ": {
+                    "name": "180 MHz (overclock)",
+                    "models": [
+                        "MACH_SAMD51G19",
+                        "MACH_SAMD51J19",
+                        "MACH_SAMD51N19",
+                        "MACH_SAMD51P20",
+                        "MACH_SAME51J19",
+                        "MACH_SAME54P20"
+                    ]
+                },
+                "FREQ_200MHZ": {
+                    "name": "200 MHz (overclock)",
+                    "models": [
+                        "MACH_SAMD51G19",
+                        "MACH_SAMD51J19",
+                        "MACH_SAMD51N19",
+                        "MACH_SAMD51P20",
+                        "MACH_SAME51J19",
+                        "MACH_SAME54P20"
+                    ]
+                }
+            },
+            "low-level":{
+                "usb_ids": "all",
+                "gpio_pins": "all",
+                "mcu_speed": "all"
+            },
+            "gpio_pins": {
+                "name": "GPIO pins",
+                "description": "GPIO pins to set at micro-controller startup",
+                "default": "",
+                "models": "all"
+            },
+            "options" : {
+                "architecture": "all",
+                "model": "all",
+                "com_interface": "all",
+                "clock_reference": "all",
+                "bootloader": "all"
+            },
+            "properties": {
+                "HAVE_GPIO": "all",
+                "HAVE_GPIO_ADC": "all",
+                "HAVE_GPIO_I2C": "all",
+                "HAVE_GPIO_SPI": "all",
+                "HAVE_GPIO_HARD_PWM": [
+                    "MACH_SAMX2"
+                ],
+                "HAVE_STRICT_TIMING": "all",
+                "HAVE_CHIPID": "all",
+                "HAVE_STEPPER_BOTH_EDGE": "all",
+                "HAVE_BOOTLOADER_REQUEST": "all",
+                "HAVE_SERCOM": "all",
+                "HAVE_SAM_CANBUS": [
+                    "MACH_SAME70"
                 ]
-            }
+            },
+            "board_dir": "atsamd"
         },
+
         "MACH_LPC176X": {
             "name": "LPC176x (Smoothieboard)",
             "description": "NXP LPC176x ARM micro-controllers",
+            "bootloader": {
+                "LPC_FLASH_START_4000": {
+                    "name": "16KiB bootloader (Smoothieware bootloader)",
+                    "description": "16KiB bootloader (Smoothieware bootloader)",
+                    "default": true,
+                    "models": "aall"
+                },
+                "LPC_FLASH_START_0000": {
+                    "name": "No bootloader",
+                    "description": "No bootloader",
+                    "models": "all"
+                }
+            },
             "clock_speed_df": "FREQ_100MHZ",
+            "clock_reference": {
+                "FREQ_100MHZ": [
+                    "MACH_LPC1769"
+                ],
+                "FREQ_120MHZ": [
+                    "MACH_LPC1769"
+                ]
+            },
             "models": {
                 "MACH_LPC1768": {
                     "name": "lpc1768 (100 MHz)"
@@ -253,12 +567,69 @@
                 "MACH_LPC1769": {
                     "name": "lpc1769 (120 MHz)"
                 }
-            }
+            },
+            "options": {
+                "architecture": "all",
+                "model": "all",
+                "com_interface": "all",
+                "bootloader": "all"
+            },
+            "gpio_pins": {
+                "name": "GPIO pins",
+                "description": "GPIO pins to set at micro-controller startup",
+                "default": "",
+                "models": "all"
+            },
+            "low-level":{
+                "gpio_pins": "all",
+                "usb_ids": "all"
+            },
+            "com_interface": {
+                "LPC_USB": {
+                    "name": "USB",
+                    "models": "all"
+                },
+                "LPC_SERIAL_UART0_P03_P02": {
+                    "name": "Serial (on UART0 P0.3/P0.2)",
+                    "models": "all"
+                },
+                "LPC_SERIAL_UART3_P429_P428": {
+                    "name": "Serial (on UART0 P4.29/P4.28)",
+                    "models": "all"
+                }
+            },
+            "properties": {
+                "HAVE_GPIO": "all",
+                "HAVE_GPIO_ADC": "all",
+                "HAVE_GPIO_I2C": "all",
+                "HAVE_GPIO_SPI": "all",
+                "HAVE_GPIO_HARD_PWM": "all",
+                "HAVE_STRICT_TIMING": "all",
+                "HAVE_CHIPID": "all",
+                "HAVE_STEPPER_BOTH_EDGE": "all",
+                "HAVE_BOOTLOADER_REQUEST": "all",
+                "FLASH_SIZE": "0x80000",
+                "FLASH_BOOT_ADDRESS": "0x0",
+                "RAM_START": "0x10000000",
+                "RAM_SIZE": "0x7fe0",
+                "STACK_SIZE": 512,
+                "FLASH_APPLICATION_ADDRESS" : "0x0000",
+                "LPC_SELECT": true
+
+            },
+            "board_dir": "lpc176x"
         },
+
         "MACH_STM32": {
             "name": "STMicroelectronics STM32",
             "description": "STMicroelectronics STM32 ARM micro-controllers",
             "clock_speed_df": "FREQ_72MHZ",
+            "gpio_pins": {
+                "name": "GPIO pins",
+                "description": "GPIO pins to set at micro-controller startup",
+                "default": "",
+                "models": "all"
+            },
             "models": {
                 "MACH_STM32F103": {
                     "name": "STM32F103"
@@ -331,6 +702,7 @@
                 }
             }
         },
+
         "MACH_HC32F460": {
             "name": "Huada Semiconductor HC32F460",
             "description": "Huada Semiconductor HC32F460 ARM micro-controllers",
@@ -341,6 +713,7 @@
                 }
             }
         },
+
         "MACH_RP2040": {
             "name": "Raspberry Pi RP2040",
             "description": "Raspberry Pi RP2040 ARM micro-controllers",
@@ -351,6 +724,7 @@
                 }
             }
         },
+
         "MACH_PRU": {
             "name": "Beaglebone PRU",
             "description": "Beaglebone PRU ARM micro-controllers",
@@ -361,6 +735,7 @@
                 }
             }
         },
+
         "MACH_AR100": {
             "name": "Allwinner A64 AR100",
             "description": "Allwinner A64 AR100 ARM micro-controllers",
@@ -371,6 +746,7 @@
                 }
             }
         },
+
         "MACH_LINUX": {
             "name": "Linux process",
             "description": "Linux process",
@@ -381,6 +757,7 @@
                 }
             }
         },
+
         "MACH_SIMU": {
             "name": "Host simulator",
             "description": "Host simulator",

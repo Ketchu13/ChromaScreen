@@ -2043,6 +2043,35 @@ box.auto-leveling-label-box-active-white {
     border: 2px solid #878787;
     min-width: 37rem;
 }
+#usbid-default-button, #usbid-check-button {
+    background-color: #00477B;
+    border: 2px solid #878787;
+    border-radius: 5px;
+    min-width: 80px;
+    min-height: 30px;
+}
+#usbid-check-button:active, #usbid-default-button:active {
+    background-color: #000000;
+    border: 2px solid #FFFFFF;
+}
+#msg-error-label {
+    color: #ff0000;
+    font-size: 1.5rem;
+}
+#msg-info-label{
+    color: #00ff00;
+    font-size: 1.6rem;
+}
+#usbid-entry {
+    border: 1px solid #878787;
+}
+#usb-id-box {
+    background: linear-gradient(180deg, rgba(63, 63, 63, 0.90) 0%, rgba(63, 63, 63, 0.00) 100%);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 2px solid #878787;
+    min-width: 37rem;
+}
 #system-setting-card-box {
     background: linear-gradient(180deg, rgba(63, 63, 63, 0.90) 0%, rgba(63, 63, 63, 0.00) 100%);
     padding: 1rem;
